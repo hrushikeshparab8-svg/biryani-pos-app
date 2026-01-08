@@ -3,240 +3,481 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Bill Generator</title>
+    <title>Restaurant POS System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --border: #dee2e6;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', monospace;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
         }
 
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
 
-        .bill-header {
-            text-align: center;
-            border-bottom: 2px dashed #333;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+        /* Header */
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
         .restaurant-name {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
         }
 
-        .bill-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .invoice-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+        .time-display {
             font-size: 14px;
+            opacity: 0.9;
         }
 
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        /* Main Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 70vh;
         }
 
-        .items-table th {
-            text-align: left;
-            padding: 10px 5px;
-            border-bottom: 2px solid #333;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .items-table td {
-            padding: 8px 5px;
-            border-bottom: 1px dashed #ccc;
-            font-size: 14px;
-        }
-
-        .amount-column {
-            text-align: right;
-        }
-
-        .rate-column, .qty-column {
-            text-align: center;
-        }
-
-        .tax-section {
-            margin: 20px 0;
-            padding-top: 10px;
-            border-top: 1px dashed #333;
-        }
-
-        .tax-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 14px;
-        }
-
-        .total-section {
-            margin: 25px 0;
-            padding-top: 10px;
-            border-top: 2px solid #333;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .divider {
-            border-top: 1px dashed #333;
-            margin: 15px 0;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-            margin: 15px 0;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-print {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-save {
-            background: #2196F3;
-            color: white;
-        }
-
-        .btn-share {
-            background: #FF9800;
-            color: white;
-        }
-
-        .footer-info {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px dashed #333;
-            font-size: 12px;
-            color: #333;
-        }
-
-        .footer-line {
-            margin: 3px 0;
-        }
-
-        .copyright-notice {
-            font-size: 10px;
-            color: #999;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .settings-panel {
+        /* Menu Section */
+        .menu-section {
+            padding: 25px;
+            border-right: 2px dashed var(--border);
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
+        }
+
+        .section-title {
+            color: var(--primary);
             margin-bottom: 20px;
-            border: 1px solid #dee2e6;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .settings-grid {
+        .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 15px;
-            margin-bottom: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
         }
 
-        .form-group {
-            margin-bottom: 10px;
+        .menu-item {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
         }
 
-        .form-group label {
-            display: block;
+        .menu-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--dark);
             margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
             font-size: 14px;
         }
 
-        .item-controls {
+        .item-price {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .item-category {
+            font-size: 11px;
+            color: #6c757d;
+            background: var(--light);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* Cart Section */
+        .cart-section {
+            padding: 25px;
+            background: white;
+        }
+
+        .cart-header {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .item-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
-            gap: 10px;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #fff;
-            border-radius: 4px;
-            border: 1px solid #eee;
+            margin-bottom: 20px;
         }
 
-        .remove-item {
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            width: 30px;
-            height: 30px;
+        .cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: var(--light);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .item-quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
         }
 
+        .quantity {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            color: #dc3545;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* Bill Summary */
+        .bill-summary {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .summary-row.total {
+            border-bottom: 2px solid var(--primary);
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a252f;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 25px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Bills List */
+        .bills-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .bill-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bill-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bill-items-preview {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        /* Sales Dashboard */
+        .sales-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .sales-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .order-type-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .type-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid var(--border);
+        }
+
+        /* Settings */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .logo-upload {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-preview {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--light);
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -250,825 +491,1540 @@
             justify-content: center;
         }
 
+        .modal.active {
+            display: flex;
+        }
+
         .modal-content {
             background: white;
+            border-radius: 15px;
             padding: 30px;
-            border-radius: 10px;
             max-width: 500px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
         }
 
-        .modal.active {
-            display: flex;
+        /* Password Modal */
+        .password-modal {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .password-content {
+            text-align: center;
+            max-width: 400px;
         }
 
         .password-input {
-            margin: 20px 0;
-            padding: 10px;
             width: 100%;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid var(--border);
+            border-radius: 8px;
             font-size: 16px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Bill Print Template */
+        .bill-print {
+            display: none;
         }
 
         @media print {
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
+            body * {
+                visibility: hidden;
             }
             
-            .container {
-                box-shadow: none;
+            .bill-print, .bill-print * {
+                visibility: visible;
+            }
+            
+            .bill-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm;
                 padding: 10px;
-                max-width: 80mm;
-            }
-            
-            .settings-panel,
-            .action-buttons,
-            .no-print {
-                display: none !important;
-            }
-            
-            .bill-header {
-                border-bottom: 3px double #000;
-            }
-            
-            .items-table th {
-                border-bottom: 3px double #000;
-            }
-            
-            .total-section {
-                border-top: 3px double #000;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
             }
         }
 
-        .bill-number {
+        .print-bill {
+            width: 80mm;
+            padding: 15px;
+            border: 1px solid #000;
+            margin: 0 auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .print-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .print-logo {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 5px;
+        }
+
+        .print-restaurant {
+            font-size: 18px;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .print-title {
             font-size: 16px;
-        }
-
-        .invoice-number {
             font-weight: bold;
-            color: #333;
+            margin: 5px 0;
         }
 
-        .gst-section {
-            margin-top: 10px;
+        .print-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 11px;
         }
 
-        .gst-note {
-            font-size: 10px;
-            color: #666;
-            margin-top: 20px;
+        .print-divider {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 11px;
+        }
+
+        .print-table th {
+            text-align: left;
+            padding: 5px 0;
+            border-bottom: 2px solid #000;
+        }
+
+        .print-table td {
+            padding: 4px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .print-table .text-right {
+            text-align: right;
+        }
+
+        .print-table .text-center {
             text-align: center;
         }
+
+        .print-total {
+            border-top: 2px solid #000;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .print-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+        }
+
+        .print-gst-note {
+            font-size: 9px;
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-section {
+                border-right: none;
+                border-bottom: 2px dashed var(--border);
+            }
+            
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Settings Panel -->
-        <div class="settings-panel">
-            <h3 style="margin-bottom: 15px;"><i class="fas fa-cog"></i> Bill Settings</h3>
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo">
+                    <img id="headerLogo" src="" alt="Logo">
+                </div>
+                <div>
+                    <div class="restaurant-name" id="restaurantTitle">The House of Biryani</div>
+                    <div class="time-display" id="currentTime"></div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('pos')">
+                <i class="fas fa-cash-register"></i> POS
+            </button>
+            <button class="tab-btn" onclick="switchTab('bills')">
+                <i class="fas fa-receipt"></i> Bills
+            </button>
+            <button class="tab-btn" onclick="switchTab('sales')">
+                <i class="fas fa-chart-line"></i> Sales
+            </button>
+            <button class="tab-btn" onclick="openSettings()">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+
+        <!-- POS Tab -->
+        <div id="pos" class="tab-content active">
+            <div class="main-content">
+                <!-- Menu Section -->
+                <div class="menu-section">
+                    <div class="section-title">
+                        <span><i class="fas fa-utensils"></i> Menu Items</span>
+                        <input type="text" id="menuSearch" placeholder="Search items..." style="width: 200px; padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div class="menu-grid" id="menuGrid">
+                        <!-- Menu items loaded here -->
+                    </div>
+                </div>
+
+                <!-- Cart Section -->
+                <div class="cart-section">
+                    <div class="cart-header">
+                        <div class="section-title">
+                            <span><i class="fas fa-shopping-cart"></i> Current Order</span>
+                            <span id="itemCount">0 items</span>
+                        </div>
+                        <button class="btn btn-danger" onclick="clearCart()">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+
+                    <div class="cart-items" id="cartItems">
+                        <div class="empty-state" id="emptyCart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>No items in cart</p>
+                            <p>Add items from the menu</p>
+                        </div>
+                    </div>
+
+                    <div class="bill-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">₹ 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>CGST (<span id="cgstPercent">2.5</span>%):</span>
+                            <span id="cgstAmount">₹ 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>SGST (<span id="sgstPercent">2.5</span>%):</span>
+                            <span id="sgstAmount">₹ 0</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="totalAmount">₹ 0</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-full mt-20" onclick="generateBill()">
+                        <i class="fas fa-file-invoice"></i> Generate Bill (₹<span id="totalDisplay">0</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bills Tab -->
+        <div id="bills" class="tab-content">
+            <div class="section-title">
+                <span><i class="fas fa-history"></i> Bill History</span>
+                <div style="display: flex; gap: 10px;">
+                    <select id="billFilter" onchange="loadBills()" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="all">All Bills</option>
+                    </select>
+                </div>
+            </div>
+            <div class="bills-list" id="billsList">
+                <!-- Bills loaded here -->
+            </div>
+        </div>
+
+        <!-- Sales Tab -->
+        <div id="sales" class="tab-content">
+            <div class="section-title">
+                <span><i class="fas fa-chart-bar"></i> Sales Dashboard</span>
+            </div>
             
-            <div class="settings-grid">
-                <div class="form-group">
-                    <label>Restaurant Name</label>
-                    <input type="text" id="restaurantName" class="form-control" value="RESTAURANT">
+            <div class="sales-filters">
+                <button class="filter-btn active" onclick="setSalesFilter('today')">Today</button>
+                <button class="filter-btn" onclick="setSalesFilter('week')">This Week</button>
+                <button class="filter-btn" onclick="setSalesFilter('month')">This Month</button>
+            </div>
+
+            <div class="sales-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value" id="totalRevenue">₹ 0</div>
                 </div>
-                <div class="form-group">
-                    <label>Invoice #</label>
-                    <input type="text" id="invoiceNumber" class="form-control" value="1304">
+                <div class="stat-card">
+                    <div class="stat-label">Total Orders</div>
+                    <div class="stat-value" id="totalOrders">0</div>
                 </div>
-                <div class="form-group">
-                    <label>Date</label>
-                    <input type="date" id="invoiceDate" class="form-control">
+                <div class="stat-card">
+                    <div class="stat-label">Avg. Order Value</div>
+                    <div class="stat-value" id="avgOrderValue">₹ 0</div>
                 </div>
-                <div class="form-group">
-                    <label>CGST %</label>
-                    <input type="number" id="cgstRate" class="form-control" value="2.5" min="0" max="100" step="0.1">
-                </div>
-                <div class="form-group">
-                    <label>SGST %</label>
-                    <input type="number" id="sgstRate" class="form-control" value="2.5" min="0" max="100" step="0.1">
+                <div class="stat-card">
+                    <div class="stat-label">Top Selling Item</div>
+                    <div class="stat-value" id="topItem">-</div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label><i class="fas fa-utensils"></i> Add Menu Item</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="itemDescription" class="form-control" placeholder="Item Description" style="flex: 2;">
-                    <input type="number" id="itemQty" class="form-control" placeholder="Qty" min="1" value="1" style="flex: 1;">
-                    <input type="number" id="itemRate" class="form-control" placeholder="Rate (₹)" min="0" step="0.01" style="flex: 1;">
-                    <button class="btn btn-print" onclick="addItem()" style="flex: 1;">
-                        <i class="fas fa-plus"></i> Add
+            <div class="section-title" style="margin-top: 30px;">
+                <span>Sales by Order Type</span>
+            </div>
+            <div class="order-type-breakdown" id="orderTypeBreakdown">
+                <!-- Order type stats loaded here -->
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <div class="settings-grid">
+                <!-- Restaurant Settings -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-store"></i> Restaurant Settings</h3>
+                    
+                    <div class="logo-upload">
+                        <div class="logo-preview">
+                            <img id="logoPreview" src="" alt="Logo Preview">
+                        </div>
+                        <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                        <button class="btn" onclick="document.getElementById('logoUpload').click()">
+                            <i class="fas fa-upload"></i> Upload Logo
+                        </button>
+                        <button class="btn btn-danger" onclick="removeLogo()" style="margin-top: 10px;">
+                            <i class="fas fa-trash"></i> Remove Logo
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Restaurant Name</label>
+                        <input type="text" id="restaurantName" class="form-control" value="RESTAURANT">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <textarea id="restaurantAddress" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GST Number</label>
+                        <input type="text" id="gstNumber" class="form-control" placeholder="GSTIN">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CGST %</label>
+                        <input type="number" id="cgstRate" class="form-control" value="2.5" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SGST %</label>
+                        <input type="number" id="sgstRate" class="form-control" value="2.5" min="0" max="100" step="0.1">
+                    </div>
+                </div>
+
+                <!-- Menu Management -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-utensils"></i> Menu Management</h3>
+                    <div id="menuManagement">
+                        <!-- Menu items will be loaded here -->
+                    </div>
+                    <button class="btn btn-primary btn-full mt-20" onclick="addMenuItem()">
+                        <i class="fas fa-plus"></i> Add Menu Item
+                    </button>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-lock"></i> Security Settings</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="changePassword()">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label class="form-label">Data Management</label>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button class="btn" onclick="exportData()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn" onclick="importData()">
+                                <i class="fas fa-upload"></i> Import
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-danger btn-full mt-20" onclick="clearAllData()">
+                        <i class="fas fa-trash"></i> Clear All Data
                     </button>
                 </div>
             </div>
 
-            <div id="itemsContainer">
-                <!-- Items will be added here -->
-            </div>
-
-            <div class="item-controls">
-                <button class="btn btn-print" onclick="generateBill()">
-                    <i class="fas fa-file-invoice"></i> Generate Bill
-                </button>
-                <button class="btn btn-save" onclick="saveSettings()">
-                    <i class="fas fa-save"></i> Save Settings
-                </button>
-                <button class="btn" onclick="clearAll()" style="background: #6c757d; color: white;">
-                    <i class="fas fa-trash"></i> Clear All
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-success" onclick="saveSettings()" style="padding: 12px 40px;">
+                    <i class="fas fa-save"></i> Save All Settings
                 </button>
             </div>
-        </div>
-
-        <!-- Bill Display -->
-        <div class="bill-header">
-            <div class="restaurant-name" id="displayRestaurantName">RESTAURANT</div>
-            <div class="bill-title">FOOD BILL</div>
-            
-            <div class="invoice-info">
-                <div>
-                    <span class="invoice-number">Invoice #: <span id="displayInvoiceNumber">1304</span></span>
-                </div>
-                <div>
-                    Date: <span id="displayDate">24/04/2024</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Items Table -->
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th>DESCRIPTION</th>
-                    <th class="qty-column">QTY</th>
-                    <th class="rate-column">RATE</th>
-                    <th class="amount-column">AMOUNT</th>
-                </tr>
-            </thead>
-            <tbody id="billItems">
-                <!-- Items will be populated here -->
-            </tbody>
-        </table>
-
-        <div class="divider"></div>
-
-        <!-- Tax Section -->
-        <div class="tax-section">
-            <div class="tax-row">
-                <span>CGST @ <span id="cgstPercent">2.5</span>%</span>
-                <span>₹ <span id="cgstAmount">0.00</span></span>
-            </div>
-            <div class="tax-row">
-                <span>SGST @ <span id="sgstPercent">2.5</span>%</span>
-                <span>₹ <span id="sgstAmount">0.00</span></span>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Total Section -->
-        <div class="total-section">
-            <div class="total-row">
-                <span>TOTAL</span>
-                <span>₹ <span id="totalAmount">0.00</span></span>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Footer Note -->
-        <div class="footer-note">
-            <p><strong>Food Bill Generator: Create Free GST Bills in 1 Min</strong></p>
-            <p class="copyright-notice">Images may be subject to copyright. Learn more</p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-print" onclick="printBill()">
-                <i class="fas fa-print"></i> Print Bill
-            </button>
-            <button class="btn btn-save" onclick="saveBill()">
-                <i class="fas fa-download"></i> Save PDF
-            </button>
-            <button class="btn btn-share" onclick="shareBill()">
-                <i class="fas fa-share-alt"></i> Share
-            </button>
-        </div>
-
-        <!-- Footer Information -->
-        <div class="footer-info">
-            <div class="footer-line" id="footerLine1">JAGDISH'S BILL</div>
-            <div class="footer-line" id="footerLine2">Indian The Veg Treat</div>
-            <div class="footer-line" id="footerLine3">Food Story (AGP)</div>
-        </div>
-
-        <div class="gst-note">
-            This is a computer generated invoice. No signature required.
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div class="modal" id="settingsModal">
+    <!-- Bill Modal -->
+    <div class="modal" id="billModal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px;"><i class="fas fa-sliders-h"></i> Advanced Settings</h3>
-            
-            <div class="form-group">
-                <label>Footer Line 1</label>
-                <input type="text" id="footer1" class="form-control" value="JAGDISH'S BILL">
+            <h2 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-file-invoice"></i> Bill Preview
+            </h2>
+            <div id="billPreview">
+                <!-- Bill preview loaded here -->
             </div>
-            
-            <div class="form-group">
-                <label>Footer Line 2</label>
-                <input type="text" id="footer2" class="form-control" value="Indian The Veg Treat">
-            </div>
-            
-            <div class="form-group">
-                <label>Footer Line 3</label>
-                <input type="text" id="footer3" class="form-control" value="Food Story (AGP)">
-            </div>
-            
-            <div class="form-group">
-                <label>Auto-increment Invoice Number</label>
-                <input type="checkbox" id="autoIncrement" checked>
-            </div>
-            
-            <div class="form-group">
-                <label>Default Items (JSON)</label>
-                <textarea id="defaultItems" class="form-control" rows="4">[
-    {"description": "Paneer Butter Masala", "qty": 1, "rate": 180},
-    {"description": "Veg Biryani", "qty": 1, "rate": 150},
-    {"description": "Tandoori Roti", "qty": 3, "rate": 20},
-    {"description": "Gulab Jamun", "qty": 2, "rate": 100}
-]</textarea>
-            </div>
-            
-            <div class="item-controls" style="margin-top: 20px;">
-                <button class="btn btn-save" onclick="saveAdvancedSettings()">
-                    <i class="fas fa-save"></i> Save
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="printBill()">
+                    <i class="fas fa-print"></i> Print Bill
                 </button>
-                <button class="btn" onclick="closeModal()" style="background: #6c757d; color: white;">
-                    <i class="fas fa-times"></i> Cancel
+                <button class="btn btn-success" onclick="saveBill()">
+                    <i class="fas fa-save"></i> Save Bill
+                </button>
+                <button class="btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Close
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Password Modal -->
-    <div class="modal" id="passwordModal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 20px;"><i class="fas fa-lock"></i> Password Required</h3>
-            <p>Enter password to access advanced settings:</p>
-            <input type="password" id="password" class="password-input" placeholder="Enter password">
-            <div class="item-controls" style="margin-top: 20px;">
-                <button class="btn btn-save" onclick="checkPassword()">
+    <div class="modal password-modal" id="passwordModal">
+        <div class="modal-content password-content">
+            <h2 style="color: var(--primary); margin-bottom: 20px;">
+                <i class="fas fa-lock"></i> Enter Password
+            </h2>
+            <p style="margin-bottom: 20px; color: #666;">Enter password to access settings:</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password" autocomplete="off">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="checkPassword()">
                     <i class="fas fa-unlock"></i> Unlock
                 </button>
-                <button class="btn" onclick="closePasswordModal()" style="background: #6c757d; color: white;">
+                <button class="btn" onclick="closePasswordModal()">
                     <i class="fas fa-times"></i> Cancel
                 </button>
             </div>
-            <p style="margin-top: 10px; font-size: 12px; color: #666;">
-                Default password: 1234 (Change in settings)
+            <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                Default password: 1234
             </p>
+        </div>
+    </div>
+
+    <!-- Print Template -->
+    <div class="bill-print" id="billPrintTemplate">
+        <div class="print-bill">
+            <div class="print-header">
+                <img id="printLogo" class="print-logo" src="" alt="">
+                <div class="print-restaurant" id="printRestaurantName">RESTAURANT</div>
+                <div class="print-title">FOOD BILL</div>
+            </div>
+
+            <div class="print-info">
+                <div>Invoice #: <span id="printInvoiceNumber">1304</span></div>
+                <div>Date: <span id="printDate">24/04/2024</span></div>
+            </div>
+
+            <div class="print-divider"></div>
+
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>DESCRIPTION</th>
+                        <th class="text-center">QTY</th>
+                        <th class="text-right">RATE</th>
+                        <th class="text-right">AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody id="printItems">
+                    <!-- Items will be inserted here -->
+                </tbody>
+            </table>
+
+            <div class="print-divider"></div>
+
+            <div style="margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin: 5px 0;">
+                    <span>CGST @ <span id="printCgstPercent">2.5</span>%</span>
+                    <span>₹ <span id="printCgstAmount">12.25</span></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin: 5px 0;">
+                    <span>SGST @ <span id="printSgstPercent">2.5</span>%</span>
+                    <span>₹ <span id="printSgstAmount">12.25</span></span>
+                </div>
+            </div>
+
+            <div class="print-divider"></div>
+
+            <div class="print-total" style="display: flex; justify-content: space-between;">
+                <span>TOTAL</span>
+                <span>₹ <span id="printTotalAmount">514.50</span></span>
+            </div>
+
+            <div class="print-footer">
+                <div style="font-weight: bold; margin-bottom: 5px;">
+                    Food Bill Generator: Create Free GST Bills in 1 Min
+                </div>
+                <div style="font-size: 9px; color: #666; margin-bottom: 10px;">
+                    Images may be subject to copyright. Learn more
+                </div>
+                <div id="printFooterLine1" style="font-size: 11px; font-weight: bold;">JAGDISH'S BILL</div>
+                <div id="printFooterLine2" style="font-size: 10px;">Indian The Veg Treat</div>
+                <div id="printFooterLine3" style="font-size: 10px;">Food Story (AGP)</div>
+            </div>
+
+            <div class="print-gst-note">
+                This is a computer generated invoice. No signature required.
+            </div>
         </div>
     </div>
 
     <script>
         // Initialize data
-        let items = [];
-        let billData = {
-            restaurantName: 'RESTAURANT',
-            invoiceNumber: '1304',
-            date: new Date().toLocaleDateString('en-IN'),
-            cgstRate: 2.5,
-            sgstRate: 2.5,
-            footer: {
-                line1: "JAGDISH'S BILL",
-                line2: "Indian The Veg Treat",
-                line3: "Food Story (AGP)"
-            }
-        };
+        let cart = [];
+        let db;
+        let currentSettings = {};
+        let salesFilter = 'today';
 
-        // Default items from the image
-        const defaultItems = [
-            { description: "Paneer Butter Masala", qty: 1, rate: 180.00 },
-            { description: "Veg Biryani", qty: 1, rate: 150.00 },
-            { description: "Tandoori Roti", qty: 3, rate: 20.00 },
-            { description: "Gulab Jamun", qty: 2, rate: 100.00 }
+        // Default menu items
+        const defaultMenu = [
+            { id: 1, name: "Paneer Butter Masala", price: 180, category: "Main Course" },
+            { id: 2, name: "Veg Biryani", price: 150, category: "Biryani" },
+            { id: 3, name: "Tandoori Roti", price: 20, category: "Breads" },
+            { id: 4, name: "Gulab Jamun", price: 100, category: "Desserts" },
+            { id: 5, name: "Chicken Biryani", price: 220, category: "Biryani" },
+            { id: 6, name: "Butter Chicken", price: 250, category: "Main Course" },
+            { id: 7, name: "Naan", price: 30, category: "Breads" },
+            { id: 8, name: "Raita", price: 60, category: "Sides" },
+            { id: 9, name: "Coke", price: 40, category: "Beverages" },
+            { id: 10, name: "Mineral Water", price: 20, category: "Beverages" }
         ];
 
-        // Initialize the app
+        // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            updateTime();
+            setInterval(updateTime, 60000);
         });
 
         function initializeApp() {
-            // Load saved data from localStorage
-            loadSavedData();
+            // Setup logo upload
+            document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
             
-            // Set today's date
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('invoiceDate').value = today;
-            billData.date = formatDate(today);
+            // Initialize IndexedDB
+            const request = indexedDB.open('RestaurantPOS', 3);
             
-            // Add default items
-            items = [...defaultItems];
-            updateItemsDisplay();
-            generateBill();
-        }
-
-        function loadSavedData() {
-            // Load restaurant name
-            const savedName = localStorage.getItem('restaurantName');
-            if (savedName) {
-                billData.restaurantName = savedName;
-                document.getElementById('restaurantName').value = savedName;
-            }
-            
-            // Load invoice number
-            const savedInvoice = localStorage.getItem('invoiceNumber');
-            if (savedInvoice) {
-                billData.invoiceNumber = savedInvoice;
-                document.getElementById('invoiceNumber').value = savedInvoice;
-            }
-            
-            // Load GST rates
-            const savedCgst = localStorage.getItem('cgstRate');
-            if (savedCgst) {
-                billData.cgstRate = parseFloat(savedCgst);
-                document.getElementById('cgstRate').value = savedCgst;
-            }
-            
-            const savedSgst = localStorage.getItem('sgstRate');
-            if (savedSgst) {
-                billData.sgstRate = parseFloat(savedSgst);
-                document.getElementById('sgstRate').value = savedSgst;
-            }
-            
-            // Load footer data
-            const savedFooter = localStorage.getItem('footerData');
-            if (savedFooter) {
-                billData.footer = JSON.parse(savedFooter);
-            }
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getDate() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        }
-
-        function addItem() {
-            const description = document.getElementById('itemDescription').value.trim();
-            const qty = parseInt(document.getElementById('itemQty').value) || 1;
-            const rate = parseFloat(document.getElementById('itemRate').value) || 0;
-            
-            if (!description) {
-                alert('Please enter item description');
-                return;
-            }
-            
-            if (rate <= 0) {
-                alert('Please enter a valid rate');
-                return;
-            }
-            
-            items.push({ description, qty, rate });
-            updateItemsDisplay();
-            
-            // Clear input fields
-            document.getElementById('itemDescription').value = '';
-            document.getElementById('itemQty').value = '1';
-            document.getElementById('itemRate').value = '';
-            
-            generateBill();
-        }
-
-        function updateItemsDisplay() {
-            const itemsContainer = document.getElementById('itemsContainer');
-            const billItems = document.getElementById('billItems');
-            
-            // Clear containers
-            itemsContainer.innerHTML = '';
-            billItems.innerHTML = '';
-            
-            // Add each item
-            items.forEach((item, index) => {
-                // Add to settings panel
-                const itemRow = document.createElement('div');
-                itemRow.className = 'item-row';
-                itemRow.innerHTML = `
-                    <input type="text" value="${item.description}" onchange="updateItem(${index}, 'description', this.value)" class="form-control">
-                    <input type="number" value="${item.qty}" onchange="updateItem(${index}, 'qty', this.value)" class="form-control">
-                    <input type="number" value="${item.rate.toFixed(2)}" onchange="updateItem(${index}, 'rate', this.value)" class="form-control">
-                    <span>₹ ${(item.qty * item.rate).toFixed(2)}</span>
-                    <button class="remove-item" onclick="removeItem(${index})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                `;
-                itemsContainer.appendChild(itemRow);
+            request.onupgradeneeded = function(event) {
+                db = event.target.result;
                 
-                // Add to bill display
-                const tableRow = document.createElement('tr');
-                tableRow.innerHTML = `
-                    <td>${item.description}</td>
-                    <td class="qty-column">${item.qty}</td>
-                    <td class="rate-column">₹ ${item.rate.toFixed(2)}</td>
-                    <td class="amount-column">₹ ${(item.qty * item.rate).toFixed(2)}</td>
-                `;
-                billItems.appendChild(tableRow);
-            });
-        }
-
-        function updateItem(index, field, value) {
-            if (field === 'description') {
-                items[index].description = value;
-            } else if (field === 'qty') {
-                items[index].qty = parseInt(value) || 1;
-            } else if (field === 'rate') {
-                items[index].rate = parseFloat(value) || 0;
-            }
-            generateBill();
-        }
-
-        function removeItem(index) {
-            if (confirm('Are you sure you want to remove this item?')) {
-                items.splice(index, 1);
-                updateItemsDisplay();
-                generateBill();
-            }
-        }
-
-        function generateBill() {
-            // Update display values
-            document.getElementById('displayRestaurantName').textContent = document.getElementById('restaurantName').value;
-            document.getElementById('displayInvoiceNumber').textContent = document.getElementById('invoiceNumber').value;
-            
-            // Format and display date
-            const dateInput = document.getElementById('invoiceDate').value;
-            billData.date = formatDate(dateInput);
-            document.getElementById('displayDate').textContent = billData.date;
-            
-            // Calculate totals
-            let subtotal = 0;
-            items.forEach(item => {
-                subtotal += item.qty * item.rate;
-            });
-            
-            // Get GST rates
-            const cgstRate = parseFloat(document.getElementById('cgstRate').value) || 0;
-            const sgstRate = parseFloat(document.getElementById('sgstRate').value) || 0;
-            
-            const cgstAmount = (subtotal * cgstRate) / 100;
-            const sgstAmount = (subtotal * sgstRate) / 100;
-            const totalAmount = subtotal + cgstAmount + sgstAmount;
-            
-            // Update display
-            document.getElementById('cgstPercent').textContent = cgstRate.toFixed(1);
-            document.getElementById('sgstPercent').textContent = sgstRate.toFixed(1);
-            document.getElementById('cgstAmount').textContent = cgstAmount.toFixed(2);
-            document.getElementById('sgstAmount').textContent = sgstAmount.toFixed(2);
-            document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);
-            
-            // Update footer
-            document.getElementById('footerLine1').textContent = billData.footer.line1;
-            document.getElementById('footerLine2').textContent = billData.footer.line2;
-            document.getElementById('footerLine3').textContent = billData.footer.line3;
-            
-            // Save to billData
-            billData.cgstRate = cgstRate;
-            billData.sgstRate = sgstRate;
-            billData.subtotal = subtotal;
-            billData.total = totalAmount;
-            billData.items = [...items];
-        }
-
-        function saveSettings() {
-            // Save to localStorage
-            localStorage.setItem('restaurantName', document.getElementById('restaurantName').value);
-            localStorage.setItem('invoiceNumber', document.getElementById('invoiceNumber').value);
-            localStorage.setItem('cgstRate', document.getElementById('cgstRate').value);
-            localStorage.setItem('sgstRate', document.getElementById('sgstRate').value);
-            localStorage.setItem('itemsData', JSON.stringify(items));
-            localStorage.setItem('footerData', JSON.stringify(billData.footer));
-            
-            // Auto-increment invoice number
-            if (document.getElementById('autoIncrement')?.checked) {
-                const currentNumber = parseInt(document.getElementById('invoiceNumber').value);
-                document.getElementById('invoiceNumber').value = (currentNumber + 1).toString();
-            }
-            
-            alert('Settings saved successfully!');
-            generateBill();
-        }
-
-        function saveAdvancedSettings() {
-            billData.footer = {
-                line1: document.getElementById('footer1').value,
-                line2: document.getElementById('footer2').value,
-                line3: document.getElementById('footer3').value
+                // Create object stores
+                if (!db.objectStoreNames.contains('bills')) {
+                    db.createObjectStore('bills', { keyPath: 'id', autoIncrement: true });
+                }
+                
+                if (!db.objectStoreNames.contains('menu')) {
+                    const menuStore = db.createObjectStore('menu', { keyPath: 'id' });
+                    defaultMenu.forEach(item => menuStore.add(item));
+                }
+                
+                if (!db.objectStoreNames.contains('settings')) {
+                    db.createObjectStore('settings', { keyPath: 'key' });
+                }
             };
             
-            // Try to parse default items
-            try {
-                const defaultItemsJson = JSON.parse(document.getElementById('defaultItems').value);
-                if (Array.isArray(defaultItemsJson)) {
-                    localStorage.setItem('defaultItems', JSON.stringify(defaultItemsJson));
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                loadMenu();
+                loadSettings();
+                loadBills();
+                loadSalesData();
+            };
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleDateString('en-IN') + ' ' + 
+                now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate corresponding tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.textContent.includes(tabName.charAt(0).toUpperCase() + tabName.slice(1)) || 
+                    (tabName === 'pos' && btn.textContent.includes('POS'))) {
+                    btn.classList.add('active');
                 }
-            } catch (e) {
-                console.error('Invalid JSON for default items');
-            }
+            });
             
-            localStorage.setItem('footerData', JSON.stringify(billData.footer));
-            closeModal();
-            generateBill();
-            alert('Advanced settings saved!');
-        }
-
-        function clearAll() {
-            if (confirm('Are you sure you want to clear all items?')) {
-                items = [];
-                updateItemsDisplay();
-                generateBill();
+            // Load data for specific tabs
+            if (tabName === 'bills') {
+                loadBills();
+            } else if (tabName === 'sales') {
+                loadSalesData();
             }
         }
 
-        function printBill() {
-            // Auto-increment invoice number before printing
-            if (document.getElementById('autoIncrement')?.checked) {
-                const currentNumber = parseInt(document.getElementById('invoiceNumber').value);
-                document.getElementById('invoiceNumber').value = (currentNumber + 1).toString();
-                saveSettings();
-            }
-            
-            window.print();
-        }
-
-        function saveBill() {
-            // Create a printable bill in new window
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Food Bill - ${billData.invoiceNumber}</title>
-                    <style>
-                        body {
-                            font-family: 'Courier New', monospace;
-                            width: 80mm;
-                            margin: 0 auto;
-                            padding: 10px;
-                        }
-                        .bill-header {
-                            text-align: center;
-                            border-bottom: 2px dashed #000;
-                            padding-bottom: 10px;
-                            margin-bottom: 10px;
-                        }
-                        .restaurant-name {
-                            font-size: 22px;
-                            font-weight: bold;
-                            text-transform: uppercase;
-                            letter-spacing: 1px;
-                        }
-                        .bill-title {
-                            font-size: 16px;
-                            font-weight: bold;
-                            margin: 5px 0;
-                        }
-                        .invoice-info {
-                            display: flex;
-                            justify-content: space-between;
-                            font-size: 12px;
-                            margin-bottom: 10px;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            font-size: 12px;
-                        }
-                        th {
-                            text-align: left;
-                            border-bottom: 2px solid #000;
-                            padding: 5px 2px;
-                        }
-                        td {
-                            padding: 4px 2px;
-                            border-bottom: 1px dashed #ccc;
-                        }
-                        .amount-column { text-align: right; }
-                        .rate-column, .qty-column { text-align: center; }
-                        .divider {
-                            border-top: 1px dashed #000;
-                            margin: 10px 0;
-                        }
-                        .tax-row {
-                            display: flex;
-                            justify-content: space-between;
-                            font-size: 12px;
-                            margin: 5px 0;
-                        }
-                        .total-section {
-                            border-top: 2px solid #000;
-                            margin-top: 15px;
-                            padding-top: 10px;
-                        }
-                        .total-row {
-                            display: flex;
-                            justify-content: space-between;
-                            font-weight: bold;
-                            font-size: 14px;
-                        }
-                        .footer-info {
-                            text-align: center;
-                            margin-top: 20px;
-                            font-size: 11px;
-                            border-top: 1px dashed #000;
-                            padding-top: 10px;
-                        }
-                        .footer-note {
-                            text-align: center;
-                            margin: 15px 0;
-                            font-size: 10px;
-                        }
-                        @media print {
-                            body {
-                                width: 80mm !important;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="bill-header">
-                        <div class="restaurant-name">${billData.restaurantName}</div>
-                        <div class="bill-title">FOOD BILL</div>
-                        <div class="invoice-info">
-                            <div>Invoice #: ${billData.invoiceNumber}</div>
-                            <div>Date: ${billData.date}</div>
-                        </div>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>DESCRIPTION</th>
-                                <th class="qty-column">QTY</th>
-                                <th class="rate-column">RATE</th>
-                                <th class="amount-column">AMOUNT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${items.map(item => `
-                                <tr>
-                                    <td>${item.description}</td>
-                                    <td class="qty-column">${item.qty}</td>
-                                    <td class="rate-column">₹ ${item.rate.toFixed(2)}</td>
-                                    <td class="amount-column">₹ ${(item.qty * item.rate).toFixed(2)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    
-                    <div class="divider"></div>
-                    
-                    <div class="tax-section">
-                        <div class="tax-row">
-                            <span>CGST @ ${billData.cgstRate.toFixed(1)}%</span>
-                            <span>₹ ${((billData.subtotal * billData.cgstRate) / 100).toFixed(2)}</span>
-                        </div>
-                        <div class="tax-row">
-                            <span>SGST @ ${billData.sgstRate.toFixed(1)}%</span>
-                            <span>₹ ${((billData.subtotal * billData.sgstRate) / 100).toFixed(2)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="divider"></div>
-                    
-                    <div class="total-section">
-                        <div class="total-row">
-                            <span>TOTAL</span>
-                            <span>₹ ${billData.total.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="divider"></div>
-                    
-                    <div class="footer-note">
-                        <p><strong>Food Bill Generator: Create Free GST Bills in 1 Min</strong></p>
-                        <p>Images may be subject to copyright. Learn more</p>
-                    </div>
-                    
-                    <div class="footer-info">
-                        <div>${billData.footer.line1}</div>
-                        <div>${billData.footer.line2}</div>
-                        <div>${billData.footer.line3}</div>
-                    </div>
-                    
-                    <div style="text-align: center; font-size: 9px; margin-top: 20px; color: #666;">
-                        This is a computer generated invoice. No signature required.
-                    </div>
-                    
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            setTimeout(function() {
-                                window.close();
-                            }, 1000);
-                        };
-                    <\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-        }
-
-        function shareBill() {
-            if (navigator.share) {
-                navigator.share({
-                    title: `Food Bill - ${billData.invoiceNumber}`,
-                    text: `Check out this food bill from ${billData.restaurantName}. Total: ₹ ${billData.total.toFixed(2)}`,
-                    url: window.location.href
-                });
+        function openSettings() {
+            // Check if password is set
+            const password = localStorage.getItem('pos_password');
+            if (!password) {
+                // First time setup - set default password
+                localStorage.setItem('pos_password', '1234');
+                switchTab('settings');
             } else {
-                alert('Share feature is not supported in your browser. You can copy the URL manually.');
+                // Show password modal
+                document.getElementById('passwordModal').classList.add('active');
+                document.getElementById('passwordInput').focus();
             }
         }
 
-        function openAdvancedSettings() {
-            document.getElementById('settingsModal').classList.add('active');
-        }
-
-        function openPasswordModal() {
-            document.getElementById('passwordModal').classList.add('active');
-            document.getElementById('password').focus();
-        }
-
-        function closeModal() {
-            document.getElementById('settingsModal').classList.remove('active');
-            document.getElementById('passwordModal').classList.remove('active');
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const savedPassword = localStorage.getItem('pos_password') || '1234';
+            
+            if (password === savedPassword) {
+                closePasswordModal();
+                switchTab('settings');
+                loadMenuManagement();
+            } else {
+                alert('Incorrect password!');
+                document.getElementById('passwordInput').value = '';
+            }
         }
 
         function closePasswordModal() {
             document.getElementById('passwordModal').classList.remove('active');
-            document.getElementById('password').value = '';
+            document.getElementById('passwordInput').value = '';
         }
 
-        function checkPassword() {
-            const password = document.getElementById('password').value;
-            const savedPassword = localStorage.getItem('billPassword') || '1234';
+        function changePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
             
-            if (password === savedPassword) {
-                closePasswordModal();
-                openAdvancedSettings();
+            const savedPassword = localStorage.getItem('pos_password') || '1234';
+            
+            if (current !== savedPassword) {
+                alert('Current password is incorrect!');
+                return;
+            }
+            
+            if (newPass.length < 4) {
+                alert('New password must be at least 4 characters long!');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            localStorage.setItem('pos_password', newPass);
+            alert('Password changed successfully!');
+            
+            // Clear fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        // Logo functions
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const logoData = e.target.result;
+                localStorage.setItem('restaurantLogo', logoData);
+                loadLogo();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadLogo() {
+            const logoData = localStorage.getItem('restaurantLogo');
+            const headerLogo = document.getElementById('headerLogo');
+            const previewLogo = document.getElementById('logoPreview');
+            const printLogo = document.getElementById('printLogo');
+            
+            if (logoData) {
+                headerLogo.src = logoData;
+                previewLogo.src = logoData;
+                printLogo.src = logoData;
+            }
+        }
+
+        function removeLogo() {
+            if (confirm('Remove logo?')) {
+                localStorage.removeItem('restaurantLogo');
+                loadLogo();
+            }
+        }
+
+        function loadMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = '';
+            
+            const transaction = db.transaction(['menu'], 'readonly');
+            const store = transaction.objectStore('menu');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const items = request.result;
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'menu-item';
+                    itemDiv.onclick = () => addToCart(item);
+                    itemDiv.innerHTML = `
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">₹ ${item.price}</div>
+                        <div class="item-category">${item.category}</div>
+                    `;
+                    menuGrid.appendChild(itemDiv);
+                });
+            };
+        }
+
+        function addToCart(item) {
+            const existing = cart.find(i => i.id === item.id);
+            if (existing) {
+                existing.quantity += 1;
             } else {
-                alert('Incorrect password!');
-                document.getElementById('password').value = '';
-                document.getElementById('password').focus();
+                cart.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1
+                });
+            }
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            const itemCount = document.getElementById('itemCount');
+            const subtotalEl = document.getElementById('subtotal');
+            const cgstAmountEl = document.getElementById('cgstAmount');
+            const sgstAmountEl = document.getElementById('sgstAmount');
+            const totalAmountEl = document.getElementById('totalAmount');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const cgstPercent = document.getElementById('cgstPercent');
+            const sgstPercent = document.getElementById('sgstPercent');
+            
+            if (cart.length === 0) {
+                emptyCart.style.display = 'block';
+                cartItems.innerHTML = '';
+                cartItems.appendChild(emptyCart);
+            } else {
+                emptyCart.style.display = 'none';
+                
+                let html = '';
+                let subtotal = 0;
+                
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <div style="font-weight: 600;">${item.name}</div>
+                                <div style="font-size: 13px; color: #666;">₹ ${item.price} × ${item.quantity}</div>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div class="item-quantity-controls">
+                                    <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <span class="quantity">${item.quantity}</span>
+                                    <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                                <div style="margin-left: 20px; font-weight: 600;">₹ ${itemTotal}</div>
+                                <button class="remove-btn" onclick="removeFromCart(${index})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                cartItems.innerHTML = html;
+            }
+            
+            // Calculate totals
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            itemCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+            
+            const cgstRate = parseFloat(document.getElementById('cgstRate')?.value || 2.5);
+            const sgstRate = parseFloat(document.getElementById('sgstRate')?.value || 2.5);
+            const cgstAmount = (subtotal * cgstRate) / 100;
+            const sgstAmount = (subtotal * sgstRate) / 100;
+            const totalAmount = subtotal + cgstAmount + sgstAmount;
+            
+            subtotalEl.textContent = `₹ ${subtotal.toFixed(2)}`;
+            cgstAmountEl.textContent = `₹ ${cgstAmount.toFixed(2)}`;
+            sgstAmountEl.textContent = `₹ ${sgstAmount.toFixed(2)}`;
+            totalAmountEl.textContent = `₹ ${totalAmount.toFixed(2)}`;
+            totalDisplay.textContent = totalAmount.toFixed(2);
+            cgstPercent.textContent = cgstRate;
+            sgstPercent.textContent = sgstRate;
+        }
+
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartDisplay();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            if (confirm('Clear cart?')) {
+                cart = [];
+                updateCartDisplay();
             }
         }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl+S to save
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                saveSettings();
+        function generateBill() {
+            if (cart.length === 0) {
+                alert('Add items to cart first!');
+                return;
             }
             
-            // Ctrl+P to print
-            if (e.ctrlKey && e.key === 'p') {
-                e.preventDefault();
-                printBill();
-            }
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const cgstRate = parseFloat(document.getElementById('cgstRate')?.value || 2.5);
+            const sgstRate = parseFloat(document.getElementById('sgstRate')?.value || 2.5);
+            const cgstAmount = (subtotal * cgstRate) / 100;
+            const sgstAmount = (subtotal * sgstRate) / 100;
+            const total = subtotal + cgstAmount + sgstAmount;
             
-            // Ctrl+Enter to add item
-            if (e.ctrlKey && e.key === 'Enter') {
-                e.preventDefault();
-                addItem();
-            }
+            // Generate bill preview
+            let itemsHtml = '';
+            cart.forEach(item => {
+                itemsHtml += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td class="text-center">${item.quantity}</td>
+                        <td class="text-right">₹ ${item.price.toFixed(2)}</td>
+                        <td class="text-right">₹ ${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
             
-            // Escape to close modals
-            if (e.key === 'Escape') {
+            document.getElementById('billPreview').innerHTML = `
+                <div style="font-family: 'Courier New', monospace;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 18px; font-weight: bold;">RESTAURANT</div>
+                        <div style="font-size: 16px; font-weight: bold;">FOOD BILL</div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px;">
+                            <div>Invoice #: ${Date.now().toString().slice(-6)}</div>
+                            <div>Date: ${new Date().toLocaleDateString('en-IN')}</div>
+                        </div>
+                    </div>
+                    
+                    <table style="width: 100%; font-size: 12px;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #000;">
+                                <th style="text-align: left; padding: 5px 0;">DESCRIPTION</th>
+                                <th style="text-align: center;">QTY</th>
+                                <th style="text-align: right;">RATE</th>
+                                <th style="text-align: right;">AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 20px; font-size: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                            <span>CGST @ ${cgstRate}%</span>
+                            <span>₹ ${cgstAmount.toFixed(2)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                            <span>SGST @ ${sgstRate}%</span>
+                            <span>₹ ${sgstAmount.toFixed(2)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 2px solid #000; font-weight: bold;">
+                            <span>TOTAL</span>
+                            <span>₹ ${total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('billModal').classList.add('active');
+        }
+
+        function printBill() {
+            // Prepare print data
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const cgstRate = parseFloat(document.getElementById('cgstRate')?.value || 2.5);
+            const sgstRate = parseFloat(document.getElementById('sgstRate')?.value || 2.5);
+            const cgstAmount = (subtotal * cgstRate) / 100;
+            const sgstAmount = (subtotal * sgstRate) / 100;
+            const total = subtotal + cgstAmount + sgstAmount;
+            
+            // Update print template
+            document.getElementById('printRestaurantName').textContent = 
+                document.getElementById('restaurantName').value || 'RESTAURANT';
+            document.getElementById('printInvoiceNumber').textContent = 
+                Date.now().toString().slice(-6);
+            document.getElementById('printDate').textContent = 
+                new Date().toLocaleDateString('en-IN');
+            
+            // Add items to print
+            const printItems = document.getElementById('printItems');
+            printItems.innerHTML = '';
+            cart.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td class="text-center">${item.quantity}</td>
+                    <td class="text-right">₹ ${item.price.toFixed(2)}</td>
+                    <td class="text-right">₹ ${(item.price * item.quantity).toFixed(2)}</td>
+                `;
+                printItems.appendChild(row);
+            });
+            
+            document.getElementById('printCgstPercent').textContent = cgstRate;
+            document.getElementById('printSgstPercent').textContent = sgstRate;
+            document.getElementById('printCgstAmount').textContent = cgstAmount.toFixed(2);
+            document.getElementById('printSgstAmount').textContent = sgstAmount.toFixed(2);
+            document.getElementById('printTotalAmount').textContent = total.toFixed(2);
+            
+            // Print
+            window.print();
+        }
+
+        function saveBill() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const cgstRate = parseFloat(document.getElementById('cgstRate')?.value || 2.5);
+            const sgstRate = parseFloat(document.getElementById('sgstRate')?.value || 2.5);
+            const cgstAmount = (subtotal * cgstRate) / 100;
+            const sgstAmount = (subtotal * sgstRate) / 100;
+            const total = subtotal + cgstAmount + sgstAmount;
+            
+            const bill = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                items: [...cart],
+                subtotal: subtotal,
+                cgstRate: cgstRate,
+                sgstRate: sgstRate,
+                cgstAmount: cgstAmount,
+                sgstAmount: sgstAmount,
+                total: total,
+                invoiceNumber: Date.now().toString().slice(-6)
+            };
+            
+            const transaction = db.transaction(['bills'], 'readwrite');
+            const store = transaction.objectStore('bills');
+            store.add(bill);
+            
+            transaction.oncomplete = function() {
+                alert('Bill saved successfully!');
+                cart = [];
+                updateCartDisplay();
                 closeModal();
+                loadBills();
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('billModal').classList.remove('active');
+        }
+
+        function loadBills() {
+            const filter = document.getElementById('billFilter').value;
+            const billsList = document.getElementById('billsList');
+            billsList.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Loading bills...</p></div>';
+            
+            const transaction = db.transaction(['bills'], 'readonly');
+            const store = transaction.objectStore('bills');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                let bills = request.result;
+                
+                // Apply filter
+                const now = new Date();
+                switch(filter) {
+                    case 'today':
+                        bills = bills.filter(bill => {
+                            const billDate = new Date(bill.date);
+                            return billDate.toDateString() === now.toDateString();
+                        });
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        bills = bills.filter(bill => new Date(bill.date) >= weekAgo);
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        bills = bills.filter(bill => new Date(bill.date) >= monthAgo);
+                        break;
+                }
+                
+                // Sort by date (newest first)
+                bills.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                if (bills.length === 0) {
+                    billsList.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>No bills found</p></div>';
+                    return;
+                }
+                
+                let html = '';
+                bills.forEach(bill => {
+                    const date = new Date(bill.date);
+                    const itemsPreview = bill.items.slice(0, 2).map(item => 
+                        `${item.name} x${item.quantity}`
+                    ).join(', ');
+                    
+                    html += `
+                        <div class="bill-card" onclick="viewBill(${bill.id})">
+                            <div class="bill-header">
+                                <div style="font-weight: bold; color: var(--primary);">Invoice #${bill.invoiceNumber}</div>
+                                <div style="font-weight: bold; color: var(--success);">₹ ${bill.total.toFixed(2)}</div>
+                            </div>
+                            <div style="font-size: 13px; color: #666;">
+                                ${date.toLocaleDateString('en-IN')} ${date.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}
+                            </div>
+                            <div class="bill-items-preview">
+                                ${itemsPreview}${bill.items.length > 2 ? '...' : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                billsList.innerHTML = html;
+            };
+        }
+
+        function viewBill(billId) {
+            const transaction = db.transaction(['bills'], 'readonly');
+            const store = transaction.objectStore('bills');
+            const request = store.get(billId);
+            
+            request.onsuccess = function() {
+                const bill = request.result;
+                if (!bill) return;
+                
+                let itemsHtml = '';
+                bill.items.forEach(item => {
+                    itemsHtml += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td class="text-center">${item.quantity}</td>
+                            <td class="text-right">₹ ${item.price.toFixed(2)}</td>
+                            <td class="text-right">₹ ${(item.price * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                
+                const date = new Date(bill.date);
+                document.getElementById('billPreview').innerHTML = `
+                    <div style="font-family: 'Courier New', monospace;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="font-size: 18px; font-weight: bold;">RESTAURANT</div>
+                            <div style="font-size: 16px; font-weight: bold;">FOOD BILL</div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px;">
+                                <div>Invoice #: ${bill.invoiceNumber}</div>
+                                <div>Date: ${date.toLocaleDateString('en-IN')}</div>
+                            </div>
+                        </div>
+                        
+                        <table style="width: 100%; font-size: 12px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #000;">
+                                    <th style="text-align: left; padding: 5px 0;">DESCRIPTION</th>
+                                    <th style="text-align: center;">QTY</th>
+                                    <th style="text-align: right;">RATE</th>
+                                    <th style="text-align: right;">AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                        </table>
+                        
+                        <div style="margin-top: 20px; font-size: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                                <span>CGST @ ${bill.cgstRate}%</span>
+                                <span>₹ ${bill.cgstAmount.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                                <span>SGST @ ${bill.sgstRate}%</span>
+                                <span>₹ ${bill.sgstAmount.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 2px solid #000; font-weight: bold;">
+                                <span>TOTAL</span>
+                                <span>₹ ${bill.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('billModal').classList.add('active');
+            };
+        }
+
+        function setSalesFilter(filter) {
+            salesFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            loadSalesData();
+        }
+
+        function loadSalesData() {
+            const transaction = db.transaction(['bills'], 'readonly');
+            const store = transaction.objectStore('bills');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                let bills = request.result;
+                const now = new Date();
+                
+                // Apply time filter
+                switch(salesFilter) {
+                    case 'today':
+                        bills = bills.filter(bill => {
+                            const billDate = new Date(bill.date);
+                            return billDate.toDateString() === now.toDateString();
+                        });
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        bills = bills.filter(bill => new Date(bill.date) >= weekAgo);
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        bills = bills.filter(bill => new Date(bill.date) >= monthAgo);
+                        break;
+                }
+                
+                // Calculate totals
+                const totalRevenue = bills.reduce((sum, bill) => sum + bill.total, 0);
+                const avgOrderValue = bills.length > 0 ? totalRevenue / bills.length : 0;
+                
+                // Find top item
+                const itemCounts = {};
+                bills.forEach(bill => {
+                    bill.items.forEach(item => {
+                        itemCounts[item.name] = (itemCounts[item.name] || 0) + item.quantity;
+                    });
+                });
+                
+                let topItem = '-';
+                let maxCount = 0;
+                for (const [item, count] of Object.entries(itemCounts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        topItem = item;
+                    }
+                }
+                
+                // Update display
+                document.getElementById('totalRevenue').textContent = `₹ ${totalRevenue.toFixed(2)}`;
+                document.getElementById('totalOrders').textContent = bills.length;
+                document.getElementById('avgOrderValue').textContent = `₹ ${avgOrderValue.toFixed(2)}`;
+                document.getElementById('topItem').textContent = topItem;
+                
+                // Load order type breakdown (simulated - in real app would have order types)
+                const orderTypes = ['Dine In', 'Take Away', 'Swiggy', 'Zomato'];
+                let breakdownHtml = '';
+                orderTypes.forEach(type => {
+                    const typeBills = bills.filter(bill => bill.orderType === type || true); // Simulated
+                    const revenue = typeBills.reduce((sum, bill) => sum + bill.total, 0);
+                    const count = typeBills.length;
+                    
+                    breakdownHtml += `
+                        <div class="type-card">
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 5px;">${type}</div>
+                            <div style="font-size: 20px; font-weight: bold;">₹ ${revenue.toFixed(2)}</div>
+                            <div style="font-size: 12px; color: #666;">${count} orders</div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('orderTypeBreakdown').innerHTML = breakdownHtml;
+            };
+        }
+
+        function loadSettings() {
+            // Load restaurant settings
+            document.getElementById('restaurantName').value = 
+                localStorage.getItem('restaurantName') || 'RESTAURANT';
+            document.getElementById('restaurantAddress').value = 
+                localStorage.getItem('restaurantAddress') || '';
+            document.getElementById('gstNumber').value = 
+                localStorage.getItem('gstNumber') || '';
+            document.getElementById('cgstRate').value = 
+                localStorage.getItem('cgstRate') || '2.5';
+            document.getElementById('sgstRate').value = 
+                localStorage.getItem('sgstRate') || '2.5';
+            
+            // Update title
+            document.getElementById('restaurantTitle').textContent = 
+                localStorage.getItem('restaurantName') || 'RESTAURANT';
+            
+            // Load logo
+            loadLogo();
+        }
+
+        function saveSettings() {
+            // Save settings
+            localStorage.setItem('restaurantName', document.getElementById('restaurantName').value);
+            localStorage.setItem('restaurantAddress', document.getElementById('restaurantAddress').value);
+            localStorage.setItem('gstNumber', document.getElementById('gstNumber').value);
+            localStorage.setItem('cgstRate', document.getElementById('cgstRate').value);
+            localStorage.setItem('sgstRate', document.getElementById('sgstRate').value);
+            
+            // Update title
+            document.getElementById('restaurantTitle').textContent = document.getElementById('restaurantName').value;
+            
+            alert('Settings saved successfully!');
+        }
+
+        function loadMenuManagement() {
+            const menuManagement = document.getElementById('menuManagement');
+            menuManagement.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Loading menu...</div>';
+            
+            const transaction = db.transaction(['menu'], 'readonly');
+            const store = transaction.objectStore('menu');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const items = request.result;
+                let html = `
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; padding: 10px; background: #f8f9fa; font-weight: 600;">
+                            <div>Item Name</div>
+                            <div>Category</div>
+                            <div>Price</div>
+                            <div>Actions</div>
+                        </div>
+                `;
+                
+                items.forEach(item => {
+                    html += `
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; align-items: center;">
+                            <div>${item.name}</div>
+                            <div>${item.category}</div>
+                            <div>₹ ${item.price}</div>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="editMenuItem(${item.id})" style="padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 4px;">Edit</button>
+                                <button onclick="deleteMenuItem(${item.id})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px;">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                menuManagement.innerHTML = html;
+            };
+        }
+
+        function addMenuItem() {
+            const name = prompt('Enter item name:');
+            if (!name) return;
+            
+            const category = prompt('Enter category (Main Course, Biryani, etc.):');
+            if (!category) return;
+            
+            const price = parseFloat(prompt('Enter price:'));
+            if (isNaN(price) || price <= 0) {
+                alert('Invalid price!');
+                return;
             }
+            
+            const transaction = db.transaction(['menu'], 'readwrite');
+            const store = transaction.objectStore('menu');
+            
+            store.getAll().onsuccess = function(event) {
+                const items = event.target.result;
+                const maxId = items.length > 0 ? Math.max(...items.map(i => i.id)) : 0;
+                
+                const newItem = {
+                    id: maxId + 1,
+                    name: name,
+                    category: category,
+                    price: price
+                };
+                
+                store.add(newItem);
+                
+                transaction.oncomplete = function() {
+                    alert('Item added!');
+                    loadMenu();
+                    loadMenuManagement();
+                };
+            };
+        }
+
+        function editMenuItem(id) {
+            const transaction = db.transaction(['menu'], 'readwrite');
+            const store = transaction.objectStore('menu');
+            const request = store.get(id);
+            
+            request.onsuccess = function() {
+                const item = request.result;
+                if (!item) return;
+                
+                const name = prompt('Enter new name:', item.name);
+                if (!name) return;
+                
+                const category = prompt('Enter new category:', item.category);
+                if (!category) return;
+                
+                const price = parseFloat(prompt('Enter new price:', item.price));
+                if (isNaN(price)) return;
+                
+                item.name = name;
+                item.category = category;
+                item.price = price;
+                
+                store.put(item);
+                
+                transaction.oncomplete = function() {
+                    alert('Item updated!');
+                    loadMenu();
+                    loadMenuManagement();
+                };
+            };
+        }
+
+        function deleteMenuItem(id) {
+            if (!confirm('Delete this item?')) return;
+            
+            const transaction = db.transaction(['menu'], 'readwrite');
+            const store = transaction.objectStore('menu');
+            store.delete(id);
+            
+            transaction.oncomplete = function() {
+                alert('Item deleted!');
+                loadMenu();
+                loadMenuManagement();
+            };
+        }
+
+        function exportData() {
+            const data = {
+                bills: [],
+                menu: [],
+                settings: {}
+            };
+            
+            const transaction = db.transaction(['bills', 'menu'], 'readonly');
+            const billsStore = transaction.objectStore('bills');
+            const menuStore = transaction.objectStore('menu');
+            
+            billsStore.getAll().onsuccess = function(event) {
+                data.bills = event.target.result;
+                
+                menuStore.getAll().onsuccess = function(event) {
+                    data.menu = event.target.result;
+                    
+                    // Add settings
+                    data.settings = {
+                        restaurantName: localStorage.getItem('restaurantName'),
+                        restaurantAddress: localStorage.getItem('restaurantAddress'),
+                        gstNumber: localStorage.getItem('gstNumber'),
+                        logo: localStorage.getItem('restaurantLogo')
+                    };
+                    
+                    const dataStr = JSON.stringify(data, null, 2);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `pos_backup_${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+            };
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (confirm('This will replace all data. Continue?')) {
+                            // Clear existing data
+                            const clearTransaction = db.transaction(['bills', 'menu'], 'readwrite');
+                            clearTransaction.objectStore('bills').clear();
+                            clearTransaction.objectStore('menu').clear();
+                            
+                            clearTransaction.oncomplete = function() {
+                                // Import new data
+                                const importTransaction = db.transaction(['bills', 'menu'], 'readwrite');
+                                const billsStore = importTransaction.objectStore('bills');
+                                const menuStore = importTransaction.objectStore('menu');
+                                
+                                if (data.bills) {
+                                    data.bills.forEach(bill => billsStore.add(bill));
+                                }
+                                
+                                if (data.menu) {
+                                    data.menu.forEach(item => menuStore.add(item));
+                                }
+                                
+                                if (data.settings) {
+                                    Object.entries(data.settings).forEach(([key, value]) => {
+                                        if (value && key !== 'logo') {
+                                            localStorage.setItem(key, value);
+                                        }
+                                        if (key === 'logo' && value) {
+                                            localStorage.setItem('restaurantLogo', value);
+                                        }
+                                    });
+                                }
+                                
+                                alert('Data imported successfully!');
+                                location.reload();
+                            };
+                        }
+                    } catch (error) {
+                        alert('Invalid backup file!');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function clearAllData() {
+            if (confirm('Delete ALL data including bills and menu? This cannot be undone!')) {
+                const transaction = db.transaction(['bills', 'menu'], 'readwrite');
+                transaction.objectStore('bills').clear();
+                transaction.objectStore('menu').clear();
+                
+                transaction.oncomplete = function() {
+                    localStorage.clear();
+                    alert('All data cleared!');
+                    location.reload();
+                };
+            }
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        // Setup menu search
+        document.getElementById('menuSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
 
-        // Update bill when settings change
-        document.getElementById('restaurantName').addEventListener('input', generateBill);
-        document.getElementById('invoiceNumber').addEventListener('input', generateBill);
-        document.getElementById('invoiceDate').addEventListener('change', generateBill);
-        document.getElementById('cgstRate').addEventListener('input', generateBill);
-        document.getElementById('sgstRate').addEventListener('input', generateBill);
+        // Auto-save settings on change
+        document.getElementById('restaurantName').addEventListener('change', saveSettings);
+        document.getElementById('cgstRate').addEventListener('change', saveSettings);
+        document.getElementById('sgstRate').addEventListener('change', saveSettings);
     </script>
 </body>
 </html>
