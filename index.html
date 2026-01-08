@@ -52,29 +52,28 @@
             border-bottom: 3px solid var(--primary);
         }
 
-        .logo {
+        .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .logo i {
-            color: var(--primary);
-            font-size: 1.8rem;
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .logo-image.active {
+            display: block;
         }
 
         .logo h1 {
             font-size: 1.4rem;
             color: var(--primary);
             font-weight: 700;
-        }
-
-        .header-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: var(--gray);
-            font-size: 0.9rem;
         }
 
         .time-display {
@@ -229,7 +228,7 @@
         }
 
         /* Form Controls */
-        select, input {
+        select, input, textarea {
             width: 100%;
             padding: 12px 15px;
             border-radius: var(--radius);
@@ -239,7 +238,7 @@
             background: white;
         }
 
-        select:focus, input:focus {
+        select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1);
@@ -294,6 +293,9 @@
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
             margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
         }
 
         .menu-item {
@@ -318,6 +320,7 @@
         .menu-item-name {
             font-weight: 600;
             color: var(--dark);
+            font-size: 0.9rem;
         }
 
         .menu-item-price {
@@ -327,7 +330,7 @@
         }
 
         .menu-item-category {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--gray);
             background: var(--light);
             padding: 3px 8px;
@@ -335,11 +338,14 @@
             display: inline-block;
         }
 
-        /* Cart Styles */
+        /* Cart Styles - FIXED */
         .cart-items {
             max-height: 300px;
             overflow-y: auto;
             margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px;
         }
 
         .cart-item {
@@ -360,11 +366,13 @@
 
         .cart-item-name {
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .cart-item-price {
             color: var(--primary);
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .cart-item-controls {
@@ -374,8 +382,8 @@
         }
 
         .quantity-btn {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             border: none;
             background: var(--light);
@@ -385,12 +393,14 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 0.9rem;
         }
 
         .quantity {
             font-weight: 600;
-            min-width: 30px;
+            min-width: 25px;
             text-align: center;
+            font-size: 0.9rem;
         }
 
         .remove-btn {
@@ -398,7 +408,7 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         /* Bill Summary */
@@ -440,6 +450,7 @@
             border-left: 4px solid var(--primary);
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .bill-card:hover {
@@ -515,6 +526,33 @@
             box-shadow: var(--shadow);
         }
 
+        /* Logo Upload */
+        .logo-upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-preview {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--light);
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -544,6 +582,24 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
+        /* Print Styles */
+        @media print {
+            header, .tabbar, .no-print, .modal {
+                display: none !important;
+            }
+            
+            body, main {
+                padding: 0;
+                margin: 0;
+                background: white;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: none;
+            }
+        }
+
         /* Utility Classes */
         .hidden {
             display: none !important;
@@ -569,21 +625,105 @@
             padding: 20px;
         }
 
-        /* Print Styles */
+        .full-width {
+            width: 100%;
+        }
+
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-modal.active {
+            display: flex;
+        }
+
+        .password-modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .password-modal h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .password-modal input {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Bill Print Template */
+        .bill-print-template {
+            display: none;
+        }
+
         @media print {
-            header, .tabbar, .no-print {
-                display: none !important;
+            .bill-print-template {
+                display: block;
+                width: 80mm;
+                padding: 10px;
+                font-family: monospace;
+                font-size: 12px;
             }
             
-            body, main {
-                padding: 0;
+            .bill-print-template * {
                 margin: 0;
-                background: white;
+                padding: 0;
+                box-sizing: border-box;
             }
             
-            .card {
-                box-shadow: none;
-                border: none;
+            .bill-print-header {
+                text-align: center;
+                margin-bottom: 10px;
+                border-bottom: 1px dashed #000;
+                padding-bottom: 10px;
+            }
+            
+            .bill-print-logo {
+                max-width: 60px;
+                max-height: 60px;
+                margin: 0 auto 5px;
+            }
+            
+            .bill-print-items {
+                margin: 10px 0;
+            }
+            
+            .bill-print-item {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            }
+            
+            .bill-print-total {
+                border-top: 2px solid #000;
+                margin-top: 10px;
+                padding-top: 10px;
+                font-weight: bold;
+            }
+            
+            .bill-print-footer {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 10px;
+                border-top: 1px dashed #000;
+                padding-top: 10px;
             }
         }
     </style>
@@ -591,14 +731,13 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">
-            <i class="fas fa-utensils"></i>
-            <h1>The House of Biryani</h1>
+        <div class="logo-container">
+            <img id="headerLogo" class="logo-image" src="" alt="Logo">
+            <div class="logo">
+                <h1 id="restaurantTitle">The House of Biryani</h1>
+            </div>
         </div>
-        <div class="header-info">
-            <div class="time-display" id="currentTime"></div>
-            <div id="userInfo">Admin User</div>
-        </div>
+        <div class="time-display" id="currentTime"></div>
     </header>
 
     <!-- Main Content -->
@@ -616,7 +755,7 @@
                 <!-- Order Type Selection -->
                 <div class="form-group">
                     <label class="form-label">Order Type</label>
-                    <div class="order-type-selector">
+                    <div class="order-type-selector" id="orderTypeSelector">
                         <button class="order-type-btn active" data-type="dine-in">
                             <i class="fas fa-chair"></i>
                             <span>Dine In</span>
@@ -654,29 +793,35 @@
 
                 <!-- Menu Items -->
                 <div class="form-group">
-                    <label class="form-label">Menu Items</label>
+                    <div class="card-header" style="padding: 0; border: none; margin-bottom: 10px;">
+                        <label class="form-label" style="margin: 0;">Menu Items</label>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="categoryFilter" style="width: auto; padding: 5px 10px;">
+                                <option value="all">All Categories</option>
+                            </select>
+                            <input type="text" id="menuSearch" placeholder="Search..." style="width: auto; padding: 5px 10px;">
+                        </div>
+                    </div>
                     <div class="menu-grid" id="menuGrid">
                         <!-- Menu items will be loaded here -->
                     </div>
                 </div>
             </div>
 
-            <!-- Order Summary -->
+            <!-- Order Summary - FIXED -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><i class="fas fa-shopping-cart"></i> Order Summary</h2>
                     <div class="cart-count" id="cartCount">0 items</div>
                 </div>
 
-                <div class="cart-items" id="cartItems">
-                    <!-- Cart items will be loaded here -->
-                    <div class="empty-cart" id="emptyCart">
-                        <div class="text-center p-20">
-                            <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd;"></i>
-                            <p class="mt-20">Your cart is empty</p>
-                            <p class="text-muted">Add items from the menu to get started</p>
-                        </div>
+                <div class="cart-items" id="cartItemsContainer">
+                    <div id="emptyCart" style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd;"></i>
+                        <p class="mt-20" style="color: var(--gray);">Your cart is empty</p>
+                        <p style="color: var(--gray); font-size: 0.9rem;">Add items from the menu to get started</p>
                     </div>
+                    <!-- Cart items will be loaded here -->
                 </div>
 
                 <!-- Bill Summary -->
@@ -686,7 +831,7 @@
                         <span id="subtotal">₹ 0</span>
                     </div>
                     <div class="summary-row">
-                        <span>GST (5%):</span>
+                        <span>GST (<span id="gstPercentageDisplay">5</span>%):</span>
                         <span id="gstAmount">₹ 0</span>
                     </div>
                     <div class="summary-row total">
@@ -697,8 +842,8 @@
 
                 <!-- Action Buttons -->
                 <div class="action-buttons mt-20">
-                    <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="processOrder()">
-                        <i class="fas fa-check-circle"></i> Process Order (₹<span id="totalDisplay">0</span>)
+                    <button class="btn btn-primary btn-lg full-width" onclick="processOrder()">
+                        <i class="fas fa-check-circle"></i> Generate Bill (₹<span id="totalDisplay">0</span>)
                     </button>
                 </div>
             </div>
@@ -754,12 +899,6 @@
                     </div>
                 </div>
 
-                <!-- Sales Chart -->
-                <div class="form-group">
-                    <label class="form-label">Sales Chart</label>
-                    <canvas id="salesChart" height="100"></canvas>
-                </div>
-
                 <!-- Sales Table -->
                 <div class="form-group">
                     <label class="form-label">Recent Orders</label>
@@ -776,34 +915,52 @@
                 <!-- Restaurant Settings -->
                 <div class="settings-section">
                     <h3 class="card-title mb-20"><i class="fas fa-store"></i> Restaurant Settings</h3>
+                    
+                    <!-- Logo Upload -->
+                    <div class="logo-upload-container">
+                        <div class="logo-preview">
+                            <img id="logoPreview" src="" alt="Logo Preview">
+                        </div>
+                        <div>
+                            <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                            <button class="btn btn-outline" onclick="document.getElementById('logoUpload').click()">
+                                <i class="fas fa-upload"></i> Upload Logo
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="removeLogo()" style="margin-top: 10px;">
+                                <i class="fas fa-trash"></i> Remove Logo
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label class="form-label">Restaurant Name</label>
-                        <input type="text" id="restaurantName" placeholder="Enter restaurant name" value="The House of Biryani">
+                        <input type="text" id="restaurantName" placeholder="Enter restaurant name">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Address</label>
-                        <textarea id="restaurantAddress" rows="3" placeholder="Enter full address">123 Food Street, Mumbai, Maharashtra 400001</textarea>
+                        <textarea id="restaurantAddress" rows="3" placeholder="Enter full address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Number</label>
+                        <input type="tel" id="contactNumber" placeholder="Enter contact number">
                     </div>
                     <div class="form-group">
                         <label class="form-label">GST Number</label>
-                        <input type="text" id="gstNumber" placeholder="Enter GST number" value="27AABCU9603R1ZX">
+                        <input type="text" id="gstNumber" placeholder="Enter GST number">
                     </div>
                     <div class="form-group">
                         <label class="form-label">GST Percentage</label>
-                        <input type="number" id="gstPercentage" placeholder="Enter GST percentage" value="5" min="0" max="100">
+                        <input type="number" id="gstPercentage" placeholder="Enter GST percentage" min="0" max="100" step="0.1">
                     </div>
-                    <button class="btn btn-primary" onclick="saveSettings()">
-                        <i class="fas fa-save"></i> Save Settings
-                    </button>
                 </div>
 
                 <!-- Menu Management -->
                 <div class="settings-section">
                     <h3 class="card-title mb-20"><i class="fas fa-utensils"></i> Menu Management</h3>
-                    <div class="menu-management" id="menuManagement">
+                    <div id="menuManagement">
                         <!-- Menu items will be loaded here -->
                     </div>
-                    <button class="btn btn-secondary mt-20" onclick="addMenuItem()">
+                    <button class="btn btn-secondary full-width mt-20" onclick="showAddMenuItemModal()">
                         <i class="fas fa-plus"></i> Add New Item
                     </button>
                 </div>
@@ -811,28 +968,49 @@
                 <!-- System Settings -->
                 <div class="settings-section">
                     <h3 class="card-title mb-20"><i class="fas fa-cog"></i> System Settings</h3>
+                    
+                    <!-- Password Settings -->
+                    <div class="form-group">
+                        <label class="form-label">Change Password</label>
+                        <input type="password" id="currentPassword" placeholder="Current password">
+                        <input type="password" id="newPassword" placeholder="New password" style="margin-top: 10px;">
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password" style="margin-top: 10px;">
+                        <button class="btn btn-outline full-width mt-10" onclick="changePassword()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+                    
                     <div class="form-group">
                         <label class="form-label">Print Settings</label>
                         <div class="checkbox-group">
                             <label><input type="checkbox" id="autoPrint" checked> Auto print after order</label><br>
-                            <label><input type="checkbox" id="printKitchen" checked> Print kitchen receipt</label>
+                            <label><input type="checkbox" id="printCustomerCopy" checked> Print customer copy</label><br>
+                            <label><input type="checkbox" id="printKitchenCopy"> Print kitchen copy</label>
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label class="form-label">Backup & Restore</label>
-                        <button class="btn btn-outline btn-sm" onclick="exportData()">
-                            <i class="fas fa-download"></i> Export Data
-                        </button>
-                        <button class="btn btn-outline btn-sm" onclick="importData()">
-                            <i class="fas fa-upload"></i> Import Data
-                        </button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-outline btn-sm" onclick="exportData()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="importData()">
+                                <i class="fas fa-upload"></i> Import
+                            </button>
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Security</label>
-                        <button class="btn btn-danger btn-sm" onclick="clearAllData()">
+                        <label class="form-label">Danger Zone</label>
+                        <button class="btn btn-danger full-width" onclick="clearAllData()">
                             <i class="fas fa-trash"></i> Clear All Data
                         </button>
                     </div>
+                    
+                    <button class="btn btn-primary full-width mt-20" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Save All Settings
+                    </button>
                 </div>
             </div>
         </section>
@@ -852,43 +1030,46 @@
             <i class="fas fa-chart-bar"></i>
             <span>Sales</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('settings')">
+        <button class="tab-btn" onclick="openSettings()">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
         </button>
     </div>
 
-    <!-- Order Modal -->
-    <div class="modal" id="orderModal">
-        <div class="modal-content">
-            <h2 class="card-title mb-20"><i class="fas fa-check-circle"></i> Order Confirmation</h2>
-            <div id="orderDetails">
-                <!-- Order details will be loaded here -->
-            </div>
-            <div class="action-buttons mt-20">
-                <button class="btn btn-primary" onclick="printReceipt()">
-                    <i class="fas fa-print"></i> Print Receipt
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-modal-content">
+            <h2><i class="fas fa-lock"></i> Settings Access</h2>
+            <p>Enter password to access settings:</p>
+            <input type="password" id="settingsPassword" placeholder="Enter password" autocomplete="off">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary full-width" onclick="checkPassword()">
+                    <i class="fas fa-unlock"></i> Unlock
                 </button>
-                <button class="btn btn-outline" onclick="closeModal()">
-                    <i class="fas fa-times"></i> Close
+                <button class="btn btn-outline full-width" onclick="closePasswordModal()">
+                    <i class="fas fa-times"></i> Cancel
                 </button>
             </div>
+            <p style="margin-top: 20px; font-size: 0.8rem; color: var(--gray);">
+                Default password: 1234<br>
+                Change it in settings for security
+            </p>
         </div>
     </div>
 
-    <!-- Bill Details Modal -->
+    <!-- Order/Bill Modal -->
     <div class="modal" id="billModal">
         <div class="modal-content">
             <h2 class="card-title mb-20"><i class="fas fa-file-invoice"></i> Bill Details</h2>
             <div id="billDetails">
                 <!-- Bill details will be loaded here -->
             </div>
-            <div class="action-buttons mt-20">
-                <button class="btn btn-primary" onclick="reprintBill()">
-                    <i class="fas fa-print"></i> Reprint
+            <div class="action-buttons mt-20" style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="printBill()">
+                    <i class="fas fa-print"></i> Print Bill
                 </button>
-                <button class="btn btn-danger" onclick="voidBill()">
-                    <i class="fas fa-ban"></i> Void Bill
+                <button class="btn btn-success" onclick="saveAndPrintBill()">
+                    <i class="fas fa-save"></i> Save & Print
                 </button>
                 <button class="btn btn-outline" onclick="closeModal()">
                     <i class="fas fa-times"></i> Close
@@ -897,26 +1078,96 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Add Menu Item Modal -->
+    <div class="modal" id="menuItemModal">
+        <div class="modal-content">
+            <h2 class="card-title mb-20"><i class="fas fa-utensils"></i> Add Menu Item</h2>
+            <div class="form-group">
+                <label class="form-label">Item Name</label>
+                <input type="text" id="itemName" placeholder="Enter item name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="itemCategory">
+                    <option value="Biryani">Biryani</option>
+                    <option value="Starters">Starters</option>
+                    <option value="Main Course">Main Course</option>
+                    <option value="Breads">Breads</option>
+                    <option value="Sides">Sides</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Price (₹)</label>
+                <input type="number" id="itemPrice" placeholder="Enter price" min="0" step="1">
+            </div>
+            <div class="action-buttons mt-20" style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="saveMenuItem()">
+                    <i class="fas fa-save"></i> Save Item
+                </button>
+                <button class="btn btn-outline" onclick="closeMenuItemModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill Print Template (Hidden) -->
+    <div id="billPrintTemplate" class="bill-print-template">
+        <div class="bill-print-header">
+            <img id="printLogo" class="bill-print-logo" src="" alt="">
+            <h2 id="printRestaurantName">The House of Biryani</h2>
+            <p id="printRestaurantAddress">123 Food Street, Mumbai</p>
+            <p id="printRestaurantContact">Phone: +91 9876543210</p>
+            <p>GST No: <span id="printGstNumber">27AABCU9603R1ZX</span></p>
+        </div>
+        <div class="bill-print-info">
+            <p>Bill No: <span id="printBillNumber">001</span></p>
+            <p>Date: <span id="printDate">01/01/2023</span></p>
+            <p>Time: <span id="printTime">12:00 PM</span></p>
+            <p>Order Type: <span id="printOrderType">Dine In</span></p>
+            <p>Table: <span id="printTableNumber">Table 1</span></p>
+        </div>
+        <hr>
+        <div class="bill-print-items" id="printItems">
+            <!-- Items will be inserted here -->
+        </div>
+        <hr>
+        <div class="bill-print-summary">
+            <p>Subtotal: ₹ <span id="printSubtotal">0</span></p>
+            <p>GST (<span id="printGstPercent">5</span>%): ₹ <span id="printGstAmount">0</span></p>
+            <p class="bill-print-total">Total: ₹ <span id="printTotalAmount">0</span></p>
+        </div>
+        <div class="bill-print-footer">
+            <p>Thank you for visiting!</p>
+            <p>Visit again!</p>
+        </div>
+    </div>
+
     <script>
         // Initialize data
         let cart = [];
         let db;
         let currentOrderType = 'dine-in';
-        let salesChart = null;
+        let isSettingsUnlocked = false;
+
+        // Default password
+        const DEFAULT_PASSWORD = '1234';
 
         // Default menu items
         const defaultMenu = [
-            { id: 1, name: "Chicken Biryani", price: 220, category: "Biryani", popularity: 5 },
-            { id: 2, name: "Mutton Biryani", price: 280, category: "Biryani", popularity: 4 },
-            { id: 3, name: "Veg Biryani", price: 180, category: "Biryani", popularity: 3 },
-            { id: 4, name: "Chicken Tikka", price: 250, category: "Starters", popularity: 4 },
-            { id: 5, name: "Paneer Butter Masala", price: 220, category: "Main Course", popularity: 4 },
-            { id: 6, name: "Butter Naan", price: 40, category: "Breads", popularity: 5 },
-            { id: 7, name: "Raita", price: 60, category: "Sides", popularity: 3 },
-            { id: 8, name: "Gulab Jamun", price: 80, category: "Desserts", popularity: 4 },
-            { id: 9, name: "Coke", price: 40, category: "Beverages", popularity: 5 },
-            { id: 10, name: "Mineral Water", price: 20, category: "Beverages", popularity: 4 }
+            { id: 1, name: "Chicken Biryani", price: 220, category: "Biryani" },
+            { id: 2, name: "Mutton Biryani", price: 280, category: "Biryani" },
+            { id: 3, name: "Veg Biryani", price: 180, category: "Biryani" },
+            { id: 4, name: "Chicken Tikka", price: 250, category: "Starters" },
+            { id: 5, name: "Paneer Butter Masala", price: 220, category: "Main Course" },
+            { id: 6, name: "Butter Naan", price: 40, category: "Breads" },
+            { id: 7, name: "Raita", price: 60, category: "Sides" },
+            { id: 8, name: "Gulab Jamun", price: 80, category: "Desserts" },
+            { id: 9, name: "Coke", price: 40, category: "Beverages" },
+            { id: 10, name: "Mineral Water", price: 20, category: "Beverages" }
         ];
 
         // Initialize the app
@@ -928,7 +1179,7 @@
 
         function initializeApp() {
             // Initialize IndexedDB
-            const request = indexedDB.open('BiryaniHousePOS', 2);
+            const request = indexedDB.open('BiryaniHousePOS', 3);
             
             request.onupgradeneeded = function(event) {
                 db = event.target.result;
@@ -936,10 +1187,6 @@
                 // Create object stores
                 if (!db.objectStoreNames.contains('orders')) {
                     db.createObjectStore('orders', { keyPath: 'id', autoIncrement: true });
-                }
-                
-                if (!db.objectStoreNames.contains('settings')) {
-                    db.createObjectStore('settings', { keyPath: 'key' });
                 }
                 
                 if (!db.objectStoreNames.contains('menu')) {
@@ -957,13 +1204,25 @@
                 loadSettings();
                 loadBills('today');
                 loadSalesData();
+                loadLogo();
+                
+                // Set up order type selector
+                setupOrderTypeSelector();
             };
             
             request.onerror = function(event) {
                 console.error('Database error:', event.target.error);
             };
 
-            // Initialize order type selector
+            // Set up logo upload
+            document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
+            
+            // Set up menu search
+            document.getElementById('menuSearch').addEventListener('input', filterMenu);
+            document.getElementById('categoryFilter').addEventListener('change', filterMenu);
+        }
+
+        function setupOrderTypeSelector() {
             document.querySelectorAll('.order-type-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.order-type-btn').forEach(b => b.classList.remove('active'));
@@ -1001,32 +1260,157 @@
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.currentTarget.classList.add('active');
+            
+            // Find and activate the clicked tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.textContent.includes(tabName.charAt(0).toUpperCase() + tabName.slice(1))) {
+                    btn.classList.add('active');
+                }
+            });
             
             // Load data for specific tabs
             if (tabName === 'bills') {
                 loadBills('today');
             } else if (tabName === 'sales') {
                 loadSalesData();
-            } else if (tabName === 'settings') {
-                loadMenuManagement();
+            } else if (tabName === 'settings' && !isSettingsUnlocked) {
+                openPasswordModal();
+                switchTab('home');
             }
         }
 
-        // Menu Functions
+        function openSettings() {
+            if (!isSettingsUnlocked) {
+                openPasswordModal();
+            } else {
+                switchTab('settings');
+            }
+        }
+
+        // Password Functions
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+            document.getElementById('settingsPassword').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+            document.getElementById('settingsPassword').value = '';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('settingsPassword').value;
+            const savedPassword = localStorage.getItem('pos_password') || DEFAULT_PASSWORD;
+            
+            if (password === savedPassword) {
+                isSettingsUnlocked = true;
+                closePasswordModal();
+                switchTab('settings');
+                loadMenuManagement();
+            } else {
+                alert('Incorrect password!');
+                document.getElementById('settingsPassword').value = '';
+                document.getElementById('settingsPassword').focus();
+            }
+        }
+
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            const savedPassword = localStorage.getItem('pos_password') || DEFAULT_PASSWORD;
+            
+            if (currentPassword !== savedPassword) {
+                alert('Current password is incorrect!');
+                return;
+            }
+            
+            if (newPassword.length < 4) {
+                alert('New password must be at least 4 characters long!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            localStorage.setItem('pos_password', newPassword);
+            alert('Password changed successfully!');
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        // Logo Functions
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const logoData = e.target.result;
+                localStorage.setItem('restaurantLogo', logoData);
+                loadLogo();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadLogo() {
+            const logoData = localStorage.getItem('restaurantLogo');
+            const headerLogo = document.getElementById('headerLogo');
+            const previewLogo = document.getElementById('logoPreview');
+            const printLogo = document.getElementById('printLogo');
+            
+            if (logoData) {
+                headerLogo.src = logoData;
+                headerLogo.classList.add('active');
+                previewLogo.src = logoData;
+                printLogo.src = logoData;
+            } else {
+                headerLogo.classList.remove('active');
+                previewLogo.src = '';
+                printLogo.src = '';
+            }
+        }
+
+        function removeLogo() {
+            if (confirm('Are you sure you want to remove the logo?')) {
+                localStorage.removeItem('restaurantLogo');
+                loadLogo();
+            }
+        }
+
+        // Menu Functions - FIXED
         function loadMenu() {
             const menuGrid = document.getElementById('menuGrid');
+            const categoryFilter = document.getElementById('categoryFilter');
+            
+            // Clear existing
             menuGrid.innerHTML = '';
             
+            // Get categories
             const transaction = db.transaction(['menu'], 'readonly');
             const store = transaction.objectStore('menu');
             const request = store.getAll();
             
             request.onsuccess = function() {
                 const menuItems = request.result;
+                const categories = new Set(['all']);
+                
+                // Populate category filter
+                categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+                
                 menuItems.forEach(item => {
+                    categories.add(item.category);
+                    
                     const menuItem = document.createElement('div');
                     menuItem.className = 'menu-item';
+                    menuItem.dataset.category = item.category;
+                    menuItem.dataset.name = item.name.toLowerCase();
                     menuItem.innerHTML = `
                         <div class="menu-item-category">${item.category}</div>
                         <div class="menu-item-name">${item.name}</div>
@@ -1037,7 +1421,36 @@
                     `;
                     menuGrid.appendChild(menuItem);
                 });
+                
+                // Add categories to filter
+                categories.forEach(category => {
+                    if (category !== 'all') {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category;
+                        categoryFilter.appendChild(option);
+                    }
+                });
             };
+        }
+
+        function filterMenu() {
+            const searchTerm = document.getElementById('menuSearch').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                const itemCategory = item.dataset.category;
+                const itemName = item.dataset.name;
+                const matchesCategory = category === 'all' || itemCategory === category;
+                const matchesSearch = itemName.includes(searchTerm);
+                
+                if (matchesCategory && matchesSearch) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
 
         function addToCart(itemId) {
@@ -1047,6 +1460,8 @@
             
             request.onsuccess = function() {
                 const item = request.result;
+                if (!item) return;
+                
                 const existingItem = cart.find(cartItem => cartItem.id === itemId);
                 
                 if (existingItem) {
@@ -1063,17 +1478,19 @@
         }
 
         function updateCartDisplay() {
-            const cartItems = document.getElementById('cartItems');
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
             const emptyCart = document.getElementById('emptyCart');
             const cartCount = document.getElementById('cartCount');
             const subtotalEl = document.getElementById('subtotal');
             const gstAmountEl = document.getElementById('gstAmount');
+            const gstPercentageDisplay = document.getElementById('gstPercentageDisplay');
             const totalAmountEl = document.getElementById('totalAmount');
             const totalDisplay = document.getElementById('totalDisplay');
             
             if (cart.length === 0) {
                 emptyCart.style.display = 'block';
-                cartItems.innerHTML = '';
+                cartItemsContainer.innerHTML = '';
+                cartItemsContainer.appendChild(emptyCart);
             } else {
                 emptyCart.style.display = 'none';
                 
@@ -1081,18 +1498,23 @@
                 let subtotal = 0;
                 
                 cart.forEach((item, index) => {
-                    subtotal += item.price * item.quantity;
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
                     
                     html += `
                         <div class="cart-item">
                             <div class="cart-item-info">
                                 <div class="cart-item-name">${item.name}</div>
-                                <div class="cart-item-price">₹ ${item.price}</div>
+                                <div class="cart-item-price">₹ ${itemTotal}</div>
                             </div>
                             <div class="cart-item-controls">
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                <button class="quantity-btn" onclick="updateCartQuantity(${index}, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
                                 <span class="quantity">${item.quantity}</span>
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                <button class="quantity-btn" onclick="updateCartQuantity(${index}, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                                 <button class="remove-btn" onclick="removeFromCart(${index})">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -1101,7 +1523,7 @@
                     `;
                 });
                 
-                cartItems.innerHTML = html;
+                cartItemsContainer.innerHTML = html;
             }
             
             // Update counts and totals
@@ -1114,11 +1536,12 @@
             
             subtotalEl.textContent = `₹ ${subtotal.toFixed(2)}`;
             gstAmountEl.textContent = `₹ ${gstAmount.toFixed(2)}`;
+            gstPercentageDisplay.textContent = gstPercentage;
             totalAmountEl.textContent = `₹ ${totalAmount.toFixed(2)}`;
             totalDisplay.textContent = totalAmount.toFixed(2);
         }
 
-        function updateQuantity(index, change) {
+        function updateCartQuantity(index, change) {
             cart[index].quantity += change;
             
             if (cart[index].quantity <= 0) {
@@ -1142,7 +1565,7 @@
             }
         }
 
-        // Order Processing
+        // Order Processing - FIXED
         function processOrder() {
             if (cart.length === 0) {
                 alert('Please add items to the cart first!');
@@ -1155,20 +1578,89 @@
                 return;
             }
             
+            // Generate bill preview
+            showBillPreview();
+        }
+
+        function showBillPreview() {
             const gstPercentage = parseFloat(localStorage.getItem('gstPercentage') || 5);
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const gstAmount = (subtotal * gstPercentage) / 100;
             const totalAmount = subtotal + gstAmount;
             
-            const order = {
+            const orderTypeMap = {
+                'dine-in': 'Dine In',
+                'takeaway': 'Take Away',
+                'swiggy': 'Swiggy',
+                'zomato': 'Zomato'
+            };
+            
+            let itemsHtml = '';
+            cart.forEach(item => {
+                itemsHtml += `
+                    <div class="summary-row">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            const billDetails = document.getElementById('billDetails');
+            billDetails.innerHTML = `
+                <div class="bill-summary">
+                    <div class="summary-row">
+                        <strong>Order Type:</strong>
+                        <strong>${orderTypeMap[currentOrderType] || currentOrderType}</strong>
+                    </div>
+                    ${document.getElementById('tableNumber').value ? 
+                        `<div class="summary-row"><span>Table:</span><span>${document.getElementById('tableNumber').value}</span></div>` : ''}
+                    <hr>
+                    <div style="max-height: 200px; overflow-y: auto; margin: 10px 0;">
+                        ${itemsHtml}
+                    </div>
+                    <hr>
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>₹ ${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>GST (${gstPercentage}%):</span>
+                        <span>₹ ${gstAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Amount:</span>
+                        <span>₹ ${totalAmount.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Store current order data for printing
+            window.currentOrderData = {
                 id: Date.now(),
-                date: new Date().toISOString(),
+                date: new Date(),
                 type: currentOrderType,
-                table: tableNumber,
+                table: document.getElementById('tableNumber').value,
                 items: [...cart],
                 subtotal: subtotal,
                 gstAmount: gstAmount,
                 total: totalAmount,
+                gstPercentage: gstPercentage
+            };
+            
+            // Show modal
+            document.getElementById('billModal').classList.add('active');
+        }
+
+        function saveAndPrintBill() {
+            saveBill();
+            printBill();
+        }
+
+        function saveBill() {
+            if (!window.currentOrderData) return;
+            
+            const order = {
+                ...window.currentOrderData,
                 status: 'completed'
             };
             
@@ -1178,62 +1670,133 @@
             store.add(order);
             
             transaction.oncomplete = function() {
-                showOrderConfirmation(order);
+                alert('Bill saved successfully!');
                 cart = [];
                 updateCartDisplay();
                 document.getElementById('tableNumber').value = '';
+                closeModal();
+                loadBills('today');
             };
         }
 
-        function showOrderConfirmation(order) {
-            const modal = document.getElementById('orderModal');
-            const orderDetails = document.getElementById('orderDetails');
+        function closeModal() {
+            document.getElementById('billModal').classList.remove('active');
+            document.getElementById('menuItemModal').classList.remove('active');
+        }
+
+        // Print Bill Function - FIXED
+        function printBill() {
+            if (!window.currentOrderData) {
+                alert('No bill data available!');
+                return;
+            }
             
-            let itemsHtml = '';
+            const order = window.currentOrderData;
+            const printTemplate = document.getElementById('billPrintTemplate');
+            
+            // Fill print template with data
+            document.getElementById('printRestaurantName').textContent = 
+                localStorage.getItem('restaurantName') || 'The House of Biryani';
+            document.getElementById('printRestaurantAddress').textContent = 
+                localStorage.getItem('restaurantAddress') || '123 Food Street, Mumbai';
+            document.getElementById('printRestaurantContact').textContent = 
+                'Phone: ' + (localStorage.getItem('contactNumber') || '+91 9876543210');
+            document.getElementById('printGstNumber').textContent = 
+                localStorage.getItem('gstNumber') || '27AABCU9603R1ZX';
+            
+            document.getElementById('printBillNumber').textContent = order.id;
+            document.getElementById('printDate').textContent = 
+                order.date.toLocaleDateString('en-IN');
+            document.getElementById('printTime').textContent = 
+                order.date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('printOrderType').textContent = 
+                currentOrderType === 'dine-in' ? 'Dine In' : 
+                currentOrderType === 'takeaway' ? 'Take Away' :
+                currentOrderType.charAt(0).toUpperCase() + currentOrderType.slice(1);
+            document.getElementById('printTableNumber').textContent = 
+                order.table || 'N/A';
+            
+            // Add items
+            const printItems = document.getElementById('printItems');
+            printItems.innerHTML = '';
             order.items.forEach(item => {
-                itemsHtml += `
-                    <div class="summary-row">
-                        <span>${item.name} x ${item.quantity}</span>
-                        <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
-                    </div>
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'bill-print-item';
+                itemDiv.innerHTML = `
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
                 `;
+                printItems.appendChild(itemDiv);
             });
             
-            orderDetails.innerHTML = `
-                <div class="bill-summary">
-                    <div class="summary-row">
-                        <strong>Order ID:</strong>
-                        <strong>${order.id}</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Order Type:</span>
-                        <span>${order.type.toUpperCase()}</span>
-                    </div>
-                    ${order.table ? `<div class="summary-row"><span>Table:</span><span>${order.table}</span></div>` : ''}
-                    <hr>
-                    ${itemsHtml}
-                    <hr>
-                    <div class="summary-row">
-                        <span>Subtotal:</span>
-                        <span>₹ ${order.subtotal.toFixed(2)}</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>GST (${localStorage.getItem('gstPercentage') || 5}%):</span>
-                        <span>₹ ${order.gstAmount.toFixed(2)}</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>Total:</span>
-                        <span>₹ ${order.total.toFixed(2)}</span>
-                    </div>
-                </div>
-            `;
+            document.getElementById('printSubtotal').textContent = order.subtotal.toFixed(2);
+            document.getElementById('printGstPercent').textContent = order.gstPercentage;
+            document.getElementById('printGstAmount').textContent = order.gstAmount.toFixed(2);
+            document.getElementById('printTotalAmount').textContent = order.total.toFixed(2);
             
-            modal.classList.add('active');
-            
-            // Auto-print if enabled
-            if (document.getElementById('autoPrint').checked) {
-                setTimeout(printReceipt, 500);
-            }
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Bill Print</title>
+                    <style>
+                        body {
+                            font-family: monospace;
+                            font-size: 12px;
+                            width: 80mm;
+                            margin: 0;
+                            padding: 10px;
+                        }
+                        .bill-header {
+                            text-align: center;
+                            margin-bottom: 10px;
+                            border-bottom: 1px dashed #000;
+                            padding-bottom: 10px;
+                        }
+                        .bill-logo {
+                            max-width: 60px;
+                            max-height: 60px;
+                            margin: 0 auto 5px;
+                        }
+                        .bill-info {
+                            margin: 10px 0;
+                        }
+                        .bill-items {
+                            margin: 10px 0;
+                        }
+                        .bill-item {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 5px;
+                        }
+                        .bill-total {
+                            border-top: 2px solid #000;
+                            margin-top: 10px;
+                            padding-top: 10px;
+                            font-weight: bold;
+                        }
+                        .bill-footer {
+                            text-align: center;
+                            margin-top: 20px;
+                            font-size: 10px;
+                            border-top: 1px dashed #000;
+                            padding-top: 10px;
+                        }
+                        @media print {
+                            body {
+                                width: 80mm !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    ${printTemplate.innerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
 
         // Bill Management
@@ -1269,12 +1832,12 @@
                     const dateString = date.toLocaleDateString('en-IN');
                     
                     html += `
-                        <div class="bill-card" onclick="viewBill(${order.id})">
+                        <div class="bill-card" onclick="viewSavedBill(${order.id})">
                             <div class="bill-header">
                                 <div class="bill-id">Order #${order.id}</div>
                                 <div class="bill-amount">₹ ${order.total.toFixed(2)}</div>
                             </div>
-                            <div>${order.type.toUpperCase()} ${order.table ? '• Table ' + order.table : ''}</div>
+                            <div>${order.type.charAt(0).toUpperCase() + order.type.slice(1)} ${order.table ? '• Table ' + order.table : ''}</div>
                             <div class="bill-details">
                                 <span>${dateString} ${timeString}</span>
                                 <span>${order.items.length} items</span>
@@ -1287,7 +1850,7 @@
             };
         }
 
-        function viewBill(orderId) {
+        function viewSavedBill(orderId) {
             const transaction = db.transaction(['orders'], 'readonly');
             const store = transaction.objectStore('orders');
             const request = store.get(orderId);
@@ -1296,78 +1859,9 @@
                 const order = request.result;
                 if (!order) return;
                 
-                const modal = document.getElementById('billModal');
-                const billDetails = document.getElementById('billDetails');
-                modal.dataset.orderId = orderId;
-                
-                let itemsHtml = '';
-                order.items.forEach(item => {
-                    itemsHtml += `
-                        <div class="summary-row">
-                            <span>${item.name} x ${item.quantity}</span>
-                            <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
-                        </div>
-                    `;
-                });
-                
-                const date = new Date(order.date);
-                billDetails.innerHTML = `
-                    <div class="bill-summary">
-                        <div class="summary-row">
-                            <strong>Order ID:</strong>
-                            <strong>#${order.id}</strong>
-                        </div>
-                        <div class="summary-row">
-                            <span>Date:</span>
-                            <span>${date.toLocaleString('en-IN')}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Order Type:</span>
-                            <span>${order.type.toUpperCase()}</span>
-                        </div>
-                        ${order.table ? `<div class="summary-row"><span>Table:</span><span>${order.table}</span></div>` : ''}
-                        <hr>
-                        ${itemsHtml}
-                        <hr>
-                        <div class="summary-row">
-                            <span>Subtotal:</span>
-                            <span>₹ ${order.subtotal.toFixed(2)}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>GST:</span>
-                            <span>₹ ${order.gstAmount.toFixed(2)}</span>
-                        </div>
-                        <div class="summary-row total">
-                            <span>Total:</span>
-                            <span>₹ ${order.total.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
-                
-                modal.classList.add('active');
+                window.currentOrderData = order;
+                showBillPreview();
             };
-        }
-
-        function reprintBill() {
-            const orderId = document.getElementById('billModal').dataset.orderId;
-            alert(`Reprinting bill #${orderId}`);
-            printReceipt();
-        }
-
-        function voidBill() {
-            const orderId = document.getElementById('billModal').dataset.orderId;
-            
-            if (confirm('Are you sure you want to void this bill? This action cannot be undone.')) {
-                const transaction = db.transaction(['orders'], 'readwrite');
-                const store = transaction.objectStore('orders');
-                store.delete(Number(orderId));
-                
-                transaction.oncomplete = function() {
-                    alert('Bill voided successfully!');
-                    closeModal();
-                    loadBills('today');
-                };
-            }
         }
 
         // Sales Dashboard
@@ -1413,72 +1907,7 @@
                 
                 // Update sales table
                 updateSalesTable(orders.slice(0, 10));
-                
-                // Update chart
-                updateSalesChart(orders);
             };
-        }
-
-        function updateSalesChart(orders) {
-            // Group orders by day for last 7 days
-            const days = [];
-            const revenues = [];
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                const dateString = date.toLocaleDateString('en-IN', { weekday: 'short' });
-                days.push(dateString);
-                
-                const dayOrders = orders.filter(order => {
-                    const orderDate = new Date(order.date);
-                    return orderDate.toDateString() === date.toDateString();
-                });
-                
-                const dayRevenue = dayOrders.reduce((sum, order) => sum + order.total, 0);
-                revenues.push(dayRevenue);
-            }
-            
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            
-            // Destroy existing chart if it exists
-            if (salesChart) {
-                salesChart.destroy();
-            }
-            
-            salesChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: 'Daily Revenue',
-                        data: revenues,
-                        borderColor: '#6a1b9a',
-                        backgroundColor: 'rgba(106, 27, 154, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return '₹' + value;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
         }
 
         function updateSalesTable(orders) {
@@ -1490,12 +1919,12 @@
             }
             
             let html = `
-                <div class="sales-table-header">
+                <div style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
                     <div class="summary-row" style="background: #f8f9fa; font-weight: 600;">
-                        <span>Order ID</span>
-                        <span>Time</span>
-                        <span>Type</span>
-                        <span>Amount</span>
+                        <span style="padding: 10px; flex: 1;">Order ID</span>
+                        <span style="padding: 10px; flex: 1;">Time</span>
+                        <span style="padding: 10px; flex: 1;">Type</span>
+                        <span style="padding: 10px; flex: 1;">Amount</span>
                     </div>
             `;
             
@@ -1504,11 +1933,11 @@
                 const timeString = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
                 
                 html += `
-                    <div class="summary-row" onclick="viewBill(${order.id})" style="cursor: pointer;">
-                        <span>#${order.id}</span>
-                        <span>${timeString}</span>
-                        <span>${order.type.charAt(0).toUpperCase() + order.type.slice(1)}</span>
-                        <span style="color: var(--success); font-weight: 600;">₹ ${order.total.toFixed(2)}</span>
+                    <div class="summary-row" onclick="viewSavedBill(${order.id})" style="cursor: pointer;">
+                        <span style="padding: 10px; flex: 1;">#${order.id}</span>
+                        <span style="padding: 10px; flex: 1;">${timeString}</span>
+                        <span style="padding: 10px; flex: 1;">${order.type.charAt(0).toUpperCase() + order.type.slice(1)}</span>
+                        <span style="padding: 10px; flex: 1; color: var(--success); font-weight: 600;">₹ ${order.total.toFixed(2)}</span>
                     </div>
                 `;
             });
@@ -1524,43 +1953,74 @@
             
             request.onsuccess = function() {
                 const orders = request.result;
-                const dataStr = JSON.stringify(orders, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                
-                const exportFileDefaultName = `sales_export_${new Date().toISOString().split('T')[0]}.json`;
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
+                const csvData = convertToCSV(orders);
+                const blob = new Blob([csvData], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sales_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                window.URL.revokeObjectURL(url);
             };
+        }
+
+        function convertToCSV(orders) {
+            const headers = ['Order ID', 'Date', 'Time', 'Type', 'Table', 'Items', 'Subtotal', 'GST', 'Total'];
+            const rows = orders.map(order => {
+                const date = new Date(order.date);
+                return [
+                    order.id,
+                    date.toLocaleDateString(),
+                    date.toLocaleTimeString(),
+                    order.type,
+                    order.table || '',
+                    order.items.map(i => `${i.name} x${i.quantity}`).join('; '),
+                    order.subtotal,
+                    order.gstAmount,
+                    order.total
+                ];
+            });
+            
+            return [headers, ...rows].map(row => row.join(',')).join('\n');
         }
 
         // Settings
         function loadSettings() {
-            // Load saved settings from localStorage
-            const restaurantName = localStorage.getItem('restaurantName') || 'The House of Biryani';
-            const restaurantAddress = localStorage.getItem('restaurantAddress') || '123 Food Street, Mumbai, Maharashtra 400001';
-            const gstNumber = localStorage.getItem('gstNumber') || '27AABCU9603R1ZX';
-            const gstPercentage = localStorage.getItem('gstPercentage') || '5';
-            
-            document.getElementById('restaurantName').value = restaurantName;
-            document.getElementById('restaurantAddress').value = restaurantAddress;
-            document.getElementById('gstNumber').value = gstNumber;
-            document.getElementById('gstPercentage').value = gstPercentage;
+            // Load saved settings
+            document.getElementById('restaurantName').value = 
+                localStorage.getItem('restaurantName') || 'The House of Biryani';
+            document.getElementById('restaurantAddress').value = 
+                localStorage.getItem('restaurantAddress') || '123 Food Street, Mumbai, Maharashtra 400001';
+            document.getElementById('contactNumber').value = 
+                localStorage.getItem('contactNumber') || '+91 9876543210';
+            document.getElementById('gstNumber').value = 
+                localStorage.getItem('gstNumber') || '27AABCU9603R1ZX';
+            document.getElementById('gstPercentage').value = 
+                localStorage.getItem('gstPercentage') || '5';
             
             // Update header
-            document.querySelector('.logo h1').textContent = restaurantName;
+            document.getElementById('restaurantTitle').textContent = 
+                localStorage.getItem('restaurantName') || 'The House of Biryani';
+            
+            // Load checkbox states
+            document.getElementById('autoPrint').checked = 
+                localStorage.getItem('autoPrint') !== 'false';
+            document.getElementById('printCustomerCopy').checked = 
+                localStorage.getItem('printCustomerCopy') !== 'false';
+            document.getElementById('printKitchenCopy').checked = 
+                localStorage.getItem('printKitchenCopy') === 'true';
         }
 
         function saveSettings() {
-            const restaurantName = document.getElementById('restaurantName').value;
-            const restaurantAddress = document.getElementById('restaurantAddress').value;
-            const gstNumber = document.getElementById('gstNumber').value;
+            // Get values
+            const restaurantName = document.getElementById('restaurantName').value.trim();
+            const restaurantAddress = document.getElementById('restaurantAddress').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const gstNumber = document.getElementById('gstNumber').value.trim();
             const gstPercentage = document.getElementById('gstPercentage').value;
             
-            // Validate inputs
-            if (!restaurantName.trim()) {
+            // Validate
+            if (!restaurantName) {
                 alert('Please enter restaurant name');
                 return;
             }
@@ -1573,15 +2033,22 @@
             // Save to localStorage
             localStorage.setItem('restaurantName', restaurantName);
             localStorage.setItem('restaurantAddress', restaurantAddress);
+            localStorage.setItem('contactNumber', contactNumber);
             localStorage.setItem('gstNumber', gstNumber);
             localStorage.setItem('gstPercentage', gstPercentage);
             
+            // Save checkbox states
+            localStorage.setItem('autoPrint', document.getElementById('autoPrint').checked);
+            localStorage.setItem('printCustomerCopy', document.getElementById('printCustomerCopy').checked);
+            localStorage.setItem('printKitchenCopy', document.getElementById('printKitchenCopy').checked);
+            
             // Update header
-            document.querySelector('.logo h1').textContent = restaurantName;
+            document.getElementById('restaurantTitle').textContent = restaurantName;
             
             alert('Settings saved successfully!');
         }
 
+        // Menu Management
         function loadMenuManagement() {
             const menuManagement = document.getElementById('menuManagement');
             menuManagement.innerHTML = '<div class="text-center p-20"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
@@ -1594,22 +2061,22 @@
                 const menuItems = request.result;
                 
                 let html = `
-                    <div class="menu-list">
-                        <div class="summary-row" style="background: #f8f9fa; font-weight: 600;">
-                            <span>Item</span>
-                            <span>Category</span>
-                            <span>Price</span>
-                            <span>Actions</span>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <div class="summary-row" style="background: #f8f9fa; font-weight: 600; position: sticky; top: 0;">
+                            <span style="padding: 10px; flex: 2;">Item</span>
+                            <span style="padding: 10px; flex: 1;">Category</span>
+                            <span style="padding: 10px; flex: 1;">Price</span>
+                            <span style="padding: 10px; flex: 1;">Actions</span>
                         </div>
                 `;
                 
                 menuItems.forEach(item => {
                     html += `
                         <div class="summary-row">
-                            <span>${item.name}</span>
-                            <span>${item.category}</span>
-                            <span>₹ ${item.price}</span>
-                            <span>
+                            <span style="padding: 10px; flex: 2;">${item.name}</span>
+                            <span style="padding: 10px; flex: 1;">${item.category}</span>
+                            <span style="padding: 10px; flex: 1;">₹ ${item.price}</span>
+                            <span style="padding: 10px; flex: 1; display: flex; gap: 5px;">
                                 <button class="btn btn-sm btn-outline" onclick="editMenuItem(${item.id})">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -1626,14 +2093,27 @@
             };
         }
 
-        function addMenuItem() {
-            const name = prompt('Enter item name:');
-            if (!name) return;
+        function showAddMenuItemModal() {
+            document.getElementById('menuItemModal').classList.add('active');
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemCategory').value = 'Biryani';
+        }
+
+        function closeMenuItemModal() {
+            document.getElementById('menuItemModal').classList.remove('active');
+        }
+
+        function saveMenuItem() {
+            const name = document.getElementById('itemName').value.trim();
+            const category = document.getElementById('itemCategory').value;
+            const price = parseFloat(document.getElementById('itemPrice').value);
             
-            const category = prompt('Enter category (Biryani, Starters, etc.):');
-            if (!category) return;
+            if (!name) {
+                alert('Please enter item name');
+                return;
+            }
             
-            const price = parseFloat(prompt('Enter price:'));
             if (isNaN(price) || price <= 0) {
                 alert('Please enter a valid price');
                 return;
@@ -1652,14 +2132,14 @@
                     id: maxId + 1,
                     name: name,
                     category: category,
-                    price: price,
-                    popularity: 0
+                    price: price
                 };
                 
                 store.add(newItem);
                 
                 transaction.oncomplete = function() {
                     alert('Item added successfully!');
+                    closeMenuItemModal();
                     loadMenu();
                     loadMenuManagement();
                 };
@@ -1715,22 +2195,19 @@
             };
         }
 
-        // Utility Functions
-        function printReceipt() {
-            window.print();
-        }
-
-        function closeModal() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.classList.remove('active');
-            });
-        }
-
+        // Data Management
         function exportData() {
             const allData = {
                 orders: [],
                 menu: [],
-                settings: {}
+                settings: {
+                    restaurantName: localStorage.getItem('restaurantName'),
+                    restaurantAddress: localStorage.getItem('restaurantAddress'),
+                    contactNumber: localStorage.getItem('contactNumber'),
+                    gstNumber: localStorage.getItem('gstNumber'),
+                    gstPercentage: localStorage.getItem('gstPercentage'),
+                    logo: localStorage.getItem('restaurantLogo')
+                }
             };
             
             // Export orders
@@ -1744,14 +2221,6 @@
                 const menuStore = menuTransaction.objectStore('menu');
                 menuStore.getAll().onsuccess = function(event) {
                     allData.menu = event.target.result;
-                    
-                    // Export settings
-                    allData.settings = {
-                        restaurantName: localStorage.getItem('restaurantName'),
-                        restaurantAddress: localStorage.getItem('restaurantAddress'),
-                        gstNumber: localStorage.getItem('gstNumber'),
-                        gstPercentage: localStorage.getItem('gstPercentage')
-                    };
                     
                     // Create download
                     const dataStr = JSON.stringify(allData, null, 2);
@@ -1781,7 +2250,6 @@
                         const data = JSON.parse(e.target.result);
                         
                         if (confirm('This will replace all existing data. Continue?')) {
-                            // Import data
                             importAllData(data);
                         }
                     } catch (error) {
@@ -1825,10 +2293,16 @@
                 // Import settings
                 if (data.settings) {
                     Object.entries(data.settings).forEach(([key, value]) => {
-                        if (value) localStorage.setItem(key, value);
+                        if (value && key !== 'logo') {
+                            localStorage.setItem(key, value);
+                        }
+                        if (key === 'logo' && value) {
+                            localStorage.setItem('restaurantLogo', value);
+                        }
                     });
                     
                     loadSettings();
+                    loadLogo();
                 }
                 
                 alert('Data imported successfully!');
@@ -1850,40 +2324,13 @@
             }
         }
 
-        // Close modal when clicking outside
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-        });
-
-        // Add keyboard shortcuts
+        // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             // Escape key closes modals
             if (e.key === 'Escape') {
                 closeModal();
-            }
-            
-            // Ctrl+S saves settings
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                if (!document.getElementById('settings').classList.contains('hidden')) {
-                    saveSettings();
-                }
-            }
-            
-            // F1 switches to home
-            if (e.key === 'F1') {
-                e.preventDefault();
-                switchTab('home');
-            }
-            
-            // F2 switches to bills
-            if (e.key === 'F2') {
-                e.preventDefault();
-                switchTab('bills');
+                closePasswordModal();
+                closeMenuItemModal();
             }
         });
     </script>
