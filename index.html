@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The House of Biryani’s POS</title>
+
+<style>
+/* ================= UI ================= */
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont;
+  background:linear-gradient(135deg,#e3f2fd,#ffffff);
+  color:#0d47a1;
+}
+
+.hidden{display:none;}
+
+.glass{
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(18px);
+  border-radius:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.1);
+}
+
+.topbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  height:60px;
+  display:flex;
+  align-items:center;
+  padding:0 15px;
+  z-index:1000;
+}
+
+.menuBtn{
+  font-size:26px;
+  background:none;
+  border:none;
+}
+
+.sideMenu{
+  position:fixed;
+  top:70px;
+  left:15px;
+  width:220px;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:1000;
+}
+
+.sideMenu button{
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#e3f2fd;
+  text-align:left;
+  font-size:16px;
+}
+
+.content{
+  padding:80px 15px;
+}
+
+/* ===== HOME ===== */
+.orderType button{
+  margin:5px;
+  padding:10px;
+  border:none;
+  border-radius:14px;
+  background:#bbdefb;
+}
+
+.tableBtns button{
+  margin:5px;
+  padding:10px;
+  border:none;
+  border-radius:14px;
+  background:#90caf9;
+}
+
+#menu{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;
+}
+
+#menu button{
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#e3f2fd;
+  font-size:16px;
+}
+
+.primary{
+  background:#1976d2;
+  color:white;
+  padding:16px;
+  border:none;
+  border-radius:18px;
+  width:100%;
+  font-size:18px;
+}
+
+.billItem{
+  background:#e3f2fd;
+  padding:12px;
+  margin:10px 0;
+  border-radius:14px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:12px;
+  border:1px solid #90caf9;
+}
+
+.danger{
+  background:#e53935;
+  color:white;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+}
+
+/* ===== 58mm PRINT ===== */
+@media print{
+ body{font-family:monospace;color:black;}
+ .noPrint{display:none;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar glass noPrint">
+  <button class="menuBtn" onclick="toggleMenu()">☰</button>
+  <b>The House of Biryani’s</b>
+</div>
+
+<!-- SIDE MENU -->
+<div id="sideMenu" class="sideMenu glass hidden noPrint">
+  <button onclick="nav('home')">🏠 Home</button>
+  <button onclick="nav('bills'); loadBills()">🧾 Bills</button>
+  <button onclick="nav('sales'); loadSales()">📊 Sales</button>
+  <button onclick="openSettings()">⚙️ Settings</button>
+</div>
+
+<div class="content">
+
+<!-- HOME -->
+<section id="home">
+<h2>New Bill</h2>
+
+<div class="orderType">
+<button onclick="orderType='Dine In'">🍽 Dine In</button>
+<button onclick="orderType='Swiggy'">🟠 Swiggy</button>
+<button onclick="orderType='Zomato'">🔴 Zomato</button>
+<button onclick="orderType='Take Away'">📦 Take Away</button>
+</div>
+
+<div class="tableBtns">
+<button onclick="tableNo='Table 1'">Table 1</button>
+<button onclick="tableNo='Table 2'">Table 2</button>
+<button onclick="tableNo='Table 3'">Table 3</button>
+</div>
+
+<div id="menu"></div>
+
+<h3>Total ₹ <span id="total">0</span></h3>
+<button class="primary" onclick="previewBill()">Preview Bill</button>
+
+<hr>
+<h3>📊 Today Summary</h3>
+<div id="dailySummary" class="glass"></div>
+</section>
+
+<!-- PREVIEW -->
+<div id="preview" class="glass hidden">
+<div id="printArea"></div>
+<button onclick="saveBill()">✅ Save</button>
+<button onclick="window.print()">🖨 Print</button>
+<button onclick="preview.classList.add('hidden')">❌ Cancel</button>
+</div>
+
+<!-- BILLS -->
+<section id="bills" class="hidden">
+<h2>Bills</h2>
+<div id="billList"></div>
+</section>
+
+<!-- SALES -->
+<section id="sales" class="hidden">
+<h2>Sales Analytics</h2>
+<div id="salesData" class="glass"></div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="hidden">
+<h2>Settings</h2>
+
+<input id="resName" placeholder="Restaurant Name">
+<input id="resAddr" placeholder="Address">
+<input id="gstNo" placeholder="GST No">
+
+<label><input type="checkbox" id="gstToggle"> Enable GST</label>
+<input id="gstRate" placeholder="GST %">
+
+<h3>Add Menu Item</h3>
+<input id="itemName" placeholder="Item Name">
+<input id="itemPrice" placeholder="Price">
+<button onclick="addMenu()">Add</button>
+
+<h3>Password</h3>
+<input id="newPass" placeholder="New Password">
+<button onclick="changePass()">Change</button>
+
+<button class="danger" onclick="deleteAllBills()">Delete All Bills</button>
+</section>
+
+</div>
+
+<script>
+/* ================= LOGIC ================= */
+let db, cart=[], orderType="Dine In", tableNo="";
+
+if(!localStorage.pass) localStorage.pass="1234";
+
+indexedDB.open("POS",1).onupgradeneeded=e=>{
+ e.target.result.createObjectStore("bills",{autoIncrement:true});
+};
+indexedDB.open("POS",1).onsuccess=e=>{db=e.target.result; updateSummary();};
+
+function toggleMenu(){sideMenu.classList.toggle("hidden");}
+function nav(p){
+ document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+ document.getElementById(p).classList.remove("hidden");
+ sideMenu.classList.add("hidden");
+}
+
+function openSettings(){
+ let p=prompt("Enter Settings Password");
+ if(p===localStorage.pass) nav("settings");
+ else alert("Wrong password");
+}
+
+function getMenu(){return JSON.parse(localStorage.menu||"[]");}
+function renderMenu(){
+ menu.innerHTML="";
+ getMenu().forEach(i=>{
+  let b=document.createElement("button");
+  b.textContent=`${i.name} ₹${i.price}`;
+  b.onclick=()=>{cart.push(i);calcTotal();};
+  menu.appendChild(b);
+ });
+}
+renderMenu();
+
+function calcTotal(){
+ let t=cart.reduce((s,i)=>s+i.price,0);
+ if(gstToggle.checked) t+=t*(gstRate.value||0)/100;
+ total.textContent=t.toFixed(2);
+}
+
+function previewBill(){
+ if(!cart.length) return alert("Add items");
+ let h=`<center><b>${resName.value}</b><br>${resAddr.value}<br>${gstNo.value}</center><hr>`;
+ h+=`Order: ${orderType}<br>${tableNo}<br>`;
+ cart.forEach(i=>h+=`${i.name}  ₹${i.price}<br>`);
+ h+=`<hr>Total ₹${total.textContent}<br>`;
+ h+=`<center>Thank You</center>`;
+ printArea.innerHTML=h;
+ preview.classList.remove("hidden");
+}
+
+function saveBill(){
+ let bill={cart,total:total.textContent,date:new Date()};
+ db.transaction("bills","readwrite").objectStore("bills").add(bill);
+ cart=[]; total.textContent=0;
+ preview.classList.add("hidden");
+ updateSummary();
+ alert("Bill Saved");
+}
+
+function loadBills(){
+ billList.innerHTML="";
+ db.transaction("bills","readonly").objectStore("bills")
+ .openCursor().onsuccess=e=>{
+  let c=e.target.result;
+  if(c){
+   billList.innerHTML+=`<div class="billItem">${new Date(c.value.date).toLocaleString()} ₹${c.value.total}</div>`;
+   c.continue();
+  }
+ };
+}
+
+function loadSales(){
+ let s={};
+ db.transaction("bills","readonly").objectStore("bills")
+ .openCursor().onsuccess=e=>{
+  let c=e.target.result;
+  if(c){
+   c.value.cart.forEach(i=>s[i.name]=(s[i.name]||0)+1);
+   c.continue();
+  }else{
+   salesData.innerHTML=Object.entries(s).map(x=>`${x[0]} : ${x[1]} plates`).join("<br>");
+  }
+ };
+}
+
+function updateSummary(){
+ let totalAmt=0,count=0;
+ let today=new Date().toDateString();
+ db.transaction("bills","readonly").objectStore("bills")
+ .openCursor().onsuccess=e=>{
+  let c=e.target.result;
+  if(c){
+   if(new Date(c.value.date).toDateString()===today){
+    totalAmt+=+c.value.total;
+    count++;
+   }
+   c.continue();
+  }else{
+   dailySummary.innerHTML=`Bills: ${count}<br>Total: ₹${totalAmt}`;
+  }
+ };
+}
+
+function addMenu(){
+ let m=getMenu();
+ m.push({name:itemName.value,price:+itemPrice.value});
+ localStorage.menu=JSON.stringify(m);
+ renderMenu();
+}
+
+function changePass(){localStorage.pass=newPass.value;alert("Password Changed");}
+function deleteAllBills(){
+ if(confirm("Delete all bills?")){
+  db.transaction("bills","readwrite").objectStore("bills").clear();
+ }
+}
+</script>
+
+</body>
+</html>
