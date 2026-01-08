@@ -6,156 +6,618 @@
 <title>The House of Biryani's POS</title>
 
 <style>
-body{
- margin:0;
- font-family:-apple-system;
- background:#f4f4f8;
-}
-:root{--p:#6a1b9a;}
-
-.hidden{display:none;}
-.glass{
- background:rgba(255,255,255,.75);
- backdrop-filter:blur(18px);
- border-radius:16px;
- padding:12px;
- box-shadow:0 6px 18px rgba(0,0,0,.1);
-}
-
-header{
- position:fixed;top:0;width:100%;height:55px;
- background:white;display:flex;align-items:center;
- justify-content:center;font-weight:600;
- border-bottom:1px solid #ddd;z-index:9;
+/* WhatsApp-inspired Modern Design */
+:root {
+    --primary: #7B1FA2;
+    --primary-light: #9C27B0;
+    --primary-dark: #4A0072;
+    --background: #F0F2F5;
+    --surface: #FFFFFF;
+    --surface-light: rgba(255, 255, 255, 0.7);
+    --text-primary: #1C1E21;
+    --text-secondary: #65676B;
+    --border: #E4E6EB;
+    --success: #4CAF50;
+    --danger: #F44336;
+    --warning: #FF9800;
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-main{padding:65px 10px 75px;}
-
-button{
- border:none;border-radius:14px;padding:12px;font-size:16px;
-}
-.primary{background:var(--p);color:white;width:100%;}
-.tabbar{
- position:fixed;bottom:0;width:100%;height:60px;
- background:white;display:flex;border-top:1px solid #ddd;
-}
-.tabbar button{flex:1;background:none;}
-.tabbar .active{color:var(--p);font-weight:600;}
-
-.grid{display:grid;gap:10px;}
-@media(min-width:768px){
- .grid{grid-template-columns:2fr 1fr;}
-}
-input{width:100%;padding:10px;border-radius:12px;border:1px solid #ccc;}
-.list{background:white;padding:12px;border-radius:14px;margin:8px 0;}
-
-/* Logo in header */
-.logo-small {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    margin-right: 10px;
-    object-fit: contain;
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    overflow-x: hidden;
 }
 
-/* Bill print style */
-.bill-print {
-    font-family: 'Courier New', monospace;
-    width: 80mm;
-    padding: 15px;
-    margin: 0 auto;
-    font-size: 12px;
-    line-height: 1.3;
+/* Modern glass morphism */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    padding: 20px;
+    box-shadow: var(--shadow);
 }
-.bill-header {
-    text-align: center;
-    margin-bottom: 10px;
-    border-bottom: 1px dashed #000;
-    padding-bottom: 10px;
-}
-.bill-logo {
-    width: 40px;
-    height: 40px;
-    margin: 0 auto 5px;
-    display: block;
-}
-.bill-restaurant {
-    font-size: 16px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-.bill-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 5px 0;
-}
-.bill-info {
-    display: flex;
-    justify-content: space-between;
-    margin: 8px 0;
-    font-size: 10px;
-}
-.bill-divider {
-    border-top: 1px dashed #000;
-    margin: 8px 0;
-}
-.bill-table {
+
+/* Header with glass effect */
+header {
+    position: fixed;
+    top: 0;
     width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-    margin: 10px 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: var(--shadow-light);
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.bill-table th {
-    text-align: left;
-    padding: 4px 0;
-    border-bottom: 2px solid #000;
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
-.bill-table td {
-    padding: 3px 0;
-    border-bottom: 1px dashed #ccc;
+
+.logo-small {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: contain;
+    border: 2px solid var(--primary);
+    padding: 3px;
 }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.bill-total {
-    border-top: 2px solid #000;
-    margin-top: 10px;
-    padding-top: 10px;
-    font-weight: bold;
-    font-size: 13px;
+
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.3px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.header-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.header-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Main content area */
+main {
+    padding: 90px 16px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    gap: 20px;
+}
+
+@media(min-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(min-width: 1024px) {
+    .grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* Modern tabbar */
+.tabbar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 75px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 100;
+    padding: 0 10px;
+}
+
+.tabbar button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    transition: all 0.2s ease;
+    border-radius: 0;
+    padding: 10px 5px;
+}
+
+.tabbar button i {
+    font-size: 20px;
+}
+
+.tabbar button.active {
+    color: var(--primary);
+    position: relative;
+}
+
+.tabbar button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+/* Modern buttons */
+button {
+    border: none;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(123, 31, 162, 0.2);
+}
+
+.primary:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    box-shadow: 0 6px 20px rgba(123, 31, 162, 0.3);
+}
+
+.secondary {
+    background: var(--surface);
+    color: var(--primary);
+    border: 1px solid var(--border);
+}
+
+.secondary:hover {
+    background: rgba(123, 31, 162, 0.05);
+}
+
+.danger {
+    background: var(--danger);
+    color: white;
+}
+
+.danger:hover {
+    background: #d32f2f;
+}
+
+/* Modern inputs */
+input, select {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 15px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    margin-bottom: 15px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(123, 31, 162, 0.1);
+}
+
+/* Sections */
+section {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow-light);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+section:hover {
+    box-shadow: var(--shadow);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Menu grid */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.menu-item {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 18px 15px;
+    text-align: center;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.menu-item-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Cart items */
+.cart-container {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.cart-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
 }
-.bill-footer {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 9px;
-    border-top: 1px dashed #000;
-    padding-top: 8px;
+
+.cart-item:last-child {
+    border-bottom: none;
 }
-.bill-note {
-    font-size: 8px;
-    color: #666;
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.cart-item-meta {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cart-item-qty {
+    font-weight: 700;
+    min-width: 24px;
     text-align: center;
-    margin-top: 10px;
+    color: var(--primary);
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.qty-btn:active {
+    background: var(--primary);
+    color: white;
+}
+
+.cart-item-remove {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 22px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.cart-item-remove:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+/* Order type buttons */
+.order-type-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.order-type-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-type-btn i {
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+.order-type-btn.active {
+    border-color: var(--primary);
+    background: rgba(123, 31, 162, 0.05);
+    color: var(--primary);
+}
+
+.order-type-btn.active i {
+    color: var(--primary);
+}
+
+/* Bill preview */
+.bill-preview-container {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.bill-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.bill-actions button {
+    flex: 1;
 }
 
 /* Sales filters */
 .sales-filters {
     display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin: 20px 0;
+    overflow-x: auto;
+    padding-bottom: 5px;
 }
+
 .filter-btn {
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    background: white;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    white-space: nowrap;
+    font-weight: 500;
 }
+
 .filter-btn.active {
-    background: var(--p);
+    background: var(--primary);
     color: white;
-    border-color: var(--p);
+    border-color: var(--primary);
+}
+
+/* Bill list */
+.bill-list {
+    margin-top: 20px;
+}
+
+.bill-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--primary);
+    box-shadow: var(--shadow-light);
+    transition: all 0.2s ease;
+}
+
+.bill-card:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow);
+}
+
+.bill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.bill-id {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.bill-total {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.bill-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.bill-items {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+}
+
+/* Settings */
+.settings-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.setting-group {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.setting-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+}
+
+.logo-upload-area:hover {
+    border-color: var(--primary);
+}
+
+.logo-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    object-fit: contain;
+    margin: 0 auto 15px;
+    border: 2px solid var(--border);
+    padding: 5px;
+}
+
+/* Menu management */
+.menu-editor {
+    margin: 20px 0;
+}
+
+.menu-editor-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--surface);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+}
+
+.menu-editor-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.editor-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.add-item-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.add-item-form input {
+    margin-bottom: 0;
 }
 
 /* Password modal */
@@ -165,214 +627,407 @@ input{width:100%;padding:10px;border-radius:12px;border:1px solid #ccc;}
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
     z-index: 1000;
     display: none;
     align-items: center;
     justify-content: center;
 }
+
 .password-modal.active {
     display: flex;
 }
+
 .password-content {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
+    background: var(--surface);
+    padding: 30px;
+    border-radius: 24px;
     width: 90%;
-    max-width: 300px;
+    max-width: 400px;
     text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
-/* Order type buttons */
-.order-type-buttons {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
+.password-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--primary);
 }
-.order-type-btn {
-    flex: 1;
-    min-width: calc(50% - 8px);
-    padding: 10px;
-    border: 2px solid #ddd;
-    background: white;
-    border-radius: 10px;
+
+.password-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+/* Print styles */
+.bill-print {
+    font-family: 'Courier New', monospace;
+    width: 80mm;
+    padding: 15px;
+    margin: 0 auto;
     font-size: 12px;
-}
-.order-type-btn.active {
-    border-color: var(--p);
-    background: rgba(106, 27, 154, 0.1);
-}
-
-/* Bill items preview */
-.bill-items-preview {
-    font-size: 11px;
-    color: #666;
-    margin-top: 5px;
+    line-height: 1.3;
+    background: white;
+    border-radius: 0;
 }
 
-/* Cart items */
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
+.bill-header {
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 10px;
 }
-.cart-item:last-child {
-    border-bottom: none;
+
+.bill-logo {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 5px;
+    display: block;
 }
-.cart-item-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.cart-item-qty {
+
+.bill-restaurant {
+    font-size: 16px;
     font-weight: bold;
-    min-width: 20px;
-    text-align: center;
-}
-.cart-item-remove {
-    background: #ff4757;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
+    letter-spacing: 1px;
 }
 
-/* Menu management */
-.menu-item {
+.bill-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.bill-info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-.menu-item:last-child {
-    border-bottom: none;
-}
-.menu-item-controls {
-    display: flex;
-    gap: 5px;
-}
-.menu-item-btn {
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: white;
+    margin: 8px 0;
+    font-size: 10px;
 }
 
-/* Delete button in preview */
-.delete-bill-btn {
-    background: #ff4757;
-    color: white;
+.bill-divider {
+    border-top: 1px dashed #000;
+    margin: 8px 0;
+}
+
+.bill-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin: 10px 0;
+}
+
+.bill-table th {
+    text-align: left;
+    padding: 4px 0;
+    border-bottom: 2px solid #000;
+}
+
+.bill-table td {
+    padding: 3px 0;
+    border-bottom: 1px dashed #ccc;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.bill-total {
+    border-top: 2px solid #000;
+    margin-top: 10px;
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.bill-footer {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 9px;
+    border-top: 1px dashed #000;
+    padding-top: 8px;
+}
+
+.bill-note {
+    font-size: 8px;
+    color: #666;
+    text-align: center;
     margin-top: 10px;
 }
+
+/* Empty states */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+    color: var(--border);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(123, 31, 162, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(123, 31, 162, 0.5);
+}
+
+/* Icons */
+.icon {
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+}
+
+.icon-home:before { content: "🏠"; }
+.icon-bills:before { content: "🧾"; }
+.icon-sales:before { content: "📊"; }
+.icon-settings:before { content: "⚙️"; }
+.icon-add:before { content: "➕"; }
+.icon-remove:before { content: "➖"; }
+.icon-print:before { content: "🖨️"; }
+.icon-save:before { content: "💾"; }
+.icon-back:before { content: "↩️"; }
+.icon-delete:before { content: "🗑️"; }
+.icon-dinein:before { content: "🍽️"; }
+.icon-takeaway:before { content: "🥡"; }
+.icon-swiggy:before { content: "🛵"; }
+.icon-zomato:before { content: "🍕"; }
 </style>
 </head>
 
 <body>
-<header>
-    <img id="headerLogo" class="logo-small hidden" src="" alt="Logo">
-    The House of Biryani's
+<header class="glass">
+    <div class="logo-container">
+        <img id="headerLogo" class="logo-small hidden" src="" alt="Logo">
+        <div class="header-title">The House of Biryani's</div>
+    </div>
+    <div class="header-actions">
+        <button class="header-btn" onclick="printBill()" title="Print">🖨️</button>
+        <button class="header-btn" onclick="nav(document.querySelector('.tabbar button:nth-child(4)'), 'settings')" title="Settings">⚙️</button>
+    </div>
 </header>
 
-<main class="grid">
-
+<main class="grid fade-in">
 <!-- HOME -->
 <section id="home">
-<h3>New Bill</h3>
-
-<div class="order-type-buttons">
-    <button class="order-type-btn active" onclick="setOrderType('Dine In')">Dine In</button>
-    <button class="order-type-btn" onclick="setOrderType('Swiggy')">Swiggy</button>
-    <button class="order-type-btn" onclick="setOrderType('Zomato')">Zomato</button>
-    <button class="order-type-btn" onclick="setOrderType('Take Away')">Take Away</button>
-</div>
-
-<div id="menu"></div>
-
-<h3>Cart</h3>
-<div id="cart" class="glass" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;"></div>
-
-<h3>Total ₹ <span id="total">0</span></h3>
-<button class="primary" onclick="previewBill()">Preview</button>
+    <h2 style="margin-top: 0; color: var(--primary);">New Order</h2>
+    
+    <div class="order-type-container">
+        <button class="order-type-btn active" onclick="setOrderType('Dine In')">
+            <span class="icon icon-dinein"></span>
+            <span>Dine In</span>
+        </button>
+        <button class="order-type-btn" onclick="setOrderType('Take Away')">
+            <span class="icon icon-takeaway"></span>
+            <span>Take Away</span>
+        </button>
+        <button class="order-type-btn" onclick="setOrderType('Swiggy')">
+            <span class="icon icon-swiggy"></span>
+            <span>Swiggy</span>
+        </button>
+        <button class="order-type-btn" onclick="setOrderType('Zomato')">
+            <span class="icon icon-zomato"></span>
+            <span>Zomato</span>
+        </button>
+    </div>
+    
+    <h3>Menu</h3>
+    <div id="menu" class="menu-grid"></div>
+    
+    <h3>Order Summary</h3>
+    <div id="cart" class="cart-container"></div>
+    
+    <div class="glass" style="padding: 20px; margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-bottom: 15px;">
+            <span>Total Amount:</span>
+            <span style="font-weight: 700; color: var(--primary);">₹ <span id="total">0</span></span>
+        </div>
+        <button class="primary" onclick="previewBill()">
+            <span class="icon icon-bills"></span>
+            Preview Bill
+        </button>
+    </div>
 </section>
 
 <!-- PREVIEW -->
-<section id="preview" class="hidden glass">
-<h3>Bill Preview</h3>
-<div id="billHTML"></div>
-<button class="primary" onclick="saveBill()">Save</button>
-<button onclick="printBill()">Print</button>
-<button class="delete-bill-btn hidden" onclick="deleteCurrentBill()" id="deleteBillBtn">Delete Bill</button>
-<button onclick="closePreview()" style="margin-top:10px;background:#666;color:white;">Back</button>
+<section id="preview" class="hidden">
+    <h2 style="margin-top: 0; color: var(--primary);">Bill Preview</h2>
+    <div id="billHTML" class="bill-preview-container"></div>
+    
+    <div class="bill-actions">
+        <button class="primary" onclick="saveBill()">
+            <span class="icon icon-save"></span>
+            Save Bill
+        </button>
+        <button class="secondary" onclick="printBill()">
+            <span class="icon icon-print"></span>
+            Print
+        </button>
+    </div>
+    
+    <button class="danger" onclick="deleteCurrentBill()" id="deleteBillBtn" style="margin-top: 15px; display: none;">
+        <span class="icon icon-delete"></span>
+        Delete Bill
+    </button>
+    
+    <button onclick="closePreview()" class="secondary" style="margin-top: 15px;">
+        <span class="icon icon-back"></span>
+        Back to Home
+    </button>
 </section>
 
 <!-- BILLS -->
 <section id="bills" class="hidden">
-<h3>Bills</h3>
-<div id="billList"></div>
+    <h2 style="margin-top: 0; color: var(--primary);">Bills History</h2>
+    <div id="billList" class="bill-list"></div>
+    
+    <div id="emptyBills" class="empty-state hidden">
+        <div class="empty-icon">🧾</div>
+        <h3>No Bills Yet</h3>
+        <p>Your saved bills will appear here</p>
+    </div>
 </section>
 
 <!-- SALES -->
 <section id="sales" class="hidden">
-<h3>Sales Summary</h3>
-<div class="sales-filters">
-    <button class="filter-btn active" onclick="loadSales('today')">Today</button>
-    <button class="filter-btn" onclick="loadSales('week')">This Week</button>
-    <button class="filter-btn" onclick="loadSales('month')">This Month</button>
-</div>
-<div id="salesData" class="glass"></div>
+    <h2 style="margin-top: 0; color: var(--primary);">Sales Summary</h2>
+    
+    <div class="sales-filters">
+        <button class="filter-btn active" onclick="loadSales('today')">Today</button>
+        <button class="filter-btn" onclick="loadSales('week')">This Week</button>
+        <button class="filter-btn" onclick="loadSales('month')">This Month</button>
+        <button class="filter-btn" onclick="loadSales('all')">All Time</button>
+    </div>
+    
+    <div id="salesData" class="glass" style="padding: 25px;"></div>
 </section>
 
 <!-- SETTINGS -->
 <section id="settings" class="hidden">
-<h3>Settings</h3>
-
-<div style="text-align:center;margin-bottom:15px;">
-    <img id="settingsLogo" src="" alt="Logo" style="width:60px;height:60px;border-radius:8px;margin:0 auto 10px;display:block;border:2px dashed #ccc;">
-    <input type="file" id="logoUpload" accept="image/*" style="display:none;">
-    <button onclick="uploadLogo()" style="padding:8px 15px;font-size:12px;">Upload Logo</button>
-</div>
-
-<input id="resName" placeholder="Restaurant Name">
-<input id="resAddr" placeholder="Address">
-<input id="gstNo" placeholder="GST No">
-<input id="cgstRate" placeholder="CGST %" type="number" value="2.5">
-<input id="sgstRate" placeholder="SGST %" type="number" value="2.5">
-
-<h4 style="margin-top: 20px;">Menu Management</h4>
-<div id="menuEditor" class="glass" style="margin-bottom: 15px; max-height: 300px; overflow-y: auto;"></div>
-<div style="display: flex; gap: 10px; margin-bottom: 20px;">
-    <input id="newItemName" placeholder="Item Name" style="flex: 2;">
-    <input id="newItemPrice" placeholder="Price" type="number" style="flex: 1;">
-    <button onclick="addMenuItem()" style="flex: 1;">Add</button>
-</div>
-
-<button onclick="saveSettings()" class="primary">Save Settings</button>
-<button onclick="changePassword()" style="margin-top:10px;background:#666;color:white;width:100%;">Change Password</button>
+    <h2 style="margin-top: 0; color: var(--primary);">Settings</h2>
+    
+    <div class="settings-container">
+        <div class="setting-group">
+            <div class="setting-title">
+                <span>🏢</span> Restaurant Details
+            </div>
+            
+            <div class="logo-upload-area" onclick="uploadLogo()">
+                <img id="settingsLogo" src="" alt="Logo" class="logo-preview">
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Tap to upload restaurant logo</p>
+                <input type="file" id="logoUpload" accept="image/*" style="display:none;">
+                <button class="secondary" style="width: auto;">Upload Logo</button>
+            </div>
+            
+            <input id="resName" placeholder="Restaurant Name">
+            <input id="resAddr" placeholder="Address">
+            <input id="gstNo" placeholder="GST No">
+        </div>
+        
+        <div class="setting-group">
+            <div class="setting-title">
+                <span>💰</span> Tax Settings
+            </div>
+            <input id="cgstRate" placeholder="CGST %" type="number" value="2.5">
+            <input id="sgstRate" placeholder="SGST %" type="number" value="2.5">
+        </div>
+        
+        <div class="setting-group">
+            <div class="setting-title">
+                <span>📋</span> Menu Management
+            </div>
+            
+            <div id="menuEditor" class="menu-editor"></div>
+            
+            <div class="add-item-form">
+                <input id="newItemName" placeholder="Item Name" style="flex: 2;">
+                <input id="newItemPrice" placeholder="Price" type="number" style="flex: 1;">
+                <button onclick="addMenuItem()" class="primary" style="flex: 1; padding: 16px;">
+                    <span class="icon icon-add"></span>
+                    Add
+                </button>
+            </div>
+        </div>
+        
+        <button onclick="saveSettings()" class="primary" style="margin-top: 20px;">
+            <span class="icon icon-save"></span>
+            Save All Settings
+        </button>
+        
+        <button onclick="changePassword()" class="secondary" style="margin-top: 15px;">
+            <span class="icon">🔒</span>
+            Change Password
+        </button>
+    </div>
 </section>
-
 </main>
 
-<div class="tabbar">
-<button class="active" onclick="nav(this,'home')">Home</button>
-<button onclick="nav(this,'bills');loadBills()">Bills</button>
-<button onclick="nav(this,'sales');loadSales('today')">Sales</button>
-<button onclick="openSettings(this)">Settings</button>
+<div class="tabbar glass">
+<button class="active" onclick="nav(this,'home')">
+    <span class="icon icon-home"></span>
+    Home
+</button>
+<button onclick="nav(this,'bills');loadBills()">
+    <span class="icon icon-bills"></span>
+    Bills
+</button>
+<button onclick="nav(this,'sales');loadSales('today')">
+    <span class="icon icon-sales"></span>
+    Sales
+</button>
+<button onclick="openSettings(this)">
+    <span class="icon icon-settings"></span>
+    Settings
+</button>
 </div>
 
 <!-- Password Modal -->
 <div class="password-modal" id="passwordModal">
     <div class="password-content">
-        <h3 style="margin-bottom:15px;">Enter Password</h3>
-        <input type="password" id="passwordInput" placeholder="Password" style="width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:8px;">
-        <button onclick="checkPassword()" class="primary" style="margin-top:10px;">Unlock Settings</button>
-        <button onclick="closePasswordModal()" style="margin-top:10px;background:#666;color:white;width:100%;padding:10px;">Cancel</button>
-        <p style="font-size:12px;color:#666;margin-top:15px;">Default password: 1234</p>
+        <div class="password-title">🔒 Settings Locked</div>
+        <div class="password-subtitle">Enter password to access settings</div>
+        
+        <input type="password" id="passwordInput" placeholder="Enter password" style="margin-bottom: 20px;">
+        
+        <button onclick="checkPassword()" class="primary" style="margin-bottom: 10px;">
+            Unlock Settings
+        </button>
+        
+        <button onclick="closePasswordModal()" class="secondary">
+            Cancel
+        </button>
+        
+        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 20px;">
+            Default password: 1234
+        </p>
     </div>
 </div>
 
@@ -381,7 +1036,7 @@ input{width:100%;padding:10px;border-radius:12px;border:1px solid #ccc;}
 let cart = [];
 let db;
 let currentOrderType = "Dine In";
-let currentBillKey = null; // For deleting bills
+let currentBillKey = null;
 
 // Invoice number counters
 const invoiceCounters = {
@@ -403,11 +1058,9 @@ function generateInvoiceNumber(orderType) {
     const prefix = prefixes[orderType];
     let counter = invoiceCounters[orderType];
     
-    // Format number with leading zeros (5 digits)
     const formattedNum = counter.toString().padStart(5, '0');
     invoiceCounters[orderType]++;
     
-    // Save to localStorage
     localStorage.setItem(`${prefix}_counter`, invoiceCounters[orderType]);
     
     return `${prefix}-${formattedNum}`;
@@ -435,7 +1088,7 @@ if(!localStorage.sgstRate) localStorage.sgstRate = "2.5";
 if(!localStorage.resName) localStorage.resName = "The House of Biryani's";
 
 /* ---------- DB ---------- */
-let r = indexedDB.open("POS_DB", 2); // Version 2 for upgrades
+let r = indexedDB.open("POS_DB", 2);
 
 r.onupgradeneeded = e => {
     db = e.target.result;
@@ -541,13 +1194,21 @@ function loadLogo(){
 function loadMenu(){
     menu.innerHTML = "";
     JSON.parse(localStorage.menu).forEach(item => {
-        let btn = document.createElement("button");
-        btn.textContent = `${item.name} ₹${item.price}`;
-        btn.style = "background:white;border:1px solid #ddd;margin:5px 0;text-align:left;";
-        btn.onclick = () => {
+        let menuItem = document.createElement("div");
+        menuItem.className = "menu-item";
+        menuItem.innerHTML = `
+            <div class="menu-item-name">${item.name}</div>
+            <div class="menu-item-price">₹${item.price}</div>
+        `;
+        menuItem.onclick = () => {
             addToCart(item);
+            // Add visual feedback
+            menuItem.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                menuItem.style.transform = "";
+            }, 200);
         };
-        menu.appendChild(btn);
+        menu.appendChild(menuItem);
     });
 }
 
@@ -592,23 +1253,29 @@ function renderCart() {
     cartDiv.innerHTML = '';
     
     if (cart.length === 0) {
-        cartDiv.innerHTML = '<div style="text-align:center;color:#666;padding:10px;">Cart is empty</div>';
+        cartDiv.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🛒</div>
+                <h3>Your cart is empty</h3>
+                <p>Add items from the menu above</p>
+            </div>
+        `;
         return;
     }
     
     cart.forEach(item => {
         const cartItem = document.createElement('div');
-        cartItem.className = 'cart-item';
+        cartItem.className = 'cart-item fade-in';
         cartItem.innerHTML = `
-            <div>
-                <strong>${item.name}</strong><br>
-                <small>₹${item.price} × ${item.quantity}</small>
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-meta">₹${item.price} each</div>
             </div>
             <div class="cart-item-controls">
-                <button onclick="updateQuantity('${item.name}', -1)" style="background:#ddd;padding:4px 8px;border-radius:6px;">-</button>
+                <button class="qty-btn" onclick="updateQuantity('${item.name}', -1)">-</button>
                 <span class="cart-item-qty">${item.quantity}</span>
-                <button onclick="updateQuantity('${item.name}', 1)" style="background:#ddd;padding:4px 8px;border-radius:6px;">+</button>
-                <button onclick="removeFromCart('${item.name}')" class="cart-item-remove">×</button>
+                <button class="qty-btn" onclick="updateQuantity('${item.name}', 1)">+</button>
+                <button class="cart-item-remove" onclick="removeFromCart('${item.name}')">×</button>
             </div>
         `;
         cartDiv.appendChild(cartItem);
@@ -617,7 +1284,7 @@ function renderCart() {
 
 function calc(){
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    document.getElementById('total').textContent = total;
+    document.getElementById('total').textContent = total.toFixed(2);
     return total;
 }
 
@@ -717,12 +1384,16 @@ function previewBill(){
     
     document.getElementById("billHTML").innerHTML = billHTML;
     document.getElementById("preview").classList.remove("hidden");
-    document.getElementById("deleteBillBtn").classList.add("hidden");
+    document.getElementById("deleteBillBtn").style.display = "none";
     currentBillKey = null;
+    
+    // Navigate to preview
+    nav(document.querySelector('.tabbar button'), 'preview');
 }
 
 function closePreview(){
     document.getElementById("preview").classList.add("hidden");
+    nav(document.querySelector('.tabbar button'), 'home');
 }
 
 function saveBill(){
@@ -776,9 +1447,6 @@ function printBill(){
     // Restore UI
     document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
     document.getElementById("preview").classList.remove("hidden");
-    document.querySelectorAll(".tabbar button").forEach(x => x.classList.remove("active"));
-    document.querySelector('.tabbar button:nth-child(1)').classList.add("active");
-    nav(document.querySelector('.tabbar button:nth-child(1)'), 'home');
 }
 
 /* ---------- BILLS HISTORY ---------- */
@@ -791,28 +1459,37 @@ function loadBills(){
     request.onsuccess = function(e){
         let bills = e.target.result;
         if(bills.length === 0){
-            billList.innerHTML = '<div class="glass" style="text-align:center;padding:20px;color:#666;">No bills found</div>';
+            document.getElementById('emptyBills').classList.remove('hidden');
             return;
         }
+        
+        document.getElementById('emptyBills').classList.add('hidden');
         
         // Sort by date (newest first)
         bills.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         bills.forEach((bill, index) => {
             let date = new Date(bill.date);
-            let itemsList = bill.items.slice(0, 2).map(i => i.name).join(', ');
-            if(bill.items.length > 2) itemsList += "...";
+            let itemsList = bill.items.slice(0, 3).map(i => `${i.quantity}x ${i.name}`).join(', ');
+            if(bill.items.length > 3) itemsList += ` +${bill.items.length - 3} more`;
             
             billList.innerHTML += `
-                <div class="list" onclick="viewBill(${index}, '${bill.id}')">
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="font-weight:bold;">${bill.invoiceNumber}</span>
-                        <span style="color:var(--p);font-weight:bold;">₹${bill.total.toFixed(2)}</span>
+                <div class="bill-card fade-in" onclick="viewBill(${index}, '${bill.id}')">
+                    <div class="bill-header">
+                        <span class="bill-id">${bill.invoiceNumber}</span>
+                        <span class="bill-total" style="color: var(--primary);">₹${bill.total.toFixed(2)}</span>
                     </div>
-                    <div style="font-size:12px;color:#666;">
-                        ${date.toLocaleDateString()} • ${date.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+                    <div class="bill-details">
+                        <span>${date.toLocaleDateString()}</span>
+                        <span>${date.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
                     </div>
-                    <div style="font-size:11px;color:#888;">${bill.orderType} • ${bill.items.length} items</div>
+                    <div class="bill-details">
+                        <span>${bill.orderType}</span>
+                        <span>${bill.items.length} items</span>
+                    </div>
+                    <div class="bill-items">
+                        ${itemsList}
+                    </div>
                 </div>
             `;
         });
@@ -906,7 +1583,8 @@ function viewBill(index, id){
             
             document.getElementById("billHTML").innerHTML = billHTML;
             document.getElementById("preview").classList.remove("hidden");
-            document.getElementById("deleteBillBtn").classList.remove("hidden");
+            document.getElementById("deleteBillBtn").style.display = "block";
+            nav(document.querySelector('.tabbar button'), 'preview');
         }
     };
 }
@@ -962,6 +1640,9 @@ function loadSales(filter){
                 let monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
                 filteredBills = bills.filter(b => new Date(b.date) >= monthAgo);
                 break;
+            case "all":
+                // Use all bills
+                break;
         }
         
         // Calculate sales by order type
@@ -974,26 +1655,59 @@ function loadSales(filter){
         
         let totalRevenue = 0;
         let totalOrders = filteredBills.length;
+        let totalItems = 0;
         
         filteredBills.forEach(bill => {
             salesByType[bill.orderType] = (salesByType[bill.orderType] || 0) + bill.total;
             totalRevenue += bill.total;
+            totalItems += bill.items.reduce((sum, item) => sum + item.quantity, 0);
         });
+        
+        // Calculate average order value
+        const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
         
         // Display sales data
         let html = `
-            <div style="font-weight:bold;margin-bottom:10px;">Total Revenue: ₹${totalRevenue.toFixed(2)}</div>
-            <div style="margin-bottom:10px;">Total Orders: ${totalOrders}</div>
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 5px;">
+                    ₹${totalRevenue.toFixed(2)}
+                </div>
+                <div style="color: var(--text-secondary); font-size: 14px;">
+                    Total Revenue • ${totalOrders} Orders
+                </div>
+            </div>
             
-            <div style="font-weight:bold;margin-bottom:10px;margin-top:15px;">Breakdown by Order Type:</div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 20px; font-weight: 700; color: var(--primary);">${totalItems}</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Items Sold</div>
+                </div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 20px; font-weight: 700; color: var(--primary);">₹${avgOrderValue.toFixed(2)}</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Avg. Order</div>
+                </div>
+            </div>
+            
+            <div style="font-weight: 600; margin-bottom: 15px; color: var(--primary);">
+                Revenue by Order Type:
+            </div>
         `;
         
         for(let type in salesByType){
             if(salesByType[type] > 0){
+                const percentage = totalRevenue > 0 ? (salesByType[type] / totalRevenue * 100).toFixed(1) : 0;
                 html += `
-                    <div style="display:flex;justify-content:space-between;margin:5px 0;padding:5px;background:#f8f9fa;border-radius:5px;">
-                        <span>${type}:</span>
-                        <span style="font-weight:bold;">₹${salesByType[type].toFixed(2)}</span>
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>${type}</span>
+                            <span style="font-weight: 600;">₹${salesByType[type].toFixed(2)}</span>
+                        </div>
+                        <div style="height: 6px; background: rgba(123, 31, 162, 0.1); border-radius: 3px; overflow: hidden;">
+                            <div style="height: 100%; width: ${percentage}%; background: var(--primary); border-radius: 3px;"></div>
+                        </div>
+                        <div style="text-align: right; font-size: 12px; color: var(--text-secondary); margin-top: 3px;">
+                            ${percentage}%
+                        </div>
                     </div>
                 `;
             }
@@ -1018,7 +1732,17 @@ function saveSettings(){
     localStorage.gstNo = document.getElementById("gstNo").value;
     localStorage.cgstRate = document.getElementById("cgstRate").value;
     localStorage.sgstRate = document.getElementById("sgstRate").value;
-    alert("Settings saved!");
+    
+    // Show success feedback
+    const saveBtn = document.querySelector('#settings .primary');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<span>✓</span> Saved Successfully';
+    saveBtn.style.background = 'var(--success)';
+    
+    setTimeout(() => {
+        saveBtn.innerHTML = originalText;
+        saveBtn.style.background = '';
+    }, 2000);
 }
 
 function loadMenuEditor() {
@@ -1027,17 +1751,27 @@ function loadMenuEditor() {
     
     menuEditor.innerHTML = '';
     
+    if (menu.length === 0) {
+        menuEditor.innerHTML = `
+            <div class="empty-state" style="padding: 20px 0;">
+                <div class="empty-icon">📋</div>
+                <p>No menu items yet. Add your first item below.</p>
+            </div>
+        `;
+        return;
+    }
+    
     menu.forEach((item, index) => {
         const menuItem = document.createElement('div');
-        menuItem.className = 'menu-item';
+        menuItem.className = 'menu-editor-item fade-in';
         menuItem.innerHTML = `
             <div>
                 <strong>${item.name}</strong><br>
-                <small>₹${item.price}</small>
+                <small style="color: var(--primary);">₹${item.price}</small>
             </div>
-            <div class="menu-item-controls">
-                <button onclick="editMenuItem(${index})" class="menu-item-btn">Edit</button>
-                <button onclick="deleteMenuItem(${index})" class="menu-item-btn" style="background:#ff4757;color:white;">Delete</button>
+            <div class="menu-editor-controls">
+                <button onclick="editMenuItem(${index})" class="editor-btn secondary" style="padding: 8px 12px;">Edit</button>
+                <button onclick="deleteMenuItem(${index})" class="editor-btn danger" style="padding: 8px 12px;">Delete</button>
             </div>
         `;
         menuEditor.appendChild(menuItem);
@@ -1065,7 +1799,9 @@ function addMenuItem() {
     
     loadMenu();
     loadMenuEditor();
-    alert('Menu item added successfully!');
+    
+    // Focus back to name input
+    nameInput.focus();
 }
 
 function editMenuItem(index) {
@@ -1085,7 +1821,6 @@ function editMenuItem(index) {
         
         loadMenu();
         loadMenuEditor();
-        alert('Menu item updated successfully!');
     }
 }
 
@@ -1098,8 +1833,16 @@ function deleteMenuItem(index) {
     
     loadMenu();
     loadMenuEditor();
-    alert('Menu item deleted successfully!');
 }
+
+// Initialize on load
+window.onload = function() {
+    // Add animation to main content
+    document.querySelector('main').classList.add('fade-in');
+    
+    // Load sales data for today by default
+    loadSales('today');
+};
 </script>
 </body>
 </html>
