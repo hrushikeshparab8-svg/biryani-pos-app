@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The House of Biryani’s POS</title>
+
+<style>
+body{
+ margin:0;
+ font-family:-apple-system;
+ background:#f4f4f8;
+}
+:root{--p:#6a1b9a;}
+
+.hidden{display:none;}
+.glass{
+ background:rgba(255,255,255,.75);
+ backdrop-filter:blur(18px);
+ border-radius:16px;
+ padding:12px;
+ box-shadow:0 6px 18px rgba(0,0,0,.1);
+}
+
+header{
+ position:fixed;top:0;width:100%;height:55px;
+ background:white;display:flex;align-items:center;
+ justify-content:center;font-weight:600;
+ border-bottom:1px solid #ddd;z-index:9;
+}
+
+main{padding:65px 10px 75px;}
+
+button{
+ border:none;border-radius:14px;padding:12px;font-size:16px;
+}
+.primary{background:var(--p);color:white;width:100%;}
+.tabbar{
+ position:fixed;bottom:0;width:100%;height:60px;
+ background:white;display:flex;border-top:1px solid #ddd;
+}
+.tabbar button{flex:1;background:none;}
+.tabbar .active{color:var(--p);font-weight:600;}
+
+.grid{display:grid;gap:10px;}
+@media(min-width:768px){
+ .grid{grid-template-columns:2fr 1fr;}
+}
+input{width:100%;padding:10px;border-radius:12px;border:1px solid #ccc;}
+.list{background:white;padding:12px;border-radius:14px;margin:8px 0;}
+</style>
+</head>
+
+<body>
+<header>The House of Biryani’s</header>
+
+<main class="grid">
+
+<!-- HOME -->
+<section id="home">
+<h3>New Bill</h3>
+
+<select id="otype">
+<option>Dine In</option>
+<option>Swiggy</option>
+<option>Zomato</option>
+<option>Take Away</option>
+</select>
+
+<select id="table">
+<option>Table 1</option>
+<option>Table 2</option>
+<option>Table 3</option>
+</select>
+
+<div id="menu"></div>
+
+<h3>Total ₹ <span id="total">0</span></h3>
+<button class="primary" onclick="previewBill()">Preview</button>
+</section>
+
+<!-- PREVIEW -->
+<section id="preview" class="hidden glass">
+<h3>Bill Preview</h3>
+<div id="billHTML"></div>
+<button class="primary" onclick="saveBill()">Save</button>
+<button onclick="printBill()">Print</button>
+</section>
+
+<!-- BILLS -->
+<section id="bills" class="hidden">
+<h3>Bills</h3>
+<div id="billList"></div>
+</section>
+
+<!-- SALES -->
+<section id="sales" class="hidden">
+<h3>Sales Summary</h3>
+<div id="salesData" class="glass"></div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="hidden">
+<h3>Settings</h3>
+
+<input id="resName" placeholder="Restaurant Name">
+<input id="resAddr" placeholder="Address">
+<input id="gstNo" placeholder="GST No">
+<input id="gstRate" placeholder="GST %">
+
+<button onclick="saveSettings()">Save Settings</button>
+</section>
+
+</main>
+
+<div class="tabbar">
+<button class="active" onclick="nav(this,'home')">Home</button>
+<button onclick="nav(this,'bills');loadBills()">Bills</button>
+<button onclick="nav(this,'sales');loadSales()">Sales</button>
+<button onclick="openSettings(this)">Settings</button>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+let cart=[],db;
+if(!localStorage.menu){
+ localStorage.menu=JSON.stringify([
+ {name:"Chicken Biryani",price:180},
+ {name:"Veg Biryani",price:140},
+ {name:"Fry Piece",price:90}
+ ]);
+}
+if(!localStorage.pass) localStorage.pass="1234";
+
+/* ---------- DB ---------- */
+let r=indexedDB.open("POS_DB",1);
+r.onupgradeneeded=e=>e.target.result.createObjectStore("bills",{autoIncrement:true});
+r.onsuccess=e=>db=e.target.result;
+
+/* ---------- NAV ---------- */
+function nav(b,id){
+ document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".tabbar button").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");
+}
+function openSettings(b){
+ if(prompt("Password")===localStorage.pass) nav(b,'settings');
+ else alert("Wrong password");
+}
+
+/* ---------- MENU ---------- */
+function loadMenu(){
+ menu.innerHTML="";
+ JSON.parse(localStorage.menu).forEach(i=>{
+  let btn=document.createElement("button");
+  btn.textContent=i.name+" ₹"+i.price;
+  btn.onclick=()=>{cart.push(i);calc();};
+  menu.appendChild(btn);
+ });
+}
+loadMenu();
+
+function calc(){
+ total.textContent=cart.reduce((s,i)=>s+i.price,0);
+}
+
+/* ---------- BILL ---------- */
+function previewBill(){
+ let gst=+localStorage.gstRate||0;
+ let subtotal=+total.textContent;
+ let gstAmt=subtotal*gst/100;
+ let grand=subtotal+gstAmt;
+ billHTML.innerHTML=`
+ <b>${localStorage.resName||""}</b><br>
+ ${localStorage.resAddr||""}<hr>
+ ${cart.map(i=>i.name+" ₹"+i.price).join("<br>")}
+ <hr>Subtotal ₹${subtotal}
+ <br>GST ${gst}% ₹${gstAmt.toFixed(2)}
+ <br><b>Total ₹${grand.toFixed(2)}</b>
+ `;
+ preview.classList.remove("hidden");
+}
+function saveBill(){
+ db.transaction("bills","readwrite")
+ .objectStore("bills")
+ .add({cart,total:total.textContent,date:new Date()});
+ cart=[];total.textContent=0;
+ preview.classList.add("hidden");
+}
+
+/* ---------- BILLS ---------- */
+function loadBills(){
+ billList.innerHTML="";
+ db.transaction("bills").objectStore("bills")
+ .openCursor().onsuccess=e=>{
+  let c=e.target.result;
+  if(c){
+   billList.innerHTML+=`<div class="list" onclick="reprint(${c.key})">
+   ${new Date(c.value.date).toLocaleString()} ₹${c.value.total}</div>`;
+   c.continue();
+  }
+ };
+}
+function reprint(k){
+ alert("Use Preview → Print");
+}
+
+/* ---------- SALES ---------- */
+function loadSales(){
+ let s={};
+ db.transaction("bills").objectStore("bills")
+ .openCursor().onsuccess=e=>{
+  let c=e.target.result;
+  if(c){
+   c.value.cart.forEach(i=>s[i.name]=(s[i.name]||0)+1);
+   c.continue();
+  }else{
+   salesData.innerHTML=Object.entries(s).map(x=>`${x[0]} : ${x[1]}`).join("<br>");
+  }
+ };
+}
+
+/* ---------- SETTINGS ---------- */
+function saveSettings(){
+ localStorage.resName=resName.value;
+ localStorage.resAddr=resAddr.value;
+ localStorage.gstNo=gstNo.value;
+ localStorage.gstRate=gstRate.value;
+ alert("Saved");
+}
+
+/* ---------- PRINT ---------- */
+function printBill(){
+ window.print(); // iOS AirPrint / Android fallback
+}
+</script>
+</body>
+</html>
