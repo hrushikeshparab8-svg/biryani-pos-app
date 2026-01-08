@@ -1,352 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The House of Biryani’s POS</title>
 
 <style>
-/* ================= UI ================= */
 body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont;
-  background:linear-gradient(135deg,#e3f2fd,#ffffff);
-  color:#0d47a1;
+ margin:0;
+ font-family:-apple-system;
+ background:#f4f4f8;
 }
+:root{--p:#6a1b9a;}
 
 .hidden{display:none;}
-
 .glass{
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(18px);
-  border-radius:18px;
-  box-shadow:0 8px 24px rgba(0,0,0,.1);
+ background:rgba(255,255,255,.75);
+ backdrop-filter:blur(18px);
+ border-radius:16px;
+ padding:12px;
+ box-shadow:0 6px 18px rgba(0,0,0,.1);
 }
 
-.topbar{
-  position:fixed;
-  top:0;
-  width:100%;
-  height:60px;
-  display:flex;
-  align-items:center;
-  padding:0 15px;
-  z-index:1000;
+header{
+ position:fixed;top:0;width:100%;height:55px;
+ background:white;display:flex;align-items:center;
+ justify-content:center;font-weight:600;
+ border-bottom:1px solid #ddd;z-index:9;
 }
 
-.menuBtn{
-  font-size:26px;
-  background:none;
-  border:none;
-}
+main{padding:65px 10px 75px;}
 
-.sideMenu{
-  position:fixed;
-  top:70px;
-  left:15px;
-  width:220px;
-  padding:15px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  z-index:1000;
+button{
+ border:none;border-radius:14px;padding:12px;font-size:16px;
 }
+.primary{background:var(--p);color:white;width:100%;}
+.tabbar{
+ position:fixed;bottom:0;width:100%;height:60px;
+ background:white;display:flex;border-top:1px solid #ddd;
+}
+.tabbar button{flex:1;background:none;}
+.tabbar .active{color:var(--p);font-weight:600;}
 
-.sideMenu button{
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  background:#e3f2fd;
-  text-align:left;
-  font-size:16px;
+.grid{display:grid;gap:10px;}
+@media(min-width:768px){
+ .grid{grid-template-columns:2fr 1fr;}
 }
-
-.content{
-  padding:80px 15px;
-}
-
-/* ===== HOME ===== */
-.orderType button{
-  margin:5px;
-  padding:10px;
-  border:none;
-  border-radius:14px;
-  background:#bbdefb;
-}
-
-.tableBtns button{
-  margin:5px;
-  padding:10px;
-  border:none;
-  border-radius:14px;
-  background:#90caf9;
-}
-
-#menu{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:10px;
-}
-
-#menu button{
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:#e3f2fd;
-  font-size:16px;
-}
-
-.primary{
-  background:#1976d2;
-  color:white;
-  padding:16px;
-  border:none;
-  border-radius:18px;
-  width:100%;
-  font-size:18px;
-}
-
-.billItem{
-  background:#e3f2fd;
-  padding:12px;
-  margin:10px 0;
-  border-radius:14px;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:12px;
-  border:1px solid #90caf9;
-}
-
-.danger{
-  background:#e53935;
-  color:white;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-}
-
-/* ===== 58mm PRINT ===== */
-@media print{
- body{font-family:monospace;color:black;}
- .noPrint{display:none;}
-}
+input{width:100%;padding:10px;border-radius:12px;border:1px solid #ccc;}
+.list{background:white;padding:12px;border-radius:14px;margin:8px 0;}
 </style>
 </head>
 
 <body>
+<header>The House of Biryani’s</header>
 
-<!-- TOP BAR -->
-<div class="topbar glass noPrint">
-  <button class="menuBtn" onclick="toggleMenu()">☰</button>
-  <b>The House of Biryani’s</b>
-</div>
-
-<!-- SIDE MENU -->
-<div id="sideMenu" class="sideMenu glass hidden noPrint">
-  <button onclick="nav('home')">🏠 Home</button>
-  <button onclick="nav('bills'); loadBills()">🧾 Bills</button>
-  <button onclick="nav('sales'); loadSales()">📊 Sales</button>
-  <button onclick="openSettings()">⚙️ Settings</button>
-</div>
-
-<div class="content">
+<main class="grid">
 
 <!-- HOME -->
 <section id="home">
-<h2>New Bill</h2>
+<h3>New Bill</h3>
 
-<div class="orderType">
-<button onclick="orderType='Dine In'">🍽 Dine In</button>
-<button onclick="orderType='Swiggy'">🟠 Swiggy</button>
-<button onclick="orderType='Zomato'">🔴 Zomato</button>
-<button onclick="orderType='Take Away'">📦 Take Away</button>
-</div>
+<select id="otype">
+<option>Dine In</option>
+<option>Swiggy</option>
+<option>Zomato</option>
+<option>Take Away</option>
+</select>
 
-<div class="tableBtns">
-<button onclick="tableNo='Table 1'">Table 1</button>
-<button onclick="tableNo='Table 2'">Table 2</button>
-<button onclick="tableNo='Table 3'">Table 3</button>
-</div>
+<select id="table">
+<option>Table 1</option>
+<option>Table 2</option>
+<option>Table 3</option>
+</select>
 
 <div id="menu"></div>
 
 <h3>Total ₹ <span id="total">0</span></h3>
-<button class="primary" onclick="previewBill()">Preview Bill</button>
-
-<hr>
-<h3>📊 Today Summary</h3>
-<div id="dailySummary" class="glass"></div>
+<button class="primary" onclick="previewBill()">Preview</button>
 </section>
 
 <!-- PREVIEW -->
-<div id="preview" class="glass hidden">
-<div id="printArea"></div>
-<button onclick="saveBill()">✅ Save</button>
-<button onclick="window.print()">🖨 Print</button>
-<button onclick="preview.classList.add('hidden')">❌ Cancel</button>
-</div>
+<section id="preview" class="hidden glass">
+<h3>Bill Preview</h3>
+<div id="billHTML"></div>
+<button class="primary" onclick="saveBill()">Save</button>
+<button onclick="printBill()">Print</button>
+</section>
 
 <!-- BILLS -->
 <section id="bills" class="hidden">
-<h2>Bills</h2>
+<h3>Bills</h3>
 <div id="billList"></div>
 </section>
 
 <!-- SALES -->
 <section id="sales" class="hidden">
-<h2>Sales Analytics</h2>
+<h3>Sales Summary</h3>
 <div id="salesData" class="glass"></div>
 </section>
 
 <!-- SETTINGS -->
 <section id="settings" class="hidden">
-<h2>Settings</h2>
+<h3>Settings</h3>
 
 <input id="resName" placeholder="Restaurant Name">
 <input id="resAddr" placeholder="Address">
 <input id="gstNo" placeholder="GST No">
-
-<label><input type="checkbox" id="gstToggle"> Enable GST</label>
 <input id="gstRate" placeholder="GST %">
 
-<h3>Add Menu Item</h3>
-<input id="itemName" placeholder="Item Name">
-<input id="itemPrice" placeholder="Price">
-<button onclick="addMenu()">Add</button>
-
-<h3>Password</h3>
-<input id="newPass" placeholder="New Password">
-<button onclick="changePass()">Change</button>
-
-<button class="danger" onclick="deleteAllBills()">Delete All Bills</button>
+<button onclick="saveSettings()">Save Settings</button>
 </section>
 
+</main>
+
+<div class="tabbar">
+<button class="active" onclick="nav(this,'home')">Home</button>
+<button onclick="nav(this,'bills');loadBills()">Bills</button>
+<button onclick="nav(this,'sales');loadSales()">Sales</button>
+<button onclick="openSettings(this)">Settings</button>
 </div>
 
 <script>
-/* ================= LOGIC ================= */
-let db, cart=[], orderType="Dine In", tableNo="";
-
+/* ---------- DATA ---------- */
+let cart=[],db;
+if(!localStorage.menu){
+ localStorage.menu=JSON.stringify([
+ {name:"Chicken Biryani",price:180},
+ {name:"Veg Biryani",price:140},
+ {name:"Fry Piece",price:90}
+ ]);
+}
 if(!localStorage.pass) localStorage.pass="1234";
 
-indexedDB.open("POS",1).onupgradeneeded=e=>{
- e.target.result.createObjectStore("bills",{autoIncrement:true});
-};
-indexedDB.open("POS",1).onsuccess=e=>{db=e.target.result; updateSummary();};
+/* ---------- DB ---------- */
+let r=indexedDB.open("POS_DB",1);
+r.onupgradeneeded=e=>e.target.result.createObjectStore("bills",{autoIncrement:true});
+r.onsuccess=e=>db=e.target.result;
 
-function toggleMenu(){sideMenu.classList.toggle("hidden");}
-function nav(p){
+/* ---------- NAV ---------- */
+function nav(b,id){
  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
- document.getElementById(p).classList.remove("hidden");
- sideMenu.classList.add("hidden");
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".tabbar button").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");
 }
-
-function openSettings(){
- let p=prompt("Enter Settings Password");
- if(p===localStorage.pass) nav("settings");
+function openSettings(b){
+ if(prompt("Password")===localStorage.pass) nav(b,'settings');
  else alert("Wrong password");
 }
 
-function getMenu(){return JSON.parse(localStorage.menu||"[]");}
-function renderMenu(){
+/* ---------- MENU ---------- */
+function loadMenu(){
  menu.innerHTML="";
- getMenu().forEach(i=>{
-  let b=document.createElement("button");
-  b.textContent=`${i.name} ₹${i.price}`;
-  b.onclick=()=>{cart.push(i);calcTotal();};
-  menu.appendChild(b);
+ JSON.parse(localStorage.menu).forEach(i=>{
+  let btn=document.createElement("button");
+  btn.textContent=i.name+" ₹"+i.price;
+  btn.onclick=()=>{cart.push(i);calc();};
+  menu.appendChild(btn);
  });
 }
-renderMenu();
+loadMenu();
 
-function calcTotal(){
- let t=cart.reduce((s,i)=>s+i.price,0);
- if(gstToggle.checked) t+=t*(gstRate.value||0)/100;
- total.textContent=t.toFixed(2);
+function calc(){
+ total.textContent=cart.reduce((s,i)=>s+i.price,0);
 }
 
+/* ---------- BILL ---------- */
 function previewBill(){
- if(!cart.length) return alert("Add items");
- let h=`<center><b>${resName.value}</b><br>${resAddr.value}<br>${gstNo.value}</center><hr>`;
- h+=`Order: ${orderType}<br>${tableNo}<br>`;
- cart.forEach(i=>h+=`${i.name}  ₹${i.price}<br>`);
- h+=`<hr>Total ₹${total.textContent}<br>`;
- h+=`<center>Thank You</center>`;
- printArea.innerHTML=h;
+ let gst=+localStorage.gstRate||0;
+ let subtotal=+total.textContent;
+ let gstAmt=subtotal*gst/100;
+ let grand=subtotal+gstAmt;
+ billHTML.innerHTML=`
+ <b>${localStorage.resName||""}</b><br>
+ ${localStorage.resAddr||""}<hr>
+ ${cart.map(i=>i.name+" ₹"+i.price).join("<br>")}
+ <hr>Subtotal ₹${subtotal}
+ <br>GST ${gst}% ₹${gstAmt.toFixed(2)}
+ <br><b>Total ₹${grand.toFixed(2)}</b>
+ `;
  preview.classList.remove("hidden");
 }
-
 function saveBill(){
- let bill={cart,total:total.textContent,date:new Date()};
- db.transaction("bills","readwrite").objectStore("bills").add(bill);
- cart=[]; total.textContent=0;
+ db.transaction("bills","readwrite")
+ .objectStore("bills")
+ .add({cart,total:total.textContent,date:new Date()});
+ cart=[];total.textContent=0;
  preview.classList.add("hidden");
- updateSummary();
- alert("Bill Saved");
 }
 
+/* ---------- BILLS ---------- */
 function loadBills(){
  billList.innerHTML="";
- db.transaction("bills","readonly").objectStore("bills")
+ db.transaction("bills").objectStore("bills")
  .openCursor().onsuccess=e=>{
   let c=e.target.result;
   if(c){
-   billList.innerHTML+=`<div class="billItem">${new Date(c.value.date).toLocaleString()} ₹${c.value.total}</div>`;
+   billList.innerHTML+=`<div class="list" onclick="reprint(${c.key})">
+   ${new Date(c.value.date).toLocaleString()} ₹${c.value.total}</div>`;
    c.continue();
   }
  };
 }
+function reprint(k){
+ alert("Use Preview → Print");
+}
 
+/* ---------- SALES ---------- */
 function loadSales(){
  let s={};
- db.transaction("bills","readonly").objectStore("bills")
+ db.transaction("bills").objectStore("bills")
  .openCursor().onsuccess=e=>{
   let c=e.target.result;
   if(c){
    c.value.cart.forEach(i=>s[i.name]=(s[i.name]||0)+1);
    c.continue();
   }else{
-   salesData.innerHTML=Object.entries(s).map(x=>`${x[0]} : ${x[1]} plates`).join("<br>");
+   salesData.innerHTML=Object.entries(s).map(x=>`${x[0]} : ${x[1]}`).join("<br>");
   }
  };
 }
 
-function updateSummary(){
- let totalAmt=0,count=0;
- let today=new Date().toDateString();
- db.transaction("bills","readonly").objectStore("bills")
- .openCursor().onsuccess=e=>{
-  let c=e.target.result;
-  if(c){
-   if(new Date(c.value.date).toDateString()===today){
-    totalAmt+=+c.value.total;
-    count++;
-   }
-   c.continue();
-  }else{
-   dailySummary.innerHTML=`Bills: ${count}<br>Total: ₹${totalAmt}`;
-  }
- };
+/* ---------- SETTINGS ---------- */
+function saveSettings(){
+ localStorage.resName=resName.value;
+ localStorage.resAddr=resAddr.value;
+ localStorage.gstNo=gstNo.value;
+ localStorage.gstRate=gstRate.value;
+ alert("Saved");
 }
 
-function addMenu(){
- let m=getMenu();
- m.push({name:itemName.value,price:+itemPrice.value});
- localStorage.menu=JSON.stringify(m);
- renderMenu();
-}
-
-function changePass(){localStorage.pass=newPass.value;alert("Password Changed");}
-function deleteAllBills(){
- if(confirm("Delete all bills?")){
-  db.transaction("bills","readwrite").objectStore("bills").clear();
- }
+/* ---------- PRINT ---------- */
+function printBill(){
+ window.print(); // iOS AirPrint / Android fallback
 }
 </script>
-
 </body>
 </html>
