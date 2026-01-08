@@ -1,239 +1,1891 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The House of Biryani’s POS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biryani House POS | Professional Restaurant Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --secondary: #ff9800;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --dark: #333;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
 
-<style>
-body{
- margin:0;
- font-family:-apple-system;
- background:#f4f4f8;
-}
-:root{--p:#6a1b9a;}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
 
-.hidden{display:none;}
-.glass{
- background:rgba(255,255,255,.75);
- backdrop-filter:blur(18px);
- border-radius:16px;
- padding:12px;
- box-shadow:0 6px 18px rgba(0,0,0,.1);
-}
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f8f9fa 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-header{
- position:fixed;top:0;width:100%;height:55px;
- background:white;display:flex;align-items:center;
- justify-content:center;font-weight:600;
- border-bottom:1px solid #ddd;z-index:9;
-}
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 64px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            border-bottom: 3px solid var(--primary);
+        }
 
-main{padding:65px 10px 75px;}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-button{
- border:none;border-radius:14px;padding:12px;font-size:16px;
-}
-.primary{background:var(--p);color:white;width:100%;}
-.tabbar{
- position:fixed;bottom:0;width:100%;height:60px;
- background:white;display:flex;border-top:1px solid #ddd;
-}
-.tabbar button{flex:1;background:none;}
-.tabbar .active{color:var(--p);font-weight:600;}
+        .logo i {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
 
-.grid{display:grid;gap:10px;}
-@media(min-width:768px){
- .grid{grid-template-columns:2fr 1fr;}
-}
-input{width:100%;padding:10px;border-radius:12px;border:1px solid #ccc;}
-.list{background:white;padding:12px;border-radius:14px;margin:8px 0;}
-</style>
+        .logo h1 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .time-display {
+            background: var(--light);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        main {
+            padding: 80px 15px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 992px) {
+            .grid-container {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        /* Tab Navigation */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            display: flex;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 999;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tab-btn i {
+            font-size: 1.3rem;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: rgba(106, 27, 154, 0.05);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--primary-light);
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(106, 27, 154, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* Form Controls */
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Order Type Selector */
+        .order-type-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .order-type-btn {
+            padding: 15px 10px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .order-type-btn.active {
+            border-color: var(--primary);
+            background: rgba(106, 27, 154, 0.05);
+            color: var(--primary);
+        }
+
+        .order-type-btn i {
+            font-size: 1.5rem;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .menu-item-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .menu-item-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .menu-item-category {
+            font-size: 0.8rem;
+            color: var(--gray);
+            background: var(--light);
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* Cart Styles */
+        .cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light);
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .quantity {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            color: var(--danger);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Bill Summary */
+        .bill-summary {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: none;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border);
+        }
+
+        /* Bills List */
+        .bills-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .bill-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .bill-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bill-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .bill-amount {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        .bill-details {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        /* Sales Dashboard */
+        .sales-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Settings */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .p-20 {
+            padding: 20px;
+        }
+
+        /* Print Styles */
+        @media print {
+            header, .tabbar, .no-print {
+                display: none !important;
+            }
+            
+            body, main {
+                padding: 0;
+                margin: 0;
+                background: white;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: none;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<header>The House of Biryani’s</header>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-utensils"></i>
+            <h1>The House of Biryani</h1>
+        </div>
+        <div class="header-info">
+            <div class="time-display" id="currentTime"></div>
+            <div id="userInfo">Admin User</div>
+        </div>
+    </header>
 
-<main class="grid">
+    <!-- Main Content -->
+    <main>
+        <!-- Home / New Order -->
+        <section id="home" class="grid-container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-plus-circle"></i> New Order</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="clearCart()">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
 
-<!-- HOME -->
-<section id="home">
-<h3>New Bill</h3>
+                <!-- Order Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">Order Type</label>
+                    <div class="order-type-selector">
+                        <button class="order-type-btn active" data-type="dine-in">
+                            <i class="fas fa-chair"></i>
+                            <span>Dine In</span>
+                        </button>
+                        <button class="order-type-btn" data-type="takeaway">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Take Away</span>
+                        </button>
+                        <button class="order-type-btn" data-type="swiggy">
+                            <i class="fas fa-bicycle"></i>
+                            <span>Swiggy</span>
+                        </button>
+                        <button class="order-type-btn" data-type="zomato">
+                            <i class="fas fa-motorcycle"></i>
+                            <span>Zomato</span>
+                        </button>
+                    </div>
+                </div>
 
-<select id="otype">
-<option>Dine In</option>
-<option>Swiggy</option>
-<option>Zomato</option>
-<option>Take Away</option>
-</select>
+                <!-- Table Selection -->
+                <div class="form-group">
+                    <label class="form-label">Table Number</label>
+                    <select id="tableNumber" class="table-select">
+                        <option value="">Select Table</option>
+                        <option>Table 1</option>
+                        <option>Table 2</option>
+                        <option>Table 3</option>
+                        <option>Table 4</option>
+                        <option>Table 5</option>
+                        <option>Table 6</option>
+                        <option>Table 7</option>
+                        <option>Table 8</option>
+                    </select>
+                </div>
 
-<select id="table">
-<option>Table 1</option>
-<option>Table 2</option>
-<option>Table 3</option>
-</select>
+                <!-- Menu Items -->
+                <div class="form-group">
+                    <label class="form-label">Menu Items</label>
+                    <div class="menu-grid" id="menuGrid">
+                        <!-- Menu items will be loaded here -->
+                    </div>
+                </div>
+            </div>
 
-<div id="menu"></div>
+            <!-- Order Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-shopping-cart"></i> Order Summary</h2>
+                    <div class="cart-count" id="cartCount">0 items</div>
+                </div>
 
-<h3>Total ₹ <span id="total">0</span></h3>
-<button class="primary" onclick="previewBill()">Preview</button>
-</section>
+                <div class="cart-items" id="cartItems">
+                    <!-- Cart items will be loaded here -->
+                    <div class="empty-cart" id="emptyCart">
+                        <div class="text-center p-20">
+                            <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd;"></i>
+                            <p class="mt-20">Your cart is empty</p>
+                            <p class="text-muted">Add items from the menu to get started</p>
+                        </div>
+                    </div>
+                </div>
 
-<!-- PREVIEW -->
-<section id="preview" class="hidden glass">
-<h3>Bill Preview</h3>
-<div id="billHTML"></div>
-<button class="primary" onclick="saveBill()">Save</button>
-<button onclick="printBill()">Print</button>
-</section>
+                <!-- Bill Summary -->
+                <div class="bill-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">₹ 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>GST (5%):</span>
+                        <span id="gstAmount">₹ 0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Amount:</span>
+                        <span id="totalAmount">₹ 0</span>
+                    </div>
+                </div>
 
-<!-- BILLS -->
-<section id="bills" class="hidden">
-<h3>Bills</h3>
-<div id="billList"></div>
-</section>
+                <!-- Action Buttons -->
+                <div class="action-buttons mt-20">
+                    <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="processOrder()">
+                        <i class="fas fa-check-circle"></i> Process Order (₹<span id="totalDisplay">0</span>)
+                    </button>
+                </div>
+            </div>
+        </section>
 
-<!-- SALES -->
-<section id="sales" class="hidden">
-<h3>Sales Summary</h3>
-<div id="salesData" class="glass"></div>
-</section>
+        <!-- Bills History -->
+        <section id="bills" class="hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-receipt"></i> Order History</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-outline btn-sm" onclick="loadBills('today')">
+                            <i class="fas fa-calendar-day"></i> Today
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="loadBills('all')">
+                            <i class="fas fa-calendar-alt"></i> All
+                        </button>
+                    </div>
+                </div>
+                <div class="bills-list" id="billsList">
+                    <!-- Bills will be loaded here -->
+                </div>
+            </div>
+        </section>
 
-<!-- SETTINGS -->
-<section id="settings" class="hidden">
-<h3>Settings</h3>
+        <!-- Sales Dashboard -->
+        <section id="sales" class="hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> Sales Dashboard</h2>
+                    <button class="btn btn-success btn-sm" onclick="exportSales()">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="sales-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Today's Revenue</div>
+                        <div class="stat-value" id="todayRevenue">₹ 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg. Order Value</div>
+                        <div class="stat-value" id="avgOrderValue">₹ 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Top Item</div>
+                        <div class="stat-value" id="topItem">-</div>
+                    </div>
+                </div>
 
-<input id="resName" placeholder="Restaurant Name">
-<input id="resAddr" placeholder="Address">
-<input id="gstNo" placeholder="GST No">
-<input id="gstRate" placeholder="GST %">
+                <!-- Sales Chart -->
+                <div class="form-group">
+                    <label class="form-label">Sales Chart</label>
+                    <canvas id="salesChart" height="100"></canvas>
+                </div>
 
-<button onclick="saveSettings()">Save Settings</button>
-</section>
+                <!-- Sales Table -->
+                <div class="form-group">
+                    <label class="form-label">Recent Orders</label>
+                    <div class="sales-table" id="salesTable">
+                        <!-- Sales data will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
 
-</main>
+        <!-- Settings -->
+        <section id="settings" class="hidden">
+            <div class="settings-grid">
+                <!-- Restaurant Settings -->
+                <div class="settings-section">
+                    <h3 class="card-title mb-20"><i class="fas fa-store"></i> Restaurant Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label">Restaurant Name</label>
+                        <input type="text" id="restaurantName" placeholder="Enter restaurant name" value="The House of Biryani">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <textarea id="restaurantAddress" rows="3" placeholder="Enter full address">123 Food Street, Mumbai, Maharashtra 400001</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GST Number</label>
+                        <input type="text" id="gstNumber" placeholder="Enter GST number" value="27AABCU9603R1ZX">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GST Percentage</label>
+                        <input type="number" id="gstPercentage" placeholder="Enter GST percentage" value="5" min="0" max="100">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
 
-<div class="tabbar">
-<button class="active" onclick="nav(this,'home')">Home</button>
-<button onclick="nav(this,'bills');loadBills()">Bills</button>
-<button onclick="nav(this,'sales');loadSales()">Sales</button>
-<button onclick="openSettings(this)">Settings</button>
-</div>
+                <!-- Menu Management -->
+                <div class="settings-section">
+                    <h3 class="card-title mb-20"><i class="fas fa-utensils"></i> Menu Management</h3>
+                    <div class="menu-management" id="menuManagement">
+                        <!-- Menu items will be loaded here -->
+                    </div>
+                    <button class="btn btn-secondary mt-20" onclick="addMenuItem()">
+                        <i class="fas fa-plus"></i> Add New Item
+                    </button>
+                </div>
 
-<script>
-/* ---------- DATA ---------- */
-let cart=[],db;
-if(!localStorage.menu){
- localStorage.menu=JSON.stringify([
- {name:"Chicken Biryani",price:180},
- {name:"Veg Biryani",price:140},
- {name:"Fry Piece",price:90}
- ]);
-}
-if(!localStorage.pass) localStorage.pass="1234";
+                <!-- System Settings -->
+                <div class="settings-section">
+                    <h3 class="card-title mb-20"><i class="fas fa-cog"></i> System Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label">Print Settings</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="autoPrint" checked> Auto print after order</label><br>
+                            <label><input type="checkbox" id="printKitchen" checked> Print kitchen receipt</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Backup & Restore</label>
+                        <button class="btn btn-outline btn-sm" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="importData()">
+                            <i class="fas fa-upload"></i> Import Data
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Security</label>
+                        <button class="btn btn-danger btn-sm" onclick="clearAllData()">
+                            <i class="fas fa-trash"></i> Clear All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-/* ---------- DB ---------- */
-let r=indexedDB.open("POS_DB",1);
-r.onupgradeneeded=e=>e.target.result.createObjectStore("bills",{autoIncrement:true});
-r.onsuccess=e=>db=e.target.result;
+    <!-- Tab Navigation -->
+    <div class="tabbar">
+        <button class="tab-btn active" onclick="switchTab('home')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('bills')">
+            <i class="fas fa-receipt"></i>
+            <span>Bills</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('sales')">
+            <i class="fas fa-chart-bar"></i>
+            <span>Sales</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('settings')">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </button>
+    </div>
 
-/* ---------- NAV ---------- */
-function nav(b,id){
- document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
- document.getElementById(id).classList.remove("hidden");
- document.querySelectorAll(".tabbar button").forEach(x=>x.classList.remove("active"));
- b.classList.add("active");
-}
-function openSettings(b){
- if(prompt("Password")===localStorage.pass) nav(b,'settings');
- else alert("Wrong password");
-}
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <h2 class="card-title mb-20"><i class="fas fa-check-circle"></i> Order Confirmation</h2>
+            <div id="orderDetails">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="action-buttons mt-20">
+                <button class="btn btn-primary" onclick="printReceipt()">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
 
-/* ---------- MENU ---------- */
-function loadMenu(){
- menu.innerHTML="";
- JSON.parse(localStorage.menu).forEach(i=>{
-  let btn=document.createElement("button");
-  btn.textContent=i.name+" ₹"+i.price;
-  btn.onclick=()=>{cart.push(i);calc();};
-  menu.appendChild(btn);
- });
-}
-loadMenu();
+    <!-- Bill Details Modal -->
+    <div class="modal" id="billModal">
+        <div class="modal-content">
+            <h2 class="card-title mb-20"><i class="fas fa-file-invoice"></i> Bill Details</h2>
+            <div id="billDetails">
+                <!-- Bill details will be loaded here -->
+            </div>
+            <div class="action-buttons mt-20">
+                <button class="btn btn-primary" onclick="reprintBill()">
+                    <i class="fas fa-print"></i> Reprint
+                </button>
+                <button class="btn btn-danger" onclick="voidBill()">
+                    <i class="fas fa-ban"></i> Void Bill
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
 
-function calc(){
- total.textContent=cart.reduce((s,i)=>s+i.price,0);
-}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize data
+        let cart = [];
+        let db;
+        let currentOrderType = 'dine-in';
+        let salesChart = null;
 
-/* ---------- BILL ---------- */
-function previewBill(){
- let gst=+localStorage.gstRate||0;
- let subtotal=+total.textContent;
- let gstAmt=subtotal*gst/100;
- let grand=subtotal+gstAmt;
- billHTML.innerHTML=`
- <b>${localStorage.resName||""}</b><br>
- ${localStorage.resAddr||""}<hr>
- ${cart.map(i=>i.name+" ₹"+i.price).join("<br>")}
- <hr>Subtotal ₹${subtotal}
- <br>GST ${gst}% ₹${gstAmt.toFixed(2)}
- <br><b>Total ₹${grand.toFixed(2)}</b>
- `;
- preview.classList.remove("hidden");
-}
-function saveBill(){
- db.transaction("bills","readwrite")
- .objectStore("bills")
- .add({cart,total:total.textContent,date:new Date()});
- cart=[];total.textContent=0;
- preview.classList.add("hidden");
-}
+        // Default menu items
+        const defaultMenu = [
+            { id: 1, name: "Chicken Biryani", price: 220, category: "Biryani", popularity: 5 },
+            { id: 2, name: "Mutton Biryani", price: 280, category: "Biryani", popularity: 4 },
+            { id: 3, name: "Veg Biryani", price: 180, category: "Biryani", popularity: 3 },
+            { id: 4, name: "Chicken Tikka", price: 250, category: "Starters", popularity: 4 },
+            { id: 5, name: "Paneer Butter Masala", price: 220, category: "Main Course", popularity: 4 },
+            { id: 6, name: "Butter Naan", price: 40, category: "Breads", popularity: 5 },
+            { id: 7, name: "Raita", price: 60, category: "Sides", popularity: 3 },
+            { id: 8, name: "Gulab Jamun", price: 80, category: "Desserts", popularity: 4 },
+            { id: 9, name: "Coke", price: 40, category: "Beverages", popularity: 5 },
+            { id: 10, name: "Mineral Water", price: 20, category: "Beverages", popularity: 4 }
+        ];
 
-/* ---------- BILLS ---------- */
-function loadBills(){
- billList.innerHTML="";
- db.transaction("bills").objectStore("bills")
- .openCursor().onsuccess=e=>{
-  let c=e.target.result;
-  if(c){
-   billList.innerHTML+=`<div class="list" onclick="reprint(${c.key})">
-   ${new Date(c.value.date).toLocaleString()} ₹${c.value.total}</div>`;
-   c.continue();
-  }
- };
-}
-function reprint(k){
- alert("Use Preview → Print");
-}
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            updateTime();
+            setInterval(updateTime, 60000);
+        });
 
-/* ---------- SALES ---------- */
-function loadSales(){
- let s={};
- db.transaction("bills").objectStore("bills")
- .openCursor().onsuccess=e=>{
-  let c=e.target.result;
-  if(c){
-   c.value.cart.forEach(i=>s[i.name]=(s[i.name]||0)+1);
-   c.continue();
-  }else{
-   salesData.innerHTML=Object.entries(s).map(x=>`${x[0]} : ${x[1]}`).join("<br>");
-  }
- };
-}
+        function initializeApp() {
+            // Initialize IndexedDB
+            const request = indexedDB.open('BiryaniHousePOS', 2);
+            
+            request.onupgradeneeded = function(event) {
+                db = event.target.result;
+                
+                // Create object stores
+                if (!db.objectStoreNames.contains('orders')) {
+                    db.createObjectStore('orders', { keyPath: 'id', autoIncrement: true });
+                }
+                
+                if (!db.objectStoreNames.contains('settings')) {
+                    db.createObjectStore('settings', { keyPath: 'key' });
+                }
+                
+                if (!db.objectStoreNames.contains('menu')) {
+                    const menuStore = db.createObjectStore('menu', { keyPath: 'id' });
+                    // Add default menu items
+                    defaultMenu.forEach(item => {
+                        menuStore.add(item);
+                    });
+                }
+            };
+            
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                loadMenu();
+                loadSettings();
+                loadBills('today');
+                loadSalesData();
+            };
+            
+            request.onerror = function(event) {
+                console.error('Database error:', event.target.error);
+            };
 
-/* ---------- SETTINGS ---------- */
-function saveSettings(){
- localStorage.resName=resName.value;
- localStorage.resAddr=resAddr.value;
- localStorage.gstNo=gstNo.value;
- localStorage.gstRate=gstRate.value;
- alert("Saved");
-}
+            // Initialize order type selector
+            document.querySelectorAll('.order-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.order-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentOrderType = this.dataset.type;
+                });
+            });
+        }
 
-/* ---------- PRINT ---------- */
-function printBill(){
- window.print(); // iOS AirPrint / Android fallback
-}
-</script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleDateString('en-IN', { 
+                    weekday: 'short', 
+                    day: 'numeric', 
+                    month: 'short', 
+                    year: 'numeric' 
+                }) + ' • ' + 
+                now.toLocaleTimeString('en-IN', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+        }
+
+        function switchTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('main > section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Load data for specific tabs
+            if (tabName === 'bills') {
+                loadBills('today');
+            } else if (tabName === 'sales') {
+                loadSalesData();
+            } else if (tabName === 'settings') {
+                loadMenuManagement();
+            }
+        }
+
+        // Menu Functions
+        function loadMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = '';
+            
+            const transaction = db.transaction(['menu'], 'readonly');
+            const store = transaction.objectStore('menu');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const menuItems = request.result;
+                menuItems.forEach(item => {
+                    const menuItem = document.createElement('div');
+                    menuItem.className = 'menu-item';
+                    menuItem.innerHTML = `
+                        <div class="menu-item-category">${item.category}</div>
+                        <div class="menu-item-name">${item.name}</div>
+                        <div class="menu-item-price">₹ ${item.price}</div>
+                        <button class="btn btn-primary btn-sm" onclick="addToCart(${item.id})">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    `;
+                    menuGrid.appendChild(menuItem);
+                });
+            };
+        }
+
+        function addToCart(itemId) {
+            const transaction = db.transaction(['menu'], 'readonly');
+            const store = transaction.objectStore('menu');
+            const request = store.get(itemId);
+            
+            request.onsuccess = function() {
+                const item = request.result;
+                const existingItem = cart.find(cartItem => cartItem.id === itemId);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        ...item,
+                        quantity: 1
+                    });
+                }
+                
+                updateCartDisplay();
+            };
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            const cartCount = document.getElementById('cartCount');
+            const subtotalEl = document.getElementById('subtotal');
+            const gstAmountEl = document.getElementById('gstAmount');
+            const totalAmountEl = document.getElementById('totalAmount');
+            const totalDisplay = document.getElementById('totalDisplay');
+            
+            if (cart.length === 0) {
+                emptyCart.style.display = 'block';
+                cartItems.innerHTML = '';
+            } else {
+                emptyCart.style.display = 'none';
+                
+                let html = '';
+                let subtotal = 0;
+                
+                cart.forEach((item, index) => {
+                    subtotal += item.price * item.quantity;
+                    
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">₹ ${item.price}</div>
+                            </div>
+                            <div class="cart-item-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                <button class="remove-btn" onclick="removeFromCart(${index})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                cartItems.innerHTML = html;
+            }
+            
+            // Update counts and totals
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+            
+            const gstPercentage = parseFloat(localStorage.getItem('gstPercentage') || 5);
+            const gstAmount = (subtotal * gstPercentage) / 100;
+            const totalAmount = subtotal + gstAmount;
+            
+            subtotalEl.textContent = `₹ ${subtotal.toFixed(2)}`;
+            gstAmountEl.textContent = `₹ ${gstAmount.toFixed(2)}`;
+            totalAmountEl.textContent = `₹ ${totalAmount.toFixed(2)}`;
+            totalDisplay.textContent = totalAmount.toFixed(2);
+        }
+
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            
+            updateCartDisplay();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear the cart?')) {
+                cart = [];
+                updateCartDisplay();
+            }
+        }
+
+        // Order Processing
+        function processOrder() {
+            if (cart.length === 0) {
+                alert('Please add items to the cart first!');
+                return;
+            }
+            
+            const tableNumber = document.getElementById('tableNumber').value;
+            if (!tableNumber && currentOrderType === 'dine-in') {
+                alert('Please select a table number!');
+                return;
+            }
+            
+            const gstPercentage = parseFloat(localStorage.getItem('gstPercentage') || 5);
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const gstAmount = (subtotal * gstPercentage) / 100;
+            const totalAmount = subtotal + gstAmount;
+            
+            const order = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                type: currentOrderType,
+                table: tableNumber,
+                items: [...cart],
+                subtotal: subtotal,
+                gstAmount: gstAmount,
+                total: totalAmount,
+                status: 'completed'
+            };
+            
+            // Save order to database
+            const transaction = db.transaction(['orders'], 'readwrite');
+            const store = transaction.objectStore('orders');
+            store.add(order);
+            
+            transaction.oncomplete = function() {
+                showOrderConfirmation(order);
+                cart = [];
+                updateCartDisplay();
+                document.getElementById('tableNumber').value = '';
+            };
+        }
+
+        function showOrderConfirmation(order) {
+            const modal = document.getElementById('orderModal');
+            const orderDetails = document.getElementById('orderDetails');
+            
+            let itemsHtml = '';
+            order.items.forEach(item => {
+                itemsHtml += `
+                    <div class="summary-row">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            orderDetails.innerHTML = `
+                <div class="bill-summary">
+                    <div class="summary-row">
+                        <strong>Order ID:</strong>
+                        <strong>${order.id}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Order Type:</span>
+                        <span>${order.type.toUpperCase()}</span>
+                    </div>
+                    ${order.table ? `<div class="summary-row"><span>Table:</span><span>${order.table}</span></div>` : ''}
+                    <hr>
+                    ${itemsHtml}
+                    <hr>
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>₹ ${order.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>GST (${localStorage.getItem('gstPercentage') || 5}%):</span>
+                        <span>₹ ${order.gstAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span>₹ ${order.total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+            
+            // Auto-print if enabled
+            if (document.getElementById('autoPrint').checked) {
+                setTimeout(printReceipt, 500);
+            }
+        }
+
+        // Bill Management
+        function loadBills(filter = 'today') {
+            const billsList = document.getElementById('billsList');
+            billsList.innerHTML = '<div class="text-center p-20"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+            
+            const transaction = db.transaction(['orders'], 'readonly');
+            const store = transaction.objectStore('orders');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                let orders = request.result;
+                
+                // Apply filter
+                if (filter === 'today') {
+                    const today = new Date().toDateString();
+                    orders = orders.filter(order => new Date(order.date).toDateString() === today);
+                }
+                
+                // Sort by date (newest first)
+                orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                if (orders.length === 0) {
+                    billsList.innerHTML = '<div class="text-center p-20">No orders found</div>';
+                    return;
+                }
+                
+                let html = '';
+                orders.forEach(order => {
+                    const date = new Date(order.date);
+                    const timeString = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    const dateString = date.toLocaleDateString('en-IN');
+                    
+                    html += `
+                        <div class="bill-card" onclick="viewBill(${order.id})">
+                            <div class="bill-header">
+                                <div class="bill-id">Order #${order.id}</div>
+                                <div class="bill-amount">₹ ${order.total.toFixed(2)}</div>
+                            </div>
+                            <div>${order.type.toUpperCase()} ${order.table ? '• Table ' + order.table : ''}</div>
+                            <div class="bill-details">
+                                <span>${dateString} ${timeString}</span>
+                                <span>${order.items.length} items</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                billsList.innerHTML = html;
+            };
+        }
+
+        function viewBill(orderId) {
+            const transaction = db.transaction(['orders'], 'readonly');
+            const store = transaction.objectStore('orders');
+            const request = store.get(orderId);
+            
+            request.onsuccess = function() {
+                const order = request.result;
+                if (!order) return;
+                
+                const modal = document.getElementById('billModal');
+                const billDetails = document.getElementById('billDetails');
+                modal.dataset.orderId = orderId;
+                
+                let itemsHtml = '';
+                order.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="summary-row">
+                            <span>${item.name} x ${item.quantity}</span>
+                            <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+                
+                const date = new Date(order.date);
+                billDetails.innerHTML = `
+                    <div class="bill-summary">
+                        <div class="summary-row">
+                            <strong>Order ID:</strong>
+                            <strong>#${order.id}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Date:</span>
+                            <span>${date.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Order Type:</span>
+                            <span>${order.type.toUpperCase()}</span>
+                        </div>
+                        ${order.table ? `<div class="summary-row"><span>Table:</span><span>${order.table}</span></div>` : ''}
+                        <hr>
+                        ${itemsHtml}
+                        <hr>
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>₹ ${order.subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>GST:</span>
+                            <span>₹ ${order.gstAmount.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>₹ ${order.total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                
+                modal.classList.add('active');
+            };
+        }
+
+        function reprintBill() {
+            const orderId = document.getElementById('billModal').dataset.orderId;
+            alert(`Reprinting bill #${orderId}`);
+            printReceipt();
+        }
+
+        function voidBill() {
+            const orderId = document.getElementById('billModal').dataset.orderId;
+            
+            if (confirm('Are you sure you want to void this bill? This action cannot be undone.')) {
+                const transaction = db.transaction(['orders'], 'readwrite');
+                const store = transaction.objectStore('orders');
+                store.delete(Number(orderId));
+                
+                transaction.oncomplete = function() {
+                    alert('Bill voided successfully!');
+                    closeModal();
+                    loadBills('today');
+                };
+            }
+        }
+
+        // Sales Dashboard
+        function loadSalesData() {
+            const transaction = db.transaction(['orders'], 'readonly');
+            const store = transaction.objectStore('orders');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const orders = request.result;
+                
+                // Calculate stats
+                const today = new Date().toDateString();
+                const todayOrders = orders.filter(order => new Date(order.date).toDateString() === today);
+                const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+                
+                const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+                const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
+                
+                // Update UI
+                document.getElementById('todayRevenue').textContent = `₹ ${todayRevenue.toFixed(2)}`;
+                document.getElementById('totalOrders').textContent = orders.length;
+                document.getElementById('avgOrderValue').textContent = `₹ ${avgOrderValue.toFixed(2)}`;
+                
+                // Find top item
+                const itemCounts = {};
+                orders.forEach(order => {
+                    order.items.forEach(item => {
+                        itemCounts[item.name] = (itemCounts[item.name] || 0) + item.quantity;
+                    });
+                });
+                
+                let topItem = '-';
+                let maxCount = 0;
+                for (const [item, count] of Object.entries(itemCounts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        topItem = item;
+                    }
+                }
+                
+                document.getElementById('topItem').textContent = topItem;
+                
+                // Update sales table
+                updateSalesTable(orders.slice(0, 10));
+                
+                // Update chart
+                updateSalesChart(orders);
+            };
+        }
+
+        function updateSalesChart(orders) {
+            // Group orders by day for last 7 days
+            const days = [];
+            const revenues = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateString = date.toLocaleDateString('en-IN', { weekday: 'short' });
+                days.push(dateString);
+                
+                const dayOrders = orders.filter(order => {
+                    const orderDate = new Date(order.date);
+                    return orderDate.toDateString() === date.toDateString();
+                });
+                
+                const dayRevenue = dayOrders.reduce((sum, order) => sum + order.total, 0);
+                revenues.push(dayRevenue);
+            }
+            
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (salesChart) {
+                salesChart.destroy();
+            }
+            
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Daily Revenue',
+                        data: revenues,
+                        borderColor: '#6a1b9a',
+                        backgroundColor: 'rgba(106, 27, 154, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSalesTable(orders) {
+            const salesTable = document.getElementById('salesTable');
+            
+            if (orders.length === 0) {
+                salesTable.innerHTML = '<div class="text-center p-20">No sales data available</div>';
+                return;
+            }
+            
+            let html = `
+                <div class="sales-table-header">
+                    <div class="summary-row" style="background: #f8f9fa; font-weight: 600;">
+                        <span>Order ID</span>
+                        <span>Time</span>
+                        <span>Type</span>
+                        <span>Amount</span>
+                    </div>
+            `;
+            
+            orders.forEach(order => {
+                const date = new Date(order.date);
+                const timeString = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                
+                html += `
+                    <div class="summary-row" onclick="viewBill(${order.id})" style="cursor: pointer;">
+                        <span>#${order.id}</span>
+                        <span>${timeString}</span>
+                        <span>${order.type.charAt(0).toUpperCase() + order.type.slice(1)}</span>
+                        <span style="color: var(--success); font-weight: 600;">₹ ${order.total.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            salesTable.innerHTML = html;
+        }
+
+        function exportSales() {
+            const transaction = db.transaction(['orders'], 'readonly');
+            const store = transaction.objectStore('orders');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const orders = request.result;
+                const dataStr = JSON.stringify(orders, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = `sales_export_${new Date().toISOString().split('T')[0]}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            };
+        }
+
+        // Settings
+        function loadSettings() {
+            // Load saved settings from localStorage
+            const restaurantName = localStorage.getItem('restaurantName') || 'The House of Biryani';
+            const restaurantAddress = localStorage.getItem('restaurantAddress') || '123 Food Street, Mumbai, Maharashtra 400001';
+            const gstNumber = localStorage.getItem('gstNumber') || '27AABCU9603R1ZX';
+            const gstPercentage = localStorage.getItem('gstPercentage') || '5';
+            
+            document.getElementById('restaurantName').value = restaurantName;
+            document.getElementById('restaurantAddress').value = restaurantAddress;
+            document.getElementById('gstNumber').value = gstNumber;
+            document.getElementById('gstPercentage').value = gstPercentage;
+            
+            // Update header
+            document.querySelector('.logo h1').textContent = restaurantName;
+        }
+
+        function saveSettings() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            const restaurantAddress = document.getElementById('restaurantAddress').value;
+            const gstNumber = document.getElementById('gstNumber').value;
+            const gstPercentage = document.getElementById('gstPercentage').value;
+            
+            // Validate inputs
+            if (!restaurantName.trim()) {
+                alert('Please enter restaurant name');
+                return;
+            }
+            
+            if (!gstPercentage || isNaN(gstPercentage) || gstPercentage < 0 || gstPercentage > 100) {
+                alert('Please enter a valid GST percentage (0-100)');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('restaurantName', restaurantName);
+            localStorage.setItem('restaurantAddress', restaurantAddress);
+            localStorage.setItem('gstNumber', gstNumber);
+            localStorage.setItem('gstPercentage', gstPercentage);
+            
+            // Update header
+            document.querySelector('.logo h1').textContent = restaurantName;
+            
+            alert('Settings saved successfully!');
+        }
+
+        function loadMenuManagement() {
+            const menuManagement = document.getElementById('menuManagement');
+            menuManagement.innerHTML = '<div class="text-center p-20"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+            
+            const transaction = db.transaction(['menu'], 'readonly');
+            const store = transaction.objectStore('menu');
+            const request = store.getAll();
+            
+            request.onsuccess = function() {
+                const menuItems = request.result;
+                
+                let html = `
+                    <div class="menu-list">
+                        <div class="summary-row" style="background: #f8f9fa; font-weight: 600;">
+                            <span>Item</span>
+                            <span>Category</span>
+                            <span>Price</span>
+                            <span>Actions</span>
+                        </div>
+                `;
+                
+                menuItems.forEach(item => {
+                    html += `
+                        <div class="summary-row">
+                            <span>${item.name}</span>
+                            <span>${item.category}</span>
+                            <span>₹ ${item.price}</span>
+                            <span>
+                                <button class="btn btn-sm btn-outline" onclick="editMenuItem(${item.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteMenuItem(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </span>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                menuManagement.innerHTML = html;
+            };
+        }
+
+        function addMenuItem() {
+            const name = prompt('Enter item name:');
+            if (!name) return;
+            
+            const category = prompt('Enter category (Biryani, Starters, etc.):');
+            if (!category) return;
+            
+            const price = parseFloat(prompt('Enter price:'));
+            if (isNaN(price) || price <= 0) {
+                alert('Please enter a valid price');
+                return;
+            }
+            
+            const transaction = db.transaction(['menu'], 'readwrite');
+            const store = transaction.objectStore('menu');
+            
+            // Get the highest ID
+            const request = store.getAll();
+            request.onsuccess = function() {
+                const items = request.result;
+                const maxId = items.length > 0 ? Math.max(...items.map(item => item.id)) : 0;
+                
+                const newItem = {
+                    id: maxId + 1,
+                    name: name,
+                    category: category,
+                    price: price,
+                    popularity: 0
+                };
+                
+                store.add(newItem);
+                
+                transaction.oncomplete = function() {
+                    alert('Item added successfully!');
+                    loadMenu();
+                    loadMenuManagement();
+                };
+            };
+        }
+
+        function editMenuItem(itemId) {
+            const transaction = db.transaction(['menu'], 'readwrite');
+            const store = transaction.objectStore('menu');
+            const request = store.get(itemId);
+            
+            request.onsuccess = function() {
+                const item = request.result;
+                if (!item) return;
+                
+                const name = prompt('Enter new name:', item.name);
+                if (!name) return;
+                
+                const category = prompt('Enter new category:', item.category);
+                if (!category) return;
+                
+                const price = parseFloat(prompt('Enter new price:', item.price));
+                if (isNaN(price) || price <= 0) {
+                    alert('Please enter a valid price');
+                    return;
+                }
+                
+                item.name = name;
+                item.category = category;
+                item.price = price;
+                
+                store.put(item);
+                
+                transaction.oncomplete = function() {
+                    alert('Item updated successfully!');
+                    loadMenu();
+                    loadMenuManagement();
+                };
+            };
+        }
+
+        function deleteMenuItem(itemId) {
+            if (!confirm('Are you sure you want to delete this menu item?')) return;
+            
+            const transaction = db.transaction(['menu'], 'readwrite');
+            const store = transaction.objectStore('menu');
+            store.delete(itemId);
+            
+            transaction.oncomplete = function() {
+                alert('Item deleted successfully!');
+                loadMenu();
+                loadMenuManagement();
+            };
+        }
+
+        // Utility Functions
+        function printReceipt() {
+            window.print();
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+
+        function exportData() {
+            const allData = {
+                orders: [],
+                menu: [],
+                settings: {}
+            };
+            
+            // Export orders
+            const orderTransaction = db.transaction(['orders'], 'readonly');
+            const orderStore = orderTransaction.objectStore('orders');
+            orderStore.getAll().onsuccess = function(event) {
+                allData.orders = event.target.result;
+                
+                // Export menu
+                const menuTransaction = db.transaction(['menu'], 'readonly');
+                const menuStore = menuTransaction.objectStore('menu');
+                menuStore.getAll().onsuccess = function(event) {
+                    allData.menu = event.target.result;
+                    
+                    // Export settings
+                    allData.settings = {
+                        restaurantName: localStorage.getItem('restaurantName'),
+                        restaurantAddress: localStorage.getItem('restaurantAddress'),
+                        gstNumber: localStorage.getItem('gstNumber'),
+                        gstPercentage: localStorage.getItem('gstPercentage')
+                    };
+                    
+                    // Create download
+                    const dataStr = JSON.stringify(allData, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = `pos_backup_${new Date().toISOString().split('T')[0]}.json`;
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                };
+            };
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (confirm('This will replace all existing data. Continue?')) {
+                            // Import data
+                            importAllData(data);
+                        }
+                    } catch (error) {
+                        alert('Invalid backup file format');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function importAllData(data) {
+            // Clear existing data
+            const clearTransaction = db.transaction(['orders', 'menu'], 'readwrite');
+            clearTransaction.objectStore('orders').clear();
+            clearTransaction.objectStore('menu').clear();
+            
+            clearTransaction.oncomplete = function() {
+                // Import orders
+                if (data.orders && data.orders.length > 0) {
+                    const orderTransaction = db.transaction(['orders'], 'readwrite');
+                    const orderStore = orderTransaction.objectStore('orders');
+                    
+                    data.orders.forEach(order => {
+                        orderStore.add(order);
+                    });
+                }
+                
+                // Import menu
+                if (data.menu && data.menu.length > 0) {
+                    const menuTransaction = db.transaction(['menu'], 'readwrite');
+                    const menuStore = menuTransaction.objectStore('menu');
+                    
+                    data.menu.forEach(item => {
+                        menuStore.add(item);
+                    });
+                }
+                
+                // Import settings
+                if (data.settings) {
+                    Object.entries(data.settings).forEach(([key, value]) => {
+                        if (value) localStorage.setItem(key, value);
+                    });
+                    
+                    loadSettings();
+                }
+                
+                alert('Data imported successfully!');
+                location.reload();
+            };
+        }
+
+        function clearAllData() {
+            if (confirm('WARNING: This will delete ALL data including orders, menu, and settings. This action cannot be undone. Continue?')) {
+                const transaction = db.transaction(['orders', 'menu'], 'readwrite');
+                transaction.objectStore('orders').clear();
+                transaction.objectStore('menu').clear();
+                
+                transaction.oncomplete = function() {
+                    localStorage.clear();
+                    alert('All data has been cleared. The page will now reload.');
+                    location.reload();
+                };
+            }
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape key closes modals
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            
+            // Ctrl+S saves settings
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if (!document.getElementById('settings').classList.contains('hidden')) {
+                    saveSettings();
+                }
+            }
+            
+            // F1 switches to home
+            if (e.key === 'F1') {
+                e.preventDefault();
+                switchTab('home');
+            }
+            
+            // F2 switches to bills
+            if (e.key === 'F2') {
+                e.preventDefault();
+                switchTab('bills');
+            }
+        });
+    </script>
 </body>
 </html>
