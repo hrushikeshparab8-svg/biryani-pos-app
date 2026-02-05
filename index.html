@@ -545,29 +545,103 @@ button {
 /* ========== PRINT STYLES ========== */
 .bill-print {
     font-family: 'Courier New', monospace;
-    width: 80mm;
-    padding: 15px;
-    margin: 0 auto;
-    font-size: 12px;
-    line-height: 1.3;
+    width: 58mm;
+    padding: 0;
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.2;
     background: white;
     color: black;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.bill-print * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Thermal printer specific styles */
+.bill-print table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bill-print td, .bill-print th {
+    padding: 2px 0;
+    font-size: 9px;
+}
+
+.bill-print .header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.bill-print .center {
+    text-align: center;
+}
+
+.bill-print .right {
+    text-align: right;
+}
+
+.bill-print .left {
+    text-align: left;
+}
+
+.bill-print .divider {
+    border-top: 1px dashed #000;
+    margin: 3px 0;
+}
+
+.bill-print .bold {
+    font-weight: bold;
+}
+
+.bill-print .underline {
+    border-bottom: 1px solid #000;
+    padding-bottom: 2px;
+}
+
+.bill-print .double-underline {
+    border-bottom: 3px double #000;
+    padding-bottom: 2px;
 }
 
 @media print {
     @page {
         margin: 0;
-        size: 80mm auto;
+        size: 58mm auto;
     }
+    
     body * {
+        visibility: hidden;
         display: none;
     }
+    
     .bill-print, .bill-print * {
+        visibility: visible;
         display: block;
     }
+    
     .bill-print {
-        width: 76mm !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 58mm !important;
         padding: 2mm !important;
+        font-size: 9px !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Printer control */
+    html, body {
+        height: auto;
+        overflow: visible;
+        background: white;
+        color: black;
     }
 }
 
@@ -626,6 +700,98 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: 6px;
     color: var(--text-secondary);
     font-weight: 500;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.checkbox-group label {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* GST Toggle Styles */
+.gst-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--surface-light);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: var(--success);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+/* GST fields container */
+.gst-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 15px;
+    background: rgba(123, 31, 162, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(123, 31, 162, 0.2);
+    transition: all 0.3s ease;
+}
+
+.gst-fields.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 /* ========== SALES ========== */
@@ -961,7 +1127,20 @@ input:focus, select:focus, textarea:focus {
                     <span>💰</span> Tax & Pricing
                 </div>
                 
-                <div class="setting-grid">
+                <!-- GST Enable/Disable Toggle -->
+                <div class="gst-toggle">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Enable GST</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Include GST in bills</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="gstEnabled" onchange="toggleGSTFields()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <!-- GST Fields (conditionally enabled) -->
+                <div id="gstFields" class="gst-fields">
                     <div class="input-group">
                         <label>GST Number</label>
                         <input id="gstNo" placeholder="29ABCDE1234F1Z5">
@@ -1007,21 +1186,36 @@ input:focus, select:focus, textarea:focus {
             
             <div class="setting-group">
                 <div class="setting-title">
+                    <span>🖨️</span> Printer Settings
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="autoPrint" style="width: 20px; height: 20px;">
+                    <label for="autoPrint">Auto Print After Save</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="printerCut" style="width: 20px; height: 20px;">
+                    <label for="printerCut">Auto Cut After Print</label>
+                </div>
+                
+                <div class="input-group">
+                    <label>Printer Width (mm)</label>
+                    <select id="printerWidth">
+                        <option value="58">58mm (MT-02/HOP-HL58)</option>
+                        <option value="80">80mm (Standard)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <div class="setting-title">
                     <span>🔧</span> System Settings
                 </div>
                 
-                <div class="input-group">
-                    <label style="display: flex; align-items: center; gap: 12px;">
-                        <input type="checkbox" id="autoPrint" style="width: 20px; height: 20px;">
-                        Auto Print After Save
-                    </label>
-                </div>
-                
-                <div class="input-group">
-                    <label style="display: flex; align-items: center; gap: 12px;">
-                        <input type="checkbox" id="soundEnabled" checked style="width: 20px; height: 20px;">
-                        Enable Sound Effects
-                    </label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="soundEnabled" checked style="width: 20px; height: 20px;">
+                    <label for="soundEnabled">Enable Sound Effects</label>
                 </div>
             </div>
             
@@ -1380,15 +1574,22 @@ function calc() {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const serviceChargeRate = parseFloat(localStorage.getItem('serviceCharge')) || 0;
     const discountRate = parseFloat(localStorage.getItem('discountRate')) || 0;
+    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
     
     const serviceCharge = (subtotal * serviceChargeRate) / 100;
     const discount = (subtotal * discountRate) / 100;
-    const cgstRate = parseFloat(localStorage.getItem('cgstRate')) || 2.5;
-    const sgstRate = parseFloat(localStorage.getItem('sgstRate')) || 2.5;
     
-    const taxable = subtotal + serviceCharge - discount;
-    const cgst = (taxable * cgstRate) / 100;
-    const sgst = (taxable * sgstRate) / 100;
+    let cgst = 0;
+    let sgst = 0;
+    let taxable = subtotal + serviceCharge - discount;
+    
+    if (gstEnabled) {
+        const cgstRate = parseFloat(localStorage.getItem('cgstRate')) || 2.5;
+        const sgstRate = parseFloat(localStorage.getItem('sgstRate')) || 2.5;
+        cgst = (taxable * cgstRate) / 100;
+        sgst = (taxable * sgstRate) / 100;
+    }
+    
     const total = taxable + cgst + sgst;
     
     document.getElementById('total').textContent = total.toFixed(2);
@@ -1398,8 +1599,21 @@ function calc() {
         discount, 
         cgst, 
         sgst, 
-        total 
+        total,
+        gstEnabled
     };
+}
+
+// ========== SETTINGS - GST TOGGLE ==========
+function toggleGSTFields() {
+    const gstEnabled = document.getElementById('gstEnabled').checked;
+    const gstFields = document.getElementById('gstFields');
+    
+    if (gstEnabled) {
+        gstFields.classList.remove('disabled');
+    } else {
+        gstFields.classList.add('disabled');
+    }
 }
 
 // ========== BILLS ==========
@@ -1429,93 +1643,121 @@ function previewBill() {
     const billData = calc();
     const date = new Date();
     
-    const billHTML = `
-        <div class="bill-print" id="printableBill">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div style="font-size: 18px; font-weight: bold;">${localStorage.getItem('resName') || "The House of Biryani's"}</div>
-                <div style="font-size: 12px; margin: 5px 0;">${localStorage.getItem('resAddr') || ''}</div>
-                <div style="font-size: 14px; font-weight: bold; margin: 10px 0;">TAX INVOICE</div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 10px;">
-                <div>Invoice: ${invoiceNumber}</div>
-                <div>${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-            </div>
-            <div style="font-size: 10px; margin-bottom: 15px;">
-                Type: ${currentOrderType}
-            </div>
-            
-            <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0;">
-                <thead>
-                    <tr>
-                        <th style="text-align: left; padding: 4px 0; border-bottom: 2px solid #000;">Item</th>
-                        <th style="text-align: center; padding: 4px 0; border-bottom: 2px solid #000;">Qty</th>
-                        <th style="text-align: right; padding: 4px 0; border-bottom: 2px solid #000;">Price</th>
-                        <th style="text-align: right; padding: 4px 0; border-bottom: 2px solid #000;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${cart.map(item => `
-                        <tr>
-                            <td style="padding: 3px 0;">${item.name}</td>
-                            <td style="text-align: center; padding: 3px 0;">${item.quantity}</td>
-                            <td style="text-align: right; padding: 3px 0;">${item.price.toFixed(2)}</td>
-                            <td style="text-align: right; padding: 3px 0;">${(item.price * item.quantity).toFixed(2)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            
-            <div style="border-top: 1px dashed #000; margin: 10px 0; padding-top: 10px; font-size: 11px;">
-                <div style="display: flex; justify-content: space-between; margin: 3px 0;">
-                    <span>Subtotal:</span>
-                    <span>₹${billData.subtotal.toFixed(2)}</span>
-                </div>
-                ${billData.serviceCharge > 0 ? `
-                    <div style="display: flex; justify-content: space-between; margin: 3px 0;">
-                        <span>Service Charge:</span>
-                        <span>₹${billData.serviceCharge.toFixed(2)}</span>
-                    </div>
-                ` : ''}
-                ${billData.discount > 0 ? `
-                    <div style="display: flex; justify-content: space-between; margin: 3px 0; color: green;">
-                        <span>Discount:</span>
-                        <span>-₹${billData.discount.toFixed(2)}</span>
-                    </div>
-                ` : ''}
-                ${billData.cgst > 0 ? `
-                    <div style="display: flex; justify-content: space-between; margin: 3px 0;">
-                        <span>CGST (${localStorage.getItem('cgstRate') || 2.5}%):</span>
-                        <span>₹${billData.cgst.toFixed(2)}</span>
-                    </div>
-                ` : ''}
-                ${billData.sgst > 0 ? `
-                    <div style="display: flex; justify-content: space-between; margin: 3px 0;">
-                        <span>SGST (${localStorage.getItem('sgstRate') || 2.5}%):</span>
-                        <span>₹${billData.sgst.toFixed(2)}</span>
-                    </div>
-                ` : ''}
-            </div>
-            
-            <div style="border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-size: 14px; font-weight: bold; display: flex; justify-content: space-between;">
-                <span>TOTAL:</span>
-                <span>₹${billData.total.toFixed(2)}</span>
-            </div>
-            
-            <div style="text-align: center; margin-top: 15px; font-size: 9px; border-top: 1px dashed #000; padding-top: 10px;">
-                ${localStorage.getItem('gstNo') ? `<div>GST: ${localStorage.getItem('gstNo')}</div>` : ''}
-                ${localStorage.getItem('resPhone') ? `<div>Ph: ${localStorage.getItem('resPhone')}</div>` : ''}
-                <div style="margin-top: 10px; font-weight: bold;">Thank you! Visit Again</div>
-            </div>
-        </div>
-    `;
-    
+    const billHTML = generateBillHTML(invoiceNumber, billData, date);
     document.getElementById("billHTML").innerHTML = billHTML;
     document.getElementById("deleteBillBtn").style.display = "none";
     currentBillKey = null;
     
     nav(null, 'preview');
     showToast("Bill preview ready", "success");
+}
+
+function generateBillHTML(invoiceNumber, billData, date) {
+    const printerWidth = localStorage.getItem('printerWidth') || '58';
+    const gstNo = localStorage.getItem('gstNo') || '';
+    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
+    const resName = localStorage.getItem('resName') || "The House of Biryani's";
+    const resAddr = localStorage.getItem('resAddr') || '';
+    const resPhone = localStorage.getItem('resPhone') || '';
+    
+    return `
+        <div class="bill-print" style="width: ${printerWidth}mm;">
+            <div class="header">
+                <div style="font-size: 12px; font-weight: bold; text-transform: uppercase;">${resName}</div>
+                ${resAddr ? `<div style="font-size: 9px;">${resAddr}</div>` : ''}
+                <div style="margin: 5px 0; font-weight: bold; font-size: 11px;">TAX INVOICE</div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 5px;">
+                <div>Invoice: ${invoiceNumber}</div>
+                <div>${date.toLocaleDateString('en-IN')}</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 5px;">
+                <div>Time: ${date.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}</div>
+                <div>Type: ${currentOrderType}</div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: left; width: 50%; font-size: 9px;">Item</th>
+                        <th style="text-align: center; width: 15%; font-size: 9px;">Qty</th>
+                        <th style="text-align: right; width: 35%; font-size: 9px;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${cart.map(item => `
+                        <tr>
+                            <td style="font-size: 9px;">${item.name}</td>
+                            <td style="text-align: center; font-size: 9px;">${item.quantity}</td>
+                            <td style="text-align: right; font-size: 9px;">${(item.price * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            
+            <div class="divider"></div>
+            
+            <div style="font-size: 9px;">
+                <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                    <span>Subtotal:</span>
+                    <span>₹${billData.subtotal.toFixed(2)}</span>
+                </div>
+                ${billData.serviceCharge > 0 ? `
+                    <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                        <span>Service Charge:</span>
+                        <span>₹${billData.serviceCharge.toFixed(2)}</span>
+                    </div>
+                ` : ''}
+                ${billData.discount > 0 ? `
+                    <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                        <span>Discount:</span>
+                        <span>-₹${billData.discount.toFixed(2)}</span>
+                    </div>
+                ` : ''}
+                ${billData.gstEnabled ? `
+                    ${billData.cgst > 0 ? `
+                        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                            <span>CGST:</span>
+                            <span>₹${billData.cgst.toFixed(2)}</span>
+                        </div>
+                    ` : ''}
+                    ${billData.sgst > 0 ? `
+                        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                            <span>SGST:</span>
+                            <span>₹${billData.sgst.toFixed(2)}</span>
+                        </div>
+                    ` : ''}
+                ` : ''}
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin: 5px 0;">
+                <span>TOTAL:</span>
+                <span>₹${billData.total.toFixed(2)}</span>
+            </div>
+            
+            ${gstEnabled && gstNo ? `
+                <div style="text-align: center; font-size: 8px; margin: 5px 0;">
+                    <div>GST: ${gstNo}</div>
+                </div>
+            ` : ''}
+            
+            <div style="text-align: center; font-size: 8px; margin-top: 10px;">
+                ${resPhone ? `<div>Phone: ${resPhone}</div>` : ''}
+                <div style="margin-top: 5px; font-weight: bold;">Thank you! Visit Again</div>
+            </div>
+            
+            ${localStorage.getItem('printerCut') === 'true' ? `
+                <div style="text-align: center; margin-top: 20px;">
+                    <div style="font-size: 8px;">--- CUT HERE ---</div>
+                </div>
+            ` : ''}
+        </div>
+    `;
 }
 
 function saveBill() {
@@ -1553,29 +1795,82 @@ function saveBill() {
     }, 1500);
 }
 
+// ========== PRINTING FOR MT-02/HOP-HL58 PRINTER ==========
 function printBill() {
-    const printContent = document.getElementById('printableBill')?.innerHTML;
+    const printContent = document.querySelector('.bill-print')?.outerHTML;
     if (!printContent) {
         showToast("No bill to print", "error");
         return;
     }
     
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
+    const printerWidth = localStorage.getItem('printerWidth') || '58';
+    const autoCut = localStorage.getItem('printerCut') === 'true';
+    
+    // Create a print-friendly HTML with thermal printer styles
+    const printHTML = `
+        <!DOCTYPE html>
         <html>
-        <head><title>Print Bill</title>
-        <style>
-            @page { margin: 0; size: 80mm auto; }
-            body { margin: 0; padding: 2mm; font-family: 'Courier New', monospace; font-size: 10px; width: 76mm; }
-            .bill-print { width: 76mm !important; padding: 2mm !important; }
-        </style>
+        <head>
+            <title>Print Bill</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                @page {
+                    margin: 0;
+                    size: ${printerWidth}mm auto;
+                }
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 9px;
+                    width: ${printerWidth}mm;
+                    background: white;
+                    color: black;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                .bill-print {
+                    width: ${printerWidth}mm !important;
+                    padding: 2mm !important;
+                    font-size: 9px !important;
+                    line-height: 1.2 !important;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                td, th {
+                    padding: 1px 0;
+                    font-size: 8px;
+                }
+                .divider {
+                    border-top: 1px dashed #000;
+                    margin: 2px 0;
+                }
+            </style>
         </head>
-        <body onload="window.print(); setTimeout(() => window.close(), 1000);">
+        <body onload="window.print(); ${autoCut ? 'window.close();' : 'setTimeout(() => window.close(), 1000);'}">
             ${printContent}
         </body>
         </html>
-    `);
+    `;
+    
+    const printWindow = window.open('', '_blank', 'width=400,height=600');
+    printWindow.document.write(printHTML);
     printWindow.document.close();
+    
+    // Add printer-specific ESC/POS commands for auto cut (if supported by browser/plugin)
+    if (autoCut && typeof window.jsPrintSetup !== 'undefined') {
+        // This would require a browser extension that supports ESC/POS
+        try {
+            printWindow.document.write('\x1B\x69'); // ESC i (partial cut)
+        } catch (e) {
+            console.log("Auto cut not supported in this browser");
+        }
+    }
 }
 
 function closePreview() {
@@ -1685,8 +1980,8 @@ function reprintBill(index) {
             <html>
             <head><title>Reprint Bill</title>
             <style>
-                @page { margin: 0; size: 80mm auto; }
-                body { margin: 0; padding: 2mm; font-family: 'Courier New', monospace; font-size: 10px; width: 76mm; }
+                @page { margin: 0; size: 58mm auto; }
+                body { margin: 0; padding: 2mm; font-family: 'Courier New', monospace; font-size: 9px; width: 58mm; }
             </style>
             </head>
             <body onload="window.print(); setTimeout(() => window.close(), 1000);">
@@ -1700,40 +1995,53 @@ function reprintBill(index) {
 }
 
 function generateBillHTMLForPrint(bill) {
+    const printerWidth = localStorage.getItem('printerWidth') || '58';
+    const gstNo = localStorage.getItem('gstNo') || '';
+    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
+    const resName = localStorage.getItem('resName') || "The House of Biryani's";
+    
     return `
-        <div style="width: 76mm; padding: 2mm; font-family: 'Courier New', monospace; font-size: 10px;">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div style="font-size: 18px; font-weight: bold;">${localStorage.getItem('resName') || "The House of Biryani's"}</div>
-                <div style="font-size: 12px; margin: 5px 0;">REPRINT</div>
-                <div style="font-size: 14px; font-weight: bold; margin: 10px 0;">TAX INVOICE</div>
+        <div class="bill-print" style="width: ${printerWidth}mm;">
+            <div class="header">
+                <div style="font-size: 12px; font-weight: bold; text-transform: uppercase;">${resName}</div>
+                <div style="margin: 5px 0; font-weight: bold; font-size: 11px;">REPRINT - TAX INVOICE</div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 5px;">
                 <div>Invoice: ${bill.invoiceNumber}</div>
-                <div>${new Date(bill.date).toLocaleDateString()}</div>
+                <div>${new Date(bill.date).toLocaleDateString('en-IN')}</div>
             </div>
             
-            <div style="font-size: 10px; margin-bottom: 15px;">
-                Type: ${bill.orderType}
-            </div>
+            <div class="divider"></div>
             
-            <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0;">
-                ${bill.items.map(item => `
+            <table>
+                <thead>
                     <tr>
-                        <td style="padding: 3px 0;">${item.name}</td>
-                        <td style="text-align: center; padding: 3px 0;">${item.quantity}</td>
-                        <td style="text-align: right; padding: 3px 0;">${(item.price * item.quantity).toFixed(2)}</td>
+                        <th style="text-align: left; width: 50%; font-size: 9px;">Item</th>
+                        <th style="text-align: center; width: 15%; font-size: 9px;">Qty</th>
+                        <th style="text-align: right; width: 35%; font-size: 9px;">Amount</th>
                     </tr>
-                `).join('')}
+                </thead>
+                <tbody>
+                    ${bill.items.map(item => `
+                        <tr>
+                            <td style="font-size: 9px;">${item.name}</td>
+                            <td style="text-align: center; font-size: 9px;">${item.quantity}</td>
+                            <td style="text-align: right; font-size: 9px;">${(item.price * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
             </table>
             
-            <div style="border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-size: 14px; font-weight: bold; display: flex; justify-content: space-between;">
+            <div class="divider"></div>
+            
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin: 5px 0;">
                 <span>TOTAL:</span>
                 <span>₹${bill.total.toFixed(2)}</span>
             </div>
             
-            <div style="text-align: center; margin-top: 15px; font-size: 9px;">
-                <div>*** REPRINT ***</div>
+            <div style="text-align: center; font-size: 8px; margin-top: 10px;">
+                <div style="font-weight: bold;">*** REPRINT ***</div>
             </div>
         </div>
     `;
@@ -1955,32 +2263,52 @@ function refreshSales() {
 
 // ========== SETTINGS ==========
 function loadSettings() {
+    // Restaurant Info
     document.getElementById('resName').value = localStorage.getItem('resName') || 'The House of Biryani\'s';
     document.getElementById('resAddr').value = localStorage.getItem('resAddr') || '';
     document.getElementById('resPhone').value = localStorage.getItem('resPhone') || '';
     document.getElementById('resEmail').value = localStorage.getItem('resEmail') || '';
+    
+    // GST Settings
+    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
+    document.getElementById('gstEnabled').checked = gstEnabled;
     document.getElementById('gstNo').value = localStorage.getItem('gstNo') || '';
     document.getElementById('cgstRate').value = localStorage.getItem('cgstRate') || '2.5';
     document.getElementById('sgstRate').value = localStorage.getItem('sgstRate') || '2.5';
+    
+    // Update GST fields visibility
+    toggleGSTFields();
+    
+    // Other settings
     document.getElementById('serviceCharge').value = localStorage.getItem('serviceCharge') || '0';
     document.getElementById('discountRate').value = localStorage.getItem('discountRate') || '0';
     document.getElementById('autoPrint').checked = localStorage.getItem('autoPrint') === 'true';
+    document.getElementById('printerCut').checked = localStorage.getItem('printerCut') === 'true';
+    document.getElementById('printerWidth').value = localStorage.getItem('printerWidth') || '58';
     document.getElementById('soundEnabled').checked = localStorage.getItem('soundEnabled') !== 'false';
     
     loadMenuEditor();
 }
 
 function saveAllSettings() {
+    // Restaurant Info
     localStorage.setItem('resName', document.getElementById('resName').value);
     localStorage.setItem('resAddr', document.getElementById('resAddr').value);
     localStorage.setItem('resPhone', document.getElementById('resPhone').value);
     localStorage.setItem('resEmail', document.getElementById('resEmail').value);
+    
+    // GST Settings
+    localStorage.setItem('gstEnabled', document.getElementById('gstEnabled').checked);
     localStorage.setItem('gstNo', document.getElementById('gstNo').value);
     localStorage.setItem('cgstRate', document.getElementById('cgstRate').value);
     localStorage.setItem('sgstRate', document.getElementById('sgstRate').value);
+    
+    // Other settings
     localStorage.setItem('serviceCharge', document.getElementById('serviceCharge').value);
     localStorage.setItem('discountRate', document.getElementById('discountRate').value);
     localStorage.setItem('autoPrint', document.getElementById('autoPrint').checked);
+    localStorage.setItem('printerCut', document.getElementById('printerCut').checked);
+    localStorage.setItem('printerWidth', document.getElementById('printerWidth').value);
     localStorage.setItem('soundEnabled', document.getElementById('soundEnabled').checked);
     
     showToast("Settings saved", "success");
