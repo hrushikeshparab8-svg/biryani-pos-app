@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#121212">
 <title>The House of Biryani's POS</title>
 
 <style>
-/* Modern Design System */
+/* ========== ROOT VARIABLES ========== */
 :root {
     --primary: #7B1FA2;
     --primary-light: #9C27B0;
@@ -31,15 +35,81 @@
     --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
 }
 
+/* ========== LIGHT MODE VARIABLES ========== */
+body.light-mode {
+    --background: #f5f5f5;
+    --surface: #ffffff;
+    --surface-light: #f9f9f9;
+    --surface-dark: #eeeeee;
+    --text-primary: #212121;
+    --text-secondary: #666666;
+    --border: #e0e0e0;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ========== BASE STYLES ========== */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+    height: 100%;
+}
+
 body {
     margin: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--background);
     color: var(--text-primary);
     overflow-x: hidden;
+    overscroll-behavior: none;
+    height: 100vh;
+    height: -webkit-fill-available;
 }
 
-/* Glass Morphism */
+/* ========== PREVENT ZOOM ========== */
+@media screen and (orientation: landscape) {
+    html {
+        -webkit-text-size-adjust: none;
+        text-size-adjust: none;
+    }
+}
+
+/* ========== ANDROID SAFE AREA SUPPORT ========== */
+@supports (-webkit-touch-callout: none) {
+    body {
+        min-height: -webkit-fill-available;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .tabbar {
+        padding-bottom: env(safe-area-inset-bottom);
+        height: calc(80px + env(safe-area-inset-bottom)) !important;
+    }
+    
+    header {
+        padding-top: env(safe-area-inset-top);
+        height: calc(70px + env(safe-area-inset-top));
+    }
+    
+    main {
+        padding-top: calc(90px + env(safe-area-inset-top));
+    }
+}
+
+/* ========== GLASS MORPHISM ========== */
 .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
@@ -50,7 +120,7 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* Header */
+/* ========== HEADER ========== */
 header {
     position: fixed;
     top: 0;
@@ -58,6 +128,7 @@ header {
     height: 70px;
     background: rgba(18, 18, 18, 0.9);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -65,6 +136,10 @@ header {
     box-shadow: var(--shadow-light);
     z-index: 1000;
     border-bottom: 1px solid var(--border);
+}
+
+body.light-mode header {
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .logo-container {
@@ -99,6 +174,8 @@ header {
 .header-btn {
     width: 44px;
     height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 12px;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -109,19 +186,21 @@ header {
     font-size: 20px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
 }
 
-.header-btn:hover {
+.header-btn:hover, .header-btn:active {
     background: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(123, 31, 162, 0.3);
 }
 
-/* Main Layout */
+/* ========== MAIN LAYOUT ========== */
 main {
     padding: 90px 20px 100px;
     max-width: 1400px;
     margin: 0 auto;
+    min-height: calc(100vh - 190px);
 }
 
 .grid {
@@ -141,7 +220,7 @@ main {
     }
 }
 
-/* Modern Tabbar */
+/* ========== MODERN TABBAR ========== */
 .tabbar {
     position: fixed;
     bottom: 0;
@@ -149,6 +228,7 @@ main {
     height: 80px;
     background: rgba(30, 30, 30, 0.95);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -157,11 +237,16 @@ main {
     padding: 0 20px;
 }
 
+body.light-mode .tabbar {
+    background: rgba(255, 255, 255, 0.95);
+}
+
 .tabbar button {
     flex: 1;
     background: transparent;
     border: none;
     height: 100%;
+    min-height: 44px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -173,6 +258,8 @@ main {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
 }
 
 .tabbar button i {
@@ -200,7 +287,7 @@ main {
     border-radius: 3px;
 }
 
-/* Modern Buttons */
+/* ========== MODERN BUTTONS ========== */
 button {
     border: none;
     border-radius: 14px;
@@ -215,6 +302,9 @@ button {
     gap: 10px;
     position: relative;
     overflow: hidden;
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button::after {
@@ -241,7 +331,7 @@ button:active::after {
     box-shadow: 0 4px 20px rgba(123, 31, 162, 0.3);
 }
 
-.primary:hover {
+.primary:hover, .primary:active {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(123, 31, 162, 0.4);
 }
@@ -252,7 +342,7 @@ button:active::after {
     border: 1px solid var(--border);
 }
 
-.secondary:hover {
+.secondary:hover, .secondary:active {
     background: var(--surface-light);
     border-color: var(--primary);
 }
@@ -262,7 +352,7 @@ button:active::after {
     color: white;
 }
 
-.danger:hover {
+.danger:hover, .danger:active {
     background: #d32f2f;
     transform: translateY(-2px);
 }
@@ -272,7 +362,7 @@ button:active::after {
     color: white;
 }
 
-/* Cards */
+/* ========== CARDS ========== */
 .card {
     background: var(--surface);
     border-radius: 20px;
@@ -280,6 +370,8 @@ button:active::after {
     margin-bottom: 20px;
     border: 1px solid var(--border);
     transition: all 0.3s ease;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .card:hover {
@@ -287,7 +379,7 @@ button:active::after {
     box-shadow: var(--shadow);
 }
 
-/* Modern Menu Items */
+/* ========== MODERN MENU ITEMS ========== */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -304,9 +396,13 @@ button:active::after {
     border: 1px solid var(--border);
     position: relative;
     overflow: hidden;
+    min-height: 120px;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-tap-highlight-color: transparent;
 }
 
-.menu-item:hover {
+.menu-item:hover, .menu-item:active {
     transform: translateY(-6px);
     border-color: var(--primary);
     box-shadow: 0 12px 30px rgba(123, 31, 162, 0.2);
@@ -351,6 +447,8 @@ button:active::after {
     right: 16px;
     width: 36px;
     height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     border-radius: 50%;
     background: var(--primary);
     color: white;
@@ -361,6 +459,7 @@ button:active::after {
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .menu-item:hover .menu-item-add {
@@ -368,7 +467,7 @@ button:active::after {
     transform: scale(1);
 }
 
-/* Enhanced Order Type */
+/* ========== ENHANCED ORDER TYPE ========== */
 .order-type-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -388,6 +487,9 @@ button:active::after {
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .order-type-btn i {
@@ -406,7 +508,7 @@ button:active::after {
     color: var(--primary);
 }
 
-/* Enhanced Cart */
+/* ========== ENHANCED CART ========== */
 .cart-container {
     background: var(--surface);
     border-radius: 20px;
@@ -425,9 +527,12 @@ button:active::after {
     margin-bottom: 12px;
     border: 1px solid transparent;
     transition: all 0.3s ease;
+    min-height: 44px;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
-.cart-item:hover {
+.cart-item:hover, .cart-item:active {
     border-color: var(--primary);
     transform: translateX(4px);
 }
@@ -456,6 +561,8 @@ button:active::after {
 .qty-btn {
     width: 36px;
     height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     border-radius: 10px;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -466,9 +573,11 @@ button:active::after {
     font-weight: bold;
     font-size: 18px;
     transition: all 0.2s ease;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.qty-btn:hover {
+.qty-btn:hover, .qty-btn:active {
     background: var(--primary);
     color: white;
 }
@@ -479,20 +588,24 @@ button:active::after {
     color: var(--danger);
     width: 36px;
     height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
     margin-left: 8px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.cart-item-remove:hover {
+.cart-item-remove:hover, .cart-item-remove:active {
     background: var(--danger);
     color: white;
 }
 
-/* Enhanced Sales Tab */
+/* ========== ENHANCED SALES TAB ========== */
 .sales-filters {
     display: flex;
     gap: 12px;
@@ -507,6 +620,10 @@ button:active::after {
     border-radius: 12px;
     font-weight: 500;
     transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .filter-btn.active {
@@ -528,6 +645,8 @@ button:active::after {
     padding: 24px;
     text-align: center;
     border: 1px solid var(--border);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .stat-value {
@@ -551,7 +670,7 @@ button:active::after {
     border: 1px solid var(--border);
 }
 
-/* Enhanced Settings */
+/* ========== ENHANCED SETTINGS ========== */
 .settings-container {
     max-width: 800px;
     margin: 0 auto;
@@ -603,6 +722,9 @@ button:active::after {
     color: var(--text-primary);
     font-size: 16px;
     transition: all 0.3s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    font-size: 16px !important; /* Prevent iOS zoom */
 }
 
 .input-group input:focus,
@@ -613,7 +735,7 @@ button:active::after {
     box-shadow: 0 0 0 2px rgba(123, 31, 162, 0.2);
 }
 
-/* Enhanced Password Modal */
+/* ========== ENHANCED PASSWORD MODAL ========== */
 .password-modal {
     position: fixed;
     top: 0;
@@ -622,6 +744,7 @@ button:active::after {
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     z-index: 2000;
     display: none;
     align-items: center;
@@ -643,7 +766,7 @@ button:active::after {
     border: 1px solid var(--border);
 }
 
-/* Print Styles */
+/* ========== PRINT STYLES ========== */
 .bill-print {
     font-family: 'Courier New', monospace;
     width: 80mm;
@@ -652,10 +775,11 @@ button:active::after {
     font-size: 12px;
     line-height: 1.3;
     background: white;
+    color: black;
     border-radius: 0;
 }
 
-/* Animations */
+/* ========== ANIMATIONS ========== */
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -675,13 +799,13 @@ button:active::after {
     animation: pulse 2s infinite;
 }
 
-/* Utility Classes */
+/* ========== UTILITY CLASSES ========== */
 .hidden { display: none !important; }
 .text-center { text-align: center; }
 .mb-20 { margin-bottom: 20px; }
 .mt-20 { margin-top: 20px; }
 
-/* Scrollbar */
+/* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -699,7 +823,7 @@ button:active::after {
     background: var(--primary-light);
 }
 
-/* Toast Notifications */
+/* ========== TOAST NOTIFICATIONS ========== */
 .toast {
     position: fixed;
     top: 100px;
@@ -718,7 +842,7 @@ button:active::after {
     transform: translateX(0);
 }
 
-/* Loading Spinner */
+/* ========== LOADING SPINNER ========== */
 .spinner {
     width: 40px;
     height: 40px;
@@ -742,9 +866,12 @@ button:active::after {
     border: 1px solid var(--border);
     transition: all 0.3s ease;
     cursor: pointer;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-tap-highlight-color: transparent;
 }
 
-.bill-card:hover {
+.bill-card:hover, .bill-card:active {
     transform: translateY(-4px);
     border-color: var(--primary);
     box-shadow: var(--shadow-light);
@@ -794,6 +921,8 @@ button:active::after {
 .bill-action-btn {
     width: 36px;
     height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     border-radius: 10px;
     background: var(--surface-light);
     border: 1px solid var(--border);
@@ -804,9 +933,10 @@ button:active::after {
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.bill-action-btn:hover {
+.bill-action-btn:hover, .bill-action-btn:active {
     background: var(--primary);
     color: white;
 }
@@ -866,6 +996,7 @@ button:active::after {
     background: var(--surface);
     color: var(--text-primary);
     font-size: 16px;
+    font-size: 16px !important;
 }
 
 .bill-stats {
@@ -895,27 +1026,6 @@ button:active::after {
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-/* Responsive adjustments */
-@media(max-width: 768px) {
-    .bill-filters {
-        grid-template-columns: 1fr;
-    }
-    
-    .bill-details {
-        grid-template-columns: 1fr;
-    }
-    
-    .bill-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .bill-amount {
-        align-self: flex-end;
-    }
 }
 
 /* GST toggle styles */
@@ -983,6 +1093,8 @@ input:checked + .toggle-slider:before {
         font-family: 'Courier New', monospace;
         font-size: 10px;
         width: 76mm;
+        background: white;
+        color: black;
     }
     .bill-print {
         width: 76mm !important;
@@ -992,6 +1104,79 @@ input:checked + .toggle-slider:before {
     .no-print {
         display: none !important;
     }
+    header, .tabbar, .header-btn, button {
+        display: none !important;
+    }
+}
+
+/* Responsive adjustments */
+@media(max-width: 768px) {
+    .bill-filters {
+        grid-template-columns: 1fr;
+    }
+    
+    .bill-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .bill-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .bill-amount {
+        align-self: flex-end;
+    }
+    
+    .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .order-type-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Small mobile screens */
+@media(max-width: 480px) {
+    main {
+        padding: 80px 12px 90px;
+    }
+    
+    .card {
+        padding: 16px;
+    }
+    
+    .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+    }
+    
+    .menu-item {
+        padding: 16px;
+    }
+    
+    .header-title {
+        font-size: 18px;
+    }
+    
+    .header-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Prevent iOS bounce */
+body {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Fix for form elements on mobile */
+input, select, textarea {
+    font-size: 16px !important; /* Prevent iOS zoom */
 }
 </style>
 
@@ -1047,7 +1232,7 @@ input:checked + .toggle-slider:before {
         <div id="menu" class="menu-grid"></div>
         
         <div style="display: flex; gap: 12px; margin-top: 24px;">
-            <input type="text" id="searchMenu" placeholder="🔍 Search menu items..." style="flex: 1;">
+            <input type="text" id="searchMenu" placeholder="🔍 Search menu items..." style="flex: 1; padding: 16px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-primary); font-size: 16px !important;">
             <button class="secondary" onclick="filterMenu()">Filter</button>
         </div>
     </div>
@@ -1108,11 +1293,11 @@ input:checked + .toggle-slider:before {
         
         <div class="bill-filters">
             <div class="bill-search">
-                <input type="text" id="searchBills" placeholder="🔍 Search by invoice or customer..." oninput="loadBills()">
+                <input type="text" id="searchBills" placeholder="🔍 Search by invoice or customer..." oninput="loadBills()" style="font-size: 16px !important;">
                 <button class="secondary" onclick="clearBillFilters()">Clear</button>
             </div>
-            <input type="date" id="filterDate" onchange="loadBills()">
-            <select id="filterType" onchange="loadBills()">
+            <input type="date" id="filterDate" onchange="loadBills()" style="font-size: 16px !important;">
+            <select id="filterType" onchange="loadBills()" style="font-size: 16px !important;">
                 <option value="all">All Types</option>
                 <option value="Dine In">Dine In</option>
                 <option value="Take Away">Take Away</option>
@@ -1188,11 +1373,11 @@ input:checked + .toggle-slider:before {
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px;">
             <div class="card">
-                <h4 style="margin-top: 0; margin-bottom: 16px;">Top Selling Items</h4>
+                <h4 style="margin-top: 0; margin-bottom: 16px;">Top Selling Items</div>
                 <div id="topItems"></div>
             </div>
             <div class="card">
-                <h4 style="margin-top: 0; margin-bottom: 16px;">Revenue by Type</h4>
+                <h4 style="margin-top: 0; margin-bottom: 16px;">Revenue by Type</div>
                 <div id="revenueByType"></div>
             </div>
         </div>
@@ -1224,22 +1409,22 @@ input:checked + .toggle-slider:before {
                     
                     <div class="input-group">
                         <label>Restaurant Name</label>
-                        <input id="resName" placeholder="The House of Biryani's" value="The House of Biryani's">
+                        <input id="resName" placeholder="The House of Biryani's" value="The House of Biryani's" style="font-size: 16px !important;">
                     </div>
                     
                     <div class="input-group">
                         <label>Address</label>
-                        <textarea id="resAddr" placeholder="Enter restaurant address" rows="3" style="width: 100%; padding: 16px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-primary);"></textarea>
+                        <textarea id="resAddr" placeholder="Enter restaurant address" rows="3" style="width: 100%; padding: 16px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-primary); font-size: 16px !important;"></textarea>
                     </div>
                     
                     <div class="input-group">
                         <label>Phone Number</label>
-                        <input id="resPhone" placeholder="+91 9876543210">
+                        <input id="resPhone" placeholder="+91 9876543210" style="font-size: 16px !important;">
                     </div>
                     
                     <div class="input-group">
                         <label>Email</label>
-                        <input id="resEmail" placeholder="contact@biryani.com" type="email">
+                        <input id="resEmail" placeholder="contact@biryani.com" type="email" style="font-size: 16px !important;">
                     </div>
                 </div>
                 
@@ -1282,32 +1467,32 @@ input:checked + .toggle-slider:before {
                 <div id="gstFields" class="setting-grid">
                     <div class="input-group">
                         <label>GST Number</label>
-                        <input id="gstNo" placeholder="29ABCDE1234F1Z5">
+                        <input id="gstNo" placeholder="29ABCDE1234F1Z5" style="font-size: 16px !important;">
                     </div>
                     <div class="input-group">
                         <label>CGST Rate (%)</label>
-                        <input id="cgstRate" type="number" step="0.1" value="2.5" min="0" max="100">
+                        <input id="cgstRate" type="number" step="0.1" value="2.5" min="0" max="100" style="font-size: 16px !important;">
                     </div>
                     <div class="input-group">
                         <label>SGST Rate (%)</label>
-                        <input id="sgstRate" type="number" step="0.1" value="2.5" min="0" max="100">
+                        <input id="sgstRate" type="number" step="0.1" value="2.5" min="0" max="100" style="font-size: 16px !important;">
                     </div>
                 </div>
                 
                 <div class="setting-grid">
                     <div class="input-group">
                         <label>Service Charge (%)</label>
-                        <input id="serviceCharge" type="number" step="0.1" value="0" min="0" max="100">
+                        <input id="serviceCharge" type="number" step="0.1" value="0" min="0" max="100" style="font-size: 16px !important;">
                     </div>
                     <div class="input-group">
                         <label>Discount (%)</label>
-                        <input id="discountRate" type="number" step="0.1" value="0" min="0" max="100">
+                        <input id="discountRate" type="number" step="0.1" value="0" min="0" max="100" style="font-size: 16px !important;">
                     </div>
                 </div>
                 
                 <div class="input-group">
                     <label>Footer Note (Optional)</label>
-                    <input id="footerNote" placeholder="Thank you! Visit Again">
+                    <input id="footerNote" placeholder="Thank you! Visit Again" style="font-size: 16px !important;">
                 </div>
             </div>
             
@@ -1319,8 +1504,8 @@ input:checked + .toggle-slider:before {
                 <div id="menuEditor" style="max-height: 400px; overflow-y: auto; margin-bottom: 24px;"></div>
                 
                 <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 12px;">
-                    <input id="newItemName" placeholder="Item Name">
-                    <input id="newItemPrice" placeholder="Price" type="number">
+                    <input id="newItemName" placeholder="Item Name" style="font-size: 16px !important;">
+                    <input id="newItemPrice" placeholder="Price" type="number" style="font-size: 16px !important;">
                     <button onclick="addMenuItem()" class="primary">
                         <span>➕</span>
                         Add
@@ -1368,10 +1553,10 @@ input:checked + .toggle-slider:before {
                 <div class="input-group">
                     <label>Invoice Number Prefix</label>
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-                        <input id="prefixDI" placeholder="DI" value="DI">
-                        <input id="prefixTA" placeholder="TA" value="TA">
-                        <input id="prefixSW" placeholder="SW" value="SW">
-                        <input id="prefixZO" placeholder="ZT" value="ZT">
+                        <input id="prefixDI" placeholder="DI" value="DI" style="font-size: 16px !important;">
+                        <input id="prefixTA" placeholder="TA" value="TA" style="font-size: 16px !important;">
+                        <input id="prefixSW" placeholder="SW" value="SW" style="font-size: 16px !important;">
+                        <input id="prefixZO" placeholder="ZT" value="ZT" style="font-size: 16px !important;">
                     </div>
                 </div>
             </div>
@@ -1384,9 +1569,9 @@ input:checked + .toggle-slider:before {
                 <div class="input-group">
                     <label>Change Password</label>
                     <div style="display: grid; gap: 12px;">
-                        <input type="password" id="currentPassword" placeholder="Current Password">
-                        <input type="password" id="newPassword" placeholder="New Password">
-                        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+                        <input type="password" id="currentPassword" placeholder="Current Password" style="font-size: 16px !important;">
+                        <input type="password" id="newPassword" placeholder="New Password" style="font-size: 16px !important;">
+                        <input type="password" id="confirmPassword" placeholder="Confirm Password" style="font-size: 16px !important;">
                         <button onclick="changePassword()" class="secondary">
                             <span>🔑</span>
                             Update Password
@@ -1496,7 +1681,7 @@ input:checked + .toggle-slider:before {
             Enter password to access settings
         </div>
         
-        <input type="password" id="passwordInput" placeholder="Enter password" style="width: 100%; margin-bottom: 24px;">
+        <input type="password" id="passwordInput" placeholder="Enter password" style="width: 100%; margin-bottom: 24px; padding: 16px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-primary); font-size: 16px !important;">
         
         <div style="display: grid; gap: 12px;">
             <button onclick="checkPassword()" class="primary">
@@ -1521,7 +1706,7 @@ input:checked + .toggle-slider:before {
             Select file to import
         </div>
         
-        <input type="file" id="importFile" accept=".json" style="width: 100%; margin-bottom: 24px;">
+        <input type="file" id="importFile" accept=".json" style="width: 100%; margin-bottom: 24px; padding: 16px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-primary);">
         
         <div style="display: grid; gap: 12px;">
             <button onclick="processImport()" class="primary">
@@ -1556,6 +1741,23 @@ const invoiceCounters = {
 
 // Initialize on load
 window.onload = function() {
+    // Prevent zoom on mobile
+    document.addEventListener('touchmove', function(e) {
+        if(e.scale !== 1) e.preventDefault();
+    }, { passive: false });
+    
+    // Prevent context menu on long press
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+    
+    // Check for Android
+    const isAndroid = /Android/.test(navigator.userAgent);
+    if (isAndroid) {
+        document.body.classList.add('android');
+        console.log('Android device detected');
+    }
+    
     initDatabase();
     loadMenu();
     loadLogo();
@@ -1570,10 +1772,35 @@ window.onload = function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('filterDate').value = today;
     document.getElementById('filterDate').max = today;
+    
+    // Apply saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+    }
 };
+
+// ========== PREVENT ZOOM FUNCTIONS ==========
+document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) {
+        e.preventDefault();
+    }
+}, { passive: false });
 
 // ========== DATABASE INITIALIZATION ==========
 function initDatabase() {
+    // Check if IndexedDB is available
+    if (!window.indexedDB) {
+        console.log("IndexedDB not supported. Using localStorage fallback.");
+        initLocalStorageFallback();
+        showToast("Using localStorage fallback", "info");
+        return;
+    }
+    
     let request = indexedDB.open("POS_DB_v3", 4);
     
     request.onupgradeneeded = e => {
@@ -1598,12 +1825,130 @@ function initDatabase() {
     
     request.onsuccess = e => {
         db = e.target.result;
-        showToast("System ready", "success");
+        console.log("Database initialized successfully");
+        // Load initial data
+        setTimeout(() => {
+            loadMenu();
+            loadLogo();
+            loadSettings();
+        }, 100);
     };
     
     request.onerror = e => {
         console.error("Database error:", e.target.error);
-        showToast("Database error", "error");
+        initLocalStorageFallback();
+    };
+}
+
+// Fallback for older browsers
+function initLocalStorageFallback() {
+    console.log("Initializing localStorage fallback");
+    
+    // Convert existing IndexedDB data to localStorage if needed
+    if (!localStorage.getItem('bills')) {
+        localStorage.setItem('bills', '[]');
+    }
+    if (!localStorage.getItem('menu')) {
+        const defaultMenu = [
+            { name: "Chicken Biryani", price: 220 },
+            { name: "Mutton Biryani", price: 280 },
+            { name: "Veg Biryani", price: 180 },
+            { name: "Paneer Biryani", price: 200 },
+            { name: "Chicken 65", price: 250 },
+            { name: "Mutton Curry", price: 300 },
+            { name: "Paneer Butter Masala", price: 220 },
+            { name: "Chicken Tikka", price: 280 },
+            { name: "Naan", price: 40 },
+            { name: "Butter Naan", price: 50 },
+            { name: "Roti", price: 20 },
+            { name: "Rice", price: 100 },
+            { name: "Coke", price: 40 },
+            { name: "Water Bottle", price: 20 },
+            { name: "Lassi", price: 60 }
+        ];
+        localStorage.setItem('menu', JSON.stringify(defaultMenu));
+    }
+    
+    // Create a mock database object for compatibility
+    db = {
+        transaction: function(storeNames, mode) {
+            return {
+                objectStore: function(storeName) {
+                    return {
+                        getAll: function() {
+                            const self = this;
+                            return {
+                                onsuccess: function(callback) {
+                                    const data = JSON.parse(localStorage.getItem(storeName) || '[]');
+                                    if (callback) {
+                                        callback({ target: { result: data } });
+                                    }
+                                },
+                                onerror: function(callback) {
+                                    if (callback) callback();
+                                }
+                            };
+                        },
+                        add: function(data) {
+                            const items = JSON.parse(localStorage.getItem(storeName) || '[]');
+                            data.id = Date.now() + Math.random();
+                            items.push(data);
+                            localStorage.setItem(storeName, JSON.stringify(items));
+                            return {
+                                onsuccess: function(callback) {
+                                    if (callback) setTimeout(callback, 0);
+                                },
+                                onerror: function(callback) {
+                                    if (callback) setTimeout(callback, 0);
+                                }
+                            };
+                        },
+                        get: function(id) {
+                            return {
+                                onsuccess: function(callback) {
+                                    const items = JSON.parse(localStorage.getItem(storeName) || '[]');
+                                    const item = items.find(i => i.id === id);
+                                    if (callback) {
+                                        callback({ target: { result: item } });
+                                    }
+                                },
+                                onerror: function(callback) {
+                                    if (callback) callback();
+                                }
+                            };
+                        },
+                        delete: function(id) {
+                            return {
+                                onsuccess: function(callback) {
+                                    const items = JSON.parse(localStorage.getItem(storeName) || '[]');
+                                    const filtered = items.filter(i => i.id !== id);
+                                    localStorage.setItem(storeName, JSON.stringify(filtered));
+                                    if (callback) setTimeout(callback, 0);
+                                },
+                                onerror: function(callback) {
+                                    if (callback) callback();
+                                }
+                            };
+                        },
+                        put: function(data) {
+                            return {
+                                onsuccess: function(callback) {
+                                    const items = JSON.parse(localStorage.getItem(storeName) || '[]');
+                                    const index = items.findIndex(i => i.id === data.id);
+                                    if (index > -1) {
+                                        items[index] = data;
+                                    } else {
+                                        items.push(data);
+                                    }
+                                    localStorage.setItem(storeName, JSON.stringify(items));
+                                    if (callback) setTimeout(callback, 0);
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        }
     };
 }
 
@@ -1611,12 +1956,34 @@ function initDatabase() {
 function applyTheme() {
     const primaryColor = localStorage.getItem('primaryColor') || '#7B1FA2';
     document.documentElement.style.setProperty('--primary', primaryColor);
+    
+    // Calculate lighter and darker shades
+    const primaryLight = adjustColor(primaryColor, 30);
+    const primaryDark = adjustColor(primaryColor, -30);
+    document.documentElement.style.setProperty('--primary-light', primaryLight);
+    document.documentElement.style.setProperty('--primary-dark', primaryDark);
+}
+
+function adjustColor(color, amount) {
+    const hex = color.replace('#', '');
+    const num = parseInt(hex, 16);
+    const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+    const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+    const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
 function toggleDarkMode() {
-    const isDark = document.body.classList.toggle('light-mode');
-    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    showToast(`Switched to ${isDark ? 'light' : 'dark'} mode`, "info");
+    // Toggle the class on body
+    document.body.classList.toggle('light-mode');
+    
+    // Update localStorage correctly
+    const isLight = document.body.classList.contains('light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    
+    // Show correct toast message
+    showToast(`Switched to ${isLight ? 'light' : 'dark'} mode`, "info");
+    playSound('click');
 }
 
 function quickSettings() {
@@ -1671,18 +2038,19 @@ function setOrderType(type) {
     document.querySelectorAll('.order-type-btn').forEach(btn => btn.classList.remove('active'));
     event.currentTarget.classList.add('active');
     showToast(`Order type: ${type}`, "info");
+    playSound('click');
 }
 
 // ========== MENU MANAGEMENT ==========
 function loadMenu() {
     const menuDiv = document.getElementById('menu');
-    const menuItems = JSON.parse(localStorage.getItem('menu') || '[]');
+    let menuItems = JSON.parse(localStorage.getItem('menu') || '[]');
     
     menuDiv.innerHTML = '';
     
     if (menuItems.length === 0) {
         // Load default menu if empty
-        const defaultMenu = [
+        menuItems = [
             { name: "Chicken Biryani", price: 220 },
             { name: "Mutton Biryani", price: 280 },
             { name: "Veg Biryani", price: 180 },
@@ -1699,8 +2067,7 @@ function loadMenu() {
             { name: "Water Bottle", price: 20 },
             { name: "Lassi", price: 60 }
         ];
-        localStorage.setItem('menu', JSON.stringify(defaultMenu));
-        menuItems = defaultMenu;
+        localStorage.setItem('menu', JSON.stringify(menuItems));
     }
     
     menuItems.forEach((item, index) => {
@@ -1710,14 +2077,16 @@ function loadMenu() {
         menuItem.innerHTML = `
             <div class="menu-item-name">${item.name}</div>
             <div class="menu-item-price">₹${item.price}</div>
-            <div class="menu-item-add" onclick="addToCart(${JSON.stringify(item).replace(/"/g, '&quot;')})">+</div>
+            <div class="menu-item-add" onclick="addToCart(${JSON.stringify(item).replace(/"/g, '&quot;')}); event.stopPropagation();">+</div>
         `;
-        menuItem.onclick = () => {
-            addToCart(item);
-            menuItem.style.animation = 'pulse 0.5s';
-            setTimeout(() => {
-                menuItem.style.animation = '';
-            }, 500);
+        menuItem.onclick = (e) => {
+            if (!e.target.classList.contains('menu-item-add')) {
+                addToCart(item);
+                menuItem.style.animation = 'pulse 0.5s';
+                setTimeout(() => {
+                    menuItem.style.animation = '';
+                }, 500);
+            }
         };
         menuDiv.appendChild(menuItem);
     });
@@ -1775,13 +2144,17 @@ function updateQuantity(itemId, change) {
 }
 
 function clearCart() {
-    if (cart.length === 0) return;
+    if (cart.length === 0) {
+        showToast("Cart is already empty", "info");
+        return;
+    }
     
     if (confirm("Clear all items from cart?")) {
         cart = [];
         renderCart();
         calc();
         showToast("Cart cleared", "info");
+        playSound('click');
     }
 }
 
@@ -1813,10 +2186,10 @@ function renderCart() {
                 <div class="cart-item-price">₹${item.price} × ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</div>
             </div>
             <div class="cart-item-controls">
-                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1); event.stopPropagation();">-</button>
                 <span style="min-width: 30px; text-align: center; font-weight: 600; color: var(--primary);">${item.quantity}</span>
-                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                <button class="cart-item-remove" onclick="removeFromCart(${item.id})">×</button>
+                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1); event.stopPropagation();">+</button>
+                <button class="cart-item-remove" onclick="removeFromCart(${item.id}); event.stopPropagation();">×</button>
             </div>
         `;
         cartDiv.appendChild(cartItem);
@@ -2049,7 +2422,7 @@ function saveBill() {
     };
     
     request.onerror = (e) => {
-        console.error("Error saving bill:", e.target.error);
+        console.error("Error saving bill:", e);
         showToast("Error saving bill", "error");
     };
 }
@@ -2208,13 +2581,13 @@ function displayFilteredBills() {
                     Paid via: ${bill.paymentMethod || 'Cash'}
                 </div>
                 <div class="bill-actions">
-                    <button class="bill-action-btn" onclick="reprintBill(${bill.id})" title="Reprint">
+                    <button class="bill-action-btn" onclick="reprintBill(${bill.id}); event.stopPropagation();" title="Reprint">
                         🖨️
                     </button>
-                    <button class="bill-action-btn" onclick="viewBill(${bill.id})" title="View Details">
+                    <button class="bill-action-btn" onclick="viewBill(${bill.id}); event.stopPropagation();" title="View Details">
                         👁️
                     </button>
-                    <button class="bill-action-btn" onclick="deleteBill(${bill.id})" title="Delete" style="color: var(--danger);">
+                    <button class="bill-action-btn" onclick="deleteBill(${bill.id}); event.stopPropagation();" title="Delete" style="color: var(--danger);">
                         🗑️
                     </button>
                 </div>
@@ -2338,6 +2711,7 @@ function convertBillsToCSV(bills) {
 function loadSampleBills() {
     const sampleBills = [
         {
+            id: Date.now() + 1,
             invoiceNumber: "DI-00001",
             items: [
                 { name: "Chicken Biryani", price: 220, quantity: 2 },
@@ -2353,9 +2727,11 @@ function loadSampleBills() {
             total: 1124.56,
             paymentMethod: "Cash",
             date: new Date().toISOString(),
-            gstEnabled: true
+            gstEnabled: true,
+            timestamp: Date.now()
         },
         {
+            id: Date.now() + 2,
             invoiceNumber: "TA-00001",
             items: [
                 { name: "Veg Biryani", price: 180, quantity: 3 },
@@ -2370,7 +2746,8 @@ function loadSampleBills() {
             total: 738.16,
             paymentMethod: "UPI",
             date: new Date(Date.now() - 86400000).toISOString(),
-            gstEnabled: true
+            gstEnabled: true,
+            timestamp: Date.now() - 86400000
         }
     ];
     
@@ -2636,7 +3013,7 @@ function convertToCSV(bills) {
         bill.orderType,
         bill.items.length,
         bill.subtotal.toFixed(2),
-        (bill.cgst + bill.sgst).toFixed(2),
+        ((bill.cgst || 0) + (bill.sgst || 0)).toFixed(2),
         bill.total.toFixed(2)
     ]);
     
@@ -2761,14 +3138,21 @@ function loadMenuEditor() {
         const editorItem = document.createElement('div');
         editorItem.className = 'menu-editor-item slide-in';
         editorItem.style.animationDelay = `${index * 0.05}s`;
+        editorItem.style.display = 'flex';
+        editorItem.style.justifyContent = 'space-between';
+        editorItem.style.alignItems = 'center';
+        editorItem.style.padding = '12px';
+        editorItem.style.marginBottom = '8px';
+        editorItem.style.backgroundColor = 'var(--surface-light)';
+        editorItem.style.borderRadius = '10px';
         editorItem.innerHTML = `
             <div>
                 <strong>${item.name}</strong>
                 <div style="color: var(--primary); font-size: 14px; margin-top: 4px;">₹${item.price}</div>
             </div>
             <div style="display: flex; gap: 8px;">
-                <button onclick="editMenuItem(${index})" style="padding: 8px 16px; background: var(--info); color: white; border: none; border-radius: 8px; cursor: pointer;">Edit</button>
-                <button onclick="deleteMenuItem(${index})" style="padding: 8px 16px; background: var(--danger); color: white; border: none; border-radius: 8px; cursor: pointer;">Delete</button>
+                <button onclick="editMenuItem(${index}); event.stopPropagation();" style="padding: 8px 16px; background: var(--info); color: white; border: none; border-radius: 8px; cursor: pointer;">Edit</button>
+                <button onclick="deleteMenuItem(${index}); event.stopPropagation();" style="padding: 8px 16px; background: var(--danger); color: white; border: none; border-radius: 8px; cursor: pointer;">Delete</button>
             </div>
         `;
         menuEditor.appendChild(editorItem);
