@@ -2,10 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <title>The House of Biryani's POS</title>
 
 <style>
+/* ========== REALME RMX2040 SPECIFIC FIXES ========== */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #121212;
+    color: #FFFFFF;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+}
+
 /* ========== ROOT VARIABLES ========== */
 :root {
     --primary: #7B1FA2;
@@ -31,7 +67,7 @@
     --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
 }
 
-/* ========== LIGHT MODE VARIABLES ========== */
+/* ========== LIGHT MODE ========== */
 body.light-mode {
     --background: #f5f5f5;
     --surface: #ffffff;
@@ -44,40 +80,6 @@ body.light-mode {
     --glass-border: rgba(0, 0, 0, 0.1);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-/* ========== BASE STYLES ========== */
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--background);
-    color: var(--text-primary);
-    position: fixed;
-    width: 100%;
-    height: 100%;
-}
-
-/* ========== SCROLL CONTAINER ========== */
-.scroll-container {
-    position: absolute;
-    top: 70px; /* Header height */
-    bottom: 80px; /* Tabbar height */
-    left: 0;
-    right: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-    overflow-x: hidden;
 }
 
 /* ========== HEADER ========== */
@@ -143,32 +145,32 @@ body.light-mode header {
     transition: all 0.3s ease;
 }
 
-.header-btn:hover, .header-btn:active {
+.header-btn:active {
     background: var(--primary);
+    transform: scale(0.95);
 }
 
-/* ========== MAIN LAYOUT ========== */
-main {
+/* ========== SCROLL CONTAINER ========== */
+.scroll-container {
+    position: absolute;
+    top: 70px;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
     padding: 20px;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
-.grid {
-    display: grid;
-    gap: 20px;
+/* Hide scrollbar for Realme */
+.scroll-container::-webkit-scrollbar {
+    display: none;
 }
 
-@media(min-width: 768px) {
-    .grid {
-        grid-template-columns: 2fr 1fr;
-    }
-}
-
-@media(min-width: 1200px) {
-    .grid {
-        grid-template-columns: 3fr 1fr;
-    }
+.scroll-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* ========== TABBAR ========== */
@@ -205,14 +207,57 @@ body.light-mode .tabbar {
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
+    min-height: 50px;
+    touch-action: manipulation;
 }
 
-.tabbar button i {
+.tabbar button span {
     font-size: 20px;
 }
 
 .tabbar button.active {
     color: var(--primary);
+}
+
+/* ========== MAIN LAYOUT ========== */
+.grid {
+    display: grid;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media(min-width: 768px) {
+    .grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+@media(min-width: 1200px) {
+    .grid {
+        grid-template-columns: 3fr 1fr;
+    }
+}
+
+/* ========== SECTIONS ========== */
+section {
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ========== CARDS ========== */
+.card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 /* ========== BUTTONS ========== */
@@ -228,6 +273,12 @@ button {
     justify-content: center;
     gap: 8px;
     transition: all 0.3s ease;
+    min-height: 50px;
+    touch-action: manipulation;
+}
+
+button:active {
+    transform: scale(0.98);
 }
 
 .primary {
@@ -235,8 +286,8 @@ button {
     color: white;
 }
 
-.primary:hover, .primary:active {
-    transform: translateY(-2px);
+.primary:active {
+    transform: translateY(-2px) scale(0.98);
     box-shadow: 0 4px 20px rgba(123, 31, 162, 0.3);
 }
 
@@ -246,7 +297,7 @@ button {
     border: 1px solid var(--border);
 }
 
-.secondary:hover, .secondary:active {
+.secondary:active {
     background: var(--surface-light);
     border-color: var(--primary);
 }
@@ -259,51 +310,6 @@ button {
 .success {
     background: var(--success);
     color: white;
-}
-
-/* ========== CARDS ========== */
-.card {
-    background: var(--surface);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-}
-
-/* ========== MENU ========== */
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
-}
-
-.menu-item {
-    background: var(--surface);
-    border-radius: 16px;
-    padding: 16px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.menu-item:hover, .menu-item:active {
-    transform: translateY(-4px);
-    border-color: var(--primary);
-    box-shadow: 0 8px 20px rgba(123, 31, 162, 0.2);
-}
-
-.menu-item-name {
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 16px;
-}
-
-.menu-item-price {
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 18px;
 }
 
 /* ========== ORDER TYPE ========== */
@@ -323,12 +329,14 @@ button {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-height: 80px;
 }
 
-.order-type-btn i {
+.order-type-btn span {
     font-size: 24px;
     color: var(--text-secondary);
     margin-bottom: 8px;
+    display: block;
 }
 
 .order-type-btn.active {
@@ -337,8 +345,50 @@ button {
     color: var(--primary);
 }
 
-.order-type-btn.active i {
+.order-type-btn.active span {
     color: var(--primary);
+}
+
+/* ========== MENU ========== */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.menu-item {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+    -webkit-touch-callout: none;
+    user-select: none;
+    transform: translateZ(0);
+}
+
+.menu-item:active {
+    transform: translateY(-4px) scale(0.98);
+    border-color: var(--primary);
+    box-shadow: 0 8px 20px rgba(123, 31, 162, 0.2);
+}
+
+.menu-item-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.menu-item-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 18px;
 }
 
 /* ========== CART ========== */
@@ -368,11 +418,12 @@ button {
 .cart-item-name {
     font-weight: 600;
     margin-bottom: 4px;
+    font-size: 14px;
 }
 
 .cart-item-price {
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cart-item-controls {
@@ -393,13 +444,82 @@ button {
     color: var(--text-primary);
     font-weight: bold;
     cursor: pointer;
+    font-size: 16px;
 }
 
-/* ========== UTILITY ========== */
-.hidden { display: none !important; }
-.text-center { text-align: center; }
-.mb-20 { margin-bottom: 20px; }
-.mt-20 { margin-top: 20px; }
+.qty-btn:active {
+    background: var(--primary);
+    color: white;
+}
+
+/* ========== BILL PREVIEW ========== */
+.bill-preview-container {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--border);
+    max-height: 500px;
+}
+
+.bill-print {
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--text-primary);
+    word-wrap: break-word;
+}
+
+.bill-print .header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 10px;
+}
+
+.bill-print .row {
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+    font-size: 11px;
+}
+
+.bill-print .divider {
+    border-top: 1px dashed var(--border);
+    margin: 8px 0;
+}
+
+.bill-print .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 10px 0;
+    padding-top: 10px;
+    border-top: 2px solid var(--primary);
+}
+
+/* ========== INPUTS ========== */
+input, select, textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 16px;
+    font-family: inherit;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
 
 /* ========== TOAST ========== */
 .toast {
@@ -414,13 +534,14 @@ button {
     z-index: 10000;
     transform: translateX(400px);
     transition: transform 0.3s ease;
+    max-width: 300px;
 }
 
 .toast.show {
     transform: translateX(0);
 }
 
-/* ========== MODALS ========== */
+/* ========== MODAL ========== */
 .password-modal {
     position: fixed;
     top: 0;
@@ -446,219 +567,6 @@ button {
     max-width: 400px;
     text-align: center;
     border: 1px solid var(--border);
-}
-
-/* ========== BILL STYLES ========== */
-.bill-card {
-    background: var(--surface);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-}
-
-.bill-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.bill-invoice {
-    font-weight: 700;
-    color: var(--primary);
-    font-size: 18px;
-}
-
-.bill-amount {
-    font-weight: 700;
-    font-size: 20px;
-    color: var(--primary);
-}
-
-.bill-type-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.bill-type-dinein {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-}
-
-.bill-type-takeaway {
-    background: rgba(33, 150, 243, 0.2);
-    color: #2196F3;
-}
-
-.bill-type-swiggy {
-    background: rgba(255, 152, 0, 0.2);
-    color: #FF9800;
-}
-
-.bill-type-zomato {
-    background: rgba(244, 67, 54, 0.2);
-    color: #F44336;
-}
-
-/* ========== RESPONSIVE ========== */
-@media(max-width: 768px) {
-    .menu-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-    
-    .order-type-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    main {
-        padding: 16px;
-    }
-}
-
-@media(max-width: 480px) {
-    .menu-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 12px;
-    }
-    
-    .menu-item {
-        padding: 12px;
-    }
-    
-    .header-title {
-        font-size: 16px;
-    }
-    
-    .order-type-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .tabbar button {
-        font-size: 11px;
-    }
-}
-
-/* ========== PRINT STYLES ========== */
-.bill-print {
-    font-family: 'Courier New', monospace;
-    width: 58mm;
-    padding: 0;
-    margin: 0;
-    font-size: 10px;
-    line-height: 1.2;
-    background: white;
-    color: black;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-.bill-print * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Thermal printer specific styles */
-.bill-print table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.bill-print td, .bill-print th {
-    padding: 2px 0;
-    font-size: 9px;
-}
-
-.bill-print .header {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.bill-print .center {
-    text-align: center;
-}
-
-.bill-print .right {
-    text-align: right;
-}
-
-.bill-print .left {
-    text-align: left;
-}
-
-.bill-print .divider {
-    border-top: 1px dashed #000;
-    margin: 3px 0;
-}
-
-.bill-print .bold {
-    font-weight: bold;
-}
-
-.bill-print .underline {
-    border-bottom: 1px solid #000;
-    padding-bottom: 2px;
-}
-
-.bill-print .double-underline {
-    border-bottom: 3px double #000;
-    padding-bottom: 2px;
-}
-
-@media print {
-    @page {
-        margin: 0;
-        size: 58mm auto;
-    }
-    
-    body * {
-        visibility: hidden;
-        display: none;
-    }
-    
-    .bill-print, .bill-print * {
-        visibility: visible;
-        display: block;
-    }
-    
-    .bill-print {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 58mm !important;
-        padding: 2mm !important;
-        font-size: 9px !important;
-        line-height: 1.2 !important;
-    }
-    
-    /* Printer control */
-    html, body {
-        height: auto;
-        overflow: visible;
-        background: white;
-        color: black;
-    }
-}
-
-/* ========== INPUTS ========== */
-input, select, textarea {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    color: var(--text-primary);
-    font-size: 16px;
-}
-
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--primary);
 }
 
 /* ========== SETTINGS ========== */
@@ -702,24 +610,7 @@ input:focus, select:focus, textarea:focus {
     font-weight: 500;
 }
 
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.checkbox-group input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-}
-
-.checkbox-group label {
-    margin: 0;
-    cursor: pointer;
-}
-
-/* GST Toggle Styles */
+/* GST Toggle */
 .gst-toggle {
     display: flex;
     align-items: center;
@@ -776,7 +667,6 @@ input:checked + .toggle-slider:before {
     transform: translateX(24px);
 }
 
-/* GST fields container */
 .gst-fields {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -786,12 +676,74 @@ input:checked + .toggle-slider:before {
     background: rgba(123, 31, 162, 0.05);
     border-radius: 10px;
     border: 1px solid rgba(123, 31, 162, 0.2);
-    transition: all 0.3s ease;
 }
 
 .gst-fields.disabled {
     opacity: 0.5;
     pointer-events: none;
+}
+
+/* ========== BILLS ========== */
+.bill-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+}
+
+.bill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.bill-invoice {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.bill-amount {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.bill-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.bill-type-dinein {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.bill-type-takeaway {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196F3;
+}
+
+.bill-type-swiggy {
+    background: rgba(255, 152, 0, 0.2);
+    color: #FF9800;
+}
+
+.bill-type-zomato {
+    background: rgba(244, 67, 54, 0.2);
+    color: #F44336;
+}
+
+.bill-list {
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ========== SALES ========== */
@@ -809,6 +761,7 @@ input:checked + .toggle-slider:before {
     border-radius: 10px;
     font-weight: 500;
     cursor: pointer;
+    min-height: auto;
 }
 
 .filter-btn.active {
@@ -848,28 +801,87 @@ input:checked + .toggle-slider:before {
     border: 1px solid var(--border);
 }
 
-/* ========== SCROLLBAR ========== */
-::-webkit-scrollbar {
-    width: 6px;
+/* ========== PRINT STYLES ========== */
+@media print {
+    @page {
+        margin: 0;
+        size: 58mm auto;
+    }
+    
+    body * {
+        visibility: hidden;
+    }
+    
+    .bill-print, .bill-print * {
+        visibility: visible;
+        color: #000000 !important;
+        background: #FFFFFF !important;
+    }
+    
+    .bill-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 58mm !important;
+        padding: 2mm !important;
+        font-size: 9px !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
+/* ========== RESPONSIVE ========== */
+@media (max-width: 480px) {
+    .scroll-container {
+        padding: 16px;
+    }
+    
+    .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+    
+    .menu-item {
+        padding: 12px;
+    }
+    
+    .header-title {
+        font-size: 16px;
+    }
+    
+    .tabbar button {
+        font-size: 11px;
+    }
+    
+    .tabbar button span {
+        font-size: 18px;
+    }
+    
+    .order-type-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .gst-fields {
+        grid-template-columns: 1fr;
+    }
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 3px;
+/* ========== REALME SPECIFIC FIXES ========== */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (max-device-width: 720px) {
+    /* Fix for Realme zoom on input focus */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+    
+    /* Fix for Realme touch */
+    button, .menu-item, .order-type-btn {
+        -webkit-tap-highlight-color: rgba(123, 31, 162, 0.3);
+    }
 }
 
-/* ========== BILL LIST ========== */
-.bill-list {
-    max-height: 400px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* ========== SAFE AREA SUPPORT ========== */
+/* Safe area support for notch */
 @supports (padding-top: env(safe-area-inset-top)) {
     header {
         padding-top: env(safe-area-inset-top);
@@ -894,7 +906,6 @@ input:checked + .toggle-slider:before {
 <body>
 <header>
     <div class="logo-container">
-        <img id="headerLogo" class="logo-small hidden" src="" alt="Logo">
         <div class="header-title">The House of Biryani's</div>
     </div>
     <div class="header-actions">
@@ -914,22 +925,22 @@ input:checked + .toggle-slider:before {
         
         <div class="order-type-container">
             <button class="order-type-btn active" onclick="setOrderType('Dine In')">
-                <span style="font-size: 24px;">🍽️</span>
+                <span>🍽️</span>
                 <span>Dine In</span>
                 <small style="color: var(--text-secondary); font-size: 12px;">Table 1</small>
             </button>
             <button class="order-type-btn" onclick="setOrderType('Take Away')">
-                <span style="font-size: 24px;">🥡</span>
+                <span>🥡</span>
                 <span>Take Away</span>
                 <small style="color: var(--text-secondary); font-size: 12px;">Pickup</small>
             </button>
             <button class="order-type-btn" onclick="setOrderType('Swiggy')">
-                <span style="font-size: 24px;">🛵</span>
+                <span>🛵</span>
                 <span>Swiggy</span>
                 <small style="color: var(--text-secondary); font-size: 12px;">Online</small>
             </button>
             <button class="order-type-btn" onclick="setOrderType('Zomato')">
-                <span style="font-size: 24px;">🍕</span>
+                <span>🍕</span>
                 <span>Zomato</span>
                 <small style="color: var(--text-secondary); font-size: 12px;">Online</small>
             </button>
@@ -1127,7 +1138,7 @@ input:checked + .toggle-slider:before {
                     <span>💰</span> Tax & Pricing
                 </div>
                 
-                <!-- GST Enable/Disable Toggle -->
+                <!-- GST Toggle -->
                 <div class="gst-toggle">
                     <div>
                         <div style="font-weight: 600; margin-bottom: 4px;">Enable GST</div>
@@ -1139,7 +1150,7 @@ input:checked + .toggle-slider:before {
                     </label>
                 </div>
                 
-                <!-- GST Fields (conditionally enabled) -->
+                <!-- GST Fields -->
                 <div id="gstFields" class="gst-fields">
                     <div class="input-group">
                         <label>GST Number</label>
@@ -1189,12 +1200,12 @@ input:checked + .toggle-slider:before {
                     <span>🖨️</span> Printer Settings
                 </div>
                 
-                <div class="checkbox-group">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                     <input type="checkbox" id="autoPrint" style="width: 20px; height: 20px;">
                     <label for="autoPrint">Auto Print After Save</label>
                 </div>
                 
-                <div class="checkbox-group">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                     <input type="checkbox" id="printerCut" style="width: 20px; height: 20px;">
                     <label for="printerCut">Auto Cut After Print</label>
                 </div>
@@ -1213,7 +1224,7 @@ input:checked + .toggle-slider:before {
                     <span>🔧</span> System Settings
                 </div>
                 
-                <div class="checkbox-group">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                     <input type="checkbox" id="soundEnabled" checked style="width: 20px; height: 20px;">
                     <label for="soundEnabled">Enable Sound Effects</label>
                 </div>
@@ -1315,34 +1326,38 @@ input:checked + .toggle-slider:before {
 
 // Global Variables
 let cart = [];
-let db;
 let currentOrderType = "Dine In";
 let currentBillKey = null;
 let salesChart = null;
 let allBills = [];
+let isRealmeDevice = /RMX2040/.test(navigator.userAgent);
 
-// Initialize
-window.onload = function() {
-    // Check for Android Realme
-    const isAndroid = /Android/.test(navigator.userAgent);
-    const isRealme = /RMX/.test(navigator.userAgent); // Realme devices often have RMX in user agent
-    
+// ========== INITIALIZATION ==========
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('POS System Initializing...');
     console.log('Device:', navigator.userAgent);
-    console.log('Is Android:', isAndroid);
-    console.log('Is Realme:', isRealme);
+    console.log('Is Realme:', isRealmeDevice);
     
-    // Apply Android-specific fixes
-    if (isAndroid) {
-        // Force reflow for Android WebView
-        setTimeout(() => {
-            document.body.style.height = '100%';
-            document.getElementById('scrollContainer').style.webkitOverflowScrolling = 'touch';
-        }, 100);
+    // Apply Realme specific fixes
+    if (isRealmeDevice) {
+        applyRealmeFixes();
     }
     
+    // Initialize system
+    setTimeout(initializeSystem, 100);
+});
+
+function initializeSystem() {
+    // Initialize database
     initDatabase();
+    
+    // Load menu
     loadMenu();
+    
+    // Load settings
     loadSettings();
+    
+    // Render cart
     renderCart();
     
     // Set today's date
@@ -1355,12 +1370,56 @@ window.onload = function() {
     }
     
     // Initialize sales chart
-    setTimeout(() => loadSales('today'), 500);
-};
+    setTimeout(() => {
+        try {
+            loadSales('today');
+        } catch (e) {
+            console.error('Error loading sales:', e);
+        }
+    }, 500);
+    
+    // Force layout for Realme
+    if (isRealmeDevice) {
+        setTimeout(() => {
+            document.body.style.height = window.innerHeight + 'px';
+            document.body.style.width = window.innerWidth + 'px';
+        }, 200);
+    }
+}
+
+function applyRealmeFixes() {
+    console.log('Applying Realme RMX2040 fixes...');
+    
+    // Disable text selection
+    document.body.style.webkitUserSelect = 'none';
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitTouchCallout = 'none';
+    
+    // Force hardware acceleration
+    document.body.style.webkitTransform = 'translate3d(0,0,0)';
+    document.body.style.transform = 'translate3d(0,0,0)';
+    
+    // Fix scrolling
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.webkitOverflowScrolling = 'touch';
+    
+    // Fix touch events
+    document.addEventListener('touchstart', function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') {
+            e.preventDefault();
+        }
+    }, { passive: false });
+    
+    // Fix resize issues (keyboard)
+    window.addEventListener('resize', function() {
+        setTimeout(() => {
+            document.body.style.height = window.innerHeight + 'px';
+        }, 100);
+    });
+}
 
 // ========== DATABASE ==========
 function initDatabase() {
-    // Simple localStorage-based database
     console.log("Database initialized");
 }
 
@@ -1384,7 +1443,9 @@ function nav(button, sectionId) {
     if (button) button.classList.add("active");
     
     // Scroll to top
-    document.getElementById('scrollContainer').scrollTop = 0;
+    setTimeout(() => {
+        document.getElementById('scrollContainer').scrollTop = 0;
+    }, 50);
 }
 
 function quickSettings() {
@@ -1462,6 +1523,7 @@ function loadMenu() {
         `;
         menuItem.onclick = () => {
             addToCart(item);
+            // Visual feedback
             menuItem.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 menuItem.style.transform = '';
@@ -1604,7 +1666,7 @@ function calc() {
     };
 }
 
-// ========== SETTINGS - GST TOGGLE ==========
+// ========== GST TOGGLE ==========
 function toggleGSTFields() {
     const gstEnabled = document.getElementById('gstEnabled').checked;
     const gstFields = document.getElementById('gstFields');
@@ -1616,7 +1678,49 @@ function toggleGSTFields() {
     }
 }
 
-// ========== BILLS ==========
+// ========== BILL PREVIEW ==========
+function previewBill() {
+    if (cart.length === 0) {
+        showToast("Add items to cart first", "error");
+        return;
+    }
+    
+    // Generate bill data
+    const invoiceNumber = generateInvoiceNumber();
+    const billData = calc();
+    const date = new Date();
+    
+    // Generate bill HTML
+    const billHTML = generateBillHTML(invoiceNumber, billData, date);
+    
+    // Display bill
+    const billContainer = document.getElementById("billHTML");
+    billContainer.innerHTML = '';
+    
+    // Create wrapper for better performance
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bill-print';
+    wrapper.innerHTML = billHTML;
+    
+    // Append with Realme workaround
+    if (isRealmeDevice) {
+        // Realme needs direct innerHTML assignment
+        billContainer.innerHTML = '<div class="bill-print">' + billHTML + '</div>';
+    } else {
+        billContainer.appendChild(wrapper);
+    }
+    
+    // Hide delete button
+    document.getElementById("deleteBillBtn").style.display = "none";
+    currentBillKey = null;
+    
+    // Navigate to preview
+    setTimeout(() => {
+        nav(null, 'preview');
+        showToast("Bill preview ready", "success");
+    }, 50);
+}
+
 function generateInvoiceNumber() {
     const prefixes = {
         'Dine In': 'DI',
@@ -1633,129 +1737,102 @@ function generateInvoiceNumber() {
     return `${prefix}-${counter.toString().padStart(5, '0')}`;
 }
 
-function previewBill() {
-    if (cart.length === 0) {
-        showToast("Add items to cart first", "error");
-        return;
-    }
-    
-    const invoiceNumber = generateInvoiceNumber();
-    const billData = calc();
-    const date = new Date();
-    
-    const billHTML = generateBillHTML(invoiceNumber, billData, date);
-    document.getElementById("billHTML").innerHTML = billHTML;
-    document.getElementById("deleteBillBtn").style.display = "none";
-    currentBillKey = null;
-    
-    nav(null, 'preview');
-    showToast("Bill preview ready", "success");
-}
-
 function generateBillHTML(invoiceNumber, billData, date) {
-    const printerWidth = localStorage.getItem('printerWidth') || '58';
-    const gstNo = localStorage.getItem('gstNo') || '';
-    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
     const resName = localStorage.getItem('resName') || "The House of Biryani's";
     const resAddr = localStorage.getItem('resAddr') || '';
     const resPhone = localStorage.getItem('resPhone') || '';
+    const gstNo = localStorage.getItem('gstNo') || '';
+    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
+    
+    // Build items table
+    let itemsHTML = '';
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        itemsHTML += `
+            <div class="row">
+                <div style="flex: 2; font-size: 11px;">${item.name}</div>
+                <div style="flex: 0.5; text-align: center; font-size: 11px;">${item.quantity}</div>
+                <div style="flex: 1; text-align: right; font-size: 11px;">₹${itemTotal.toFixed(2)}</div>
+            </div>
+        `;
+    });
     
     return `
-        <div class="bill-print" style="width: ${printerWidth}mm;">
-            <div class="header">
-                <div style="font-size: 12px; font-weight: bold; text-transform: uppercase;">${resName}</div>
-                ${resAddr ? `<div style="font-size: 9px;">${resAddr}</div>` : ''}
-                <div style="margin: 5px 0; font-weight: bold; font-size: 11px;">TAX INVOICE</div>
+        <div class="header">
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">${resName}</div>
+            ${resAddr ? `<div style="font-size: 10px; margin-bottom: 3px;">${resAddr}</div>` : ''}
+            <div style="font-size: 12px; font-weight: bold; margin: 10px 0;">TAX INVOICE</div>
+        </div>
+        
+        <div class="row">
+            <div style="flex: 1; font-size: 10px;">Invoice: ${invoiceNumber}</div>
+            <div style="flex: 1; text-align: right; font-size: 10px;">${date.toLocaleDateString('en-IN')}</div>
+        </div>
+        <div class="row">
+            <div style="flex: 1; font-size: 10px;">Time: ${date.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}</div>
+            <div style="flex: 1; text-align: right; font-size: 10px; color: var(--primary); font-weight: bold;">${currentOrderType}</div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <!-- Items Header -->
+        <div class="row" style="font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px;">
+            <div style="flex: 2; font-size: 11px;">Item</div>
+            <div style="flex: 0.5; text-align: center; font-size: 11px;">Qty</div>
+            <div style="flex: 1; text-align: right; font-size: 11px;">Amount</div>
+        </div>
+        
+        ${itemsHTML}
+        
+        <div class="divider"></div>
+        
+        <!-- Calculations -->
+        <div class="row">
+            <div>Subtotal:</div>
+            <div style="text-align: right;">₹${billData.subtotal.toFixed(2)}</div>
+        </div>
+        
+        ${billData.serviceCharge > 0 ? `
+            <div class="row">
+                <div>Service Charge:</div>
+                <div style="text-align: right;">₹${billData.serviceCharge.toFixed(2)}</div>
             </div>
-            
-            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 5px;">
-                <div>Invoice: ${invoiceNumber}</div>
-                <div>${date.toLocaleDateString('en-IN')}</div>
+        ` : ''}
+        
+        ${billData.discount > 0 ? `
+            <div class="row" style="color: #4CAF50;">
+                <div>Discount:</div>
+                <div style="text-align: right;">-₹${billData.discount.toFixed(2)}</div>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 5px;">
-                <div>Time: ${date.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}</div>
-                <div>Type: ${currentOrderType}</div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th style="text-align: left; width: 50%; font-size: 9px;">Item</th>
-                        <th style="text-align: center; width: 15%; font-size: 9px;">Qty</th>
-                        <th style="text-align: right; width: 35%; font-size: 9px;">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${cart.map(item => `
-                        <tr>
-                            <td style="font-size: 9px;">${item.name}</td>
-                            <td style="text-align: center; font-size: 9px;">${item.quantity}</td>
-                            <td style="text-align: right; font-size: 9px;">${(item.price * item.quantity).toFixed(2)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            
-            <div class="divider"></div>
-            
-            <div style="font-size: 9px;">
-                <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-                    <span>Subtotal:</span>
-                    <span>₹${billData.subtotal.toFixed(2)}</span>
-                </div>
-                ${billData.serviceCharge > 0 ? `
-                    <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-                        <span>Service Charge:</span>
-                        <span>₹${billData.serviceCharge.toFixed(2)}</span>
-                    </div>
-                ` : ''}
-                ${billData.discount > 0 ? `
-                    <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-                        <span>Discount:</span>
-                        <span>-₹${billData.discount.toFixed(2)}</span>
-                    </div>
-                ` : ''}
-                ${billData.gstEnabled ? `
-                    ${billData.cgst > 0 ? `
-                        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-                            <span>CGST:</span>
-                            <span>₹${billData.cgst.toFixed(2)}</span>
-                        </div>
-                    ` : ''}
-                    ${billData.sgst > 0 ? `
-                        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-                            <span>SGST:</span>
-                            <span>₹${billData.sgst.toFixed(2)}</span>
-                        </div>
-                    ` : ''}
-                ` : ''}
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin: 5px 0;">
-                <span>TOTAL:</span>
-                <span>₹${billData.total.toFixed(2)}</span>
-            </div>
-            
-            ${gstEnabled && gstNo ? `
-                <div style="text-align: center; font-size: 8px; margin: 5px 0;">
-                    <div>GST: ${gstNo}</div>
+        ` : ''}
+        
+        ${billData.gstEnabled ? `
+            ${billData.cgst > 0 ? `
+                <div class="row">
+                    <div>CGST:</div>
+                    <div style="text-align: right;">₹${billData.cgst.toFixed(2)}</div>
                 </div>
             ` : ''}
-            
-            <div style="text-align: center; font-size: 8px; margin-top: 10px;">
-                ${resPhone ? `<div>Phone: ${resPhone}</div>` : ''}
-                <div style="margin-top: 5px; font-weight: bold;">Thank you! Visit Again</div>
-            </div>
-            
-            ${localStorage.getItem('printerCut') === 'true' ? `
-                <div style="text-align: center; margin-top: 20px;">
-                    <div style="font-size: 8px;">--- CUT HERE ---</div>
+            ${billData.sgst > 0 ? `
+                <div class="row">
+                    <div>SGST:</div>
+                    <div style="text-align: right;">₹${billData.sgst.toFixed(2)}</div>
                 </div>
             ` : ''}
+        ` : ''}
+        
+        <div class="total-row">
+            <div>TOTAL:</div>
+            <div>₹${billData.total.toFixed(2)}</div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--border);">
+            ${resPhone ? `<div style="font-size: 10px; margin-bottom: 5px;">📞 ${resPhone}</div>` : ''}
+            ${gstEnabled && gstNo ? `<div style="font-size: 9px; margin-bottom: 5px;">GST: ${gstNo}</div>` : ''}
+            <div style="font-size: 11px; font-weight: bold; color: var(--primary); margin-top: 10px;">
+                Thank you! Visit Again
+            </div>
         </div>
     `;
 }
@@ -1780,24 +1857,26 @@ function saveBill() {
     bills.push(bill);
     localStorage.setItem('bills', JSON.stringify(bills));
     
+    // Clear cart
     cart = [];
     renderCart();
     
+    // Auto print if enabled
     if (localStorage.getItem('autoPrint') === 'true') {
         setTimeout(printBill, 500);
     }
     
     showToast("Bill saved successfully!", "success");
     
+    // Return to home
     setTimeout(() => {
         closePreview();
         nav(document.querySelector('.tabbar button:nth-child(1)'), 'home');
     }, 1500);
 }
 
-// ========== PRINTING FOR MT-02/HOP-HL58 PRINTER ==========
 function printBill() {
-    const printContent = document.querySelector('.bill-print')?.outerHTML;
+    const printContent = document.querySelector('.bill-print')?.innerHTML;
     if (!printContent) {
         showToast("No bill to print", "error");
         return;
@@ -1806,14 +1885,13 @@ function printBill() {
     const printerWidth = localStorage.getItem('printerWidth') || '58';
     const autoCut = localStorage.getItem('printerCut') === 'true';
     
-    // Create a print-friendly HTML with thermal printer styles
+    // Create print window
     const printHTML = `
         <!DOCTYPE html>
         <html>
         <head>
             <title>Print Bill</title>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
                 @page {
                     margin: 0;
@@ -1821,62 +1899,46 @@ function printBill() {
                 }
                 body {
                     margin: 0;
-                    padding: 0;
+                    padding: 2mm;
                     font-family: 'Courier New', monospace;
                     font-size: 9px;
                     width: ${printerWidth}mm;
                     background: white;
                     color: black;
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
                 }
                 .bill-print {
                     width: ${printerWidth}mm !important;
                     padding: 2mm !important;
                     font-size: 9px !important;
                     line-height: 1.2 !important;
-                    word-wrap: break-word;
-                    overflow-wrap: break-word;
-                }
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
-                td, th {
-                    padding: 1px 0;
-                    font-size: 8px;
                 }
                 .divider {
                     border-top: 1px dashed #000;
                     margin: 2px 0;
                 }
+                .row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 1px 0;
+                }
             </style>
         </head>
         <body onload="window.print(); ${autoCut ? 'window.close();' : 'setTimeout(() => window.close(), 1000);'}">
-            ${printContent}
+            <div class="bill-print">${printContent}</div>
         </body>
         </html>
     `;
     
-    const printWindow = window.open('', '_blank', 'width=400,height=600');
+    const printWindow = window.open('', '_blank');
     printWindow.document.write(printHTML);
     printWindow.document.close();
-    
-    // Add printer-specific ESC/POS commands for auto cut (if supported by browser/plugin)
-    if (autoCut && typeof window.jsPrintSetup !== 'undefined') {
-        // This would require a browser extension that supports ESC/POS
-        try {
-            printWindow.document.write('\x1B\x69'); // ESC i (partial cut)
-        } catch (e) {
-            console.log("Auto cut not supported in this browser");
-        }
-    }
 }
 
 function closePreview() {
     nav(document.querySelector('.tabbar button:nth-child(1)'), 'home');
 }
 
+// ========== BILLS HISTORY ==========
 function loadBills() {
     const bills = JSON.parse(localStorage.getItem('bills') || '[]');
     allBills = bills.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1944,8 +2006,8 @@ function displayFilteredBills() {
             </div>
             
             <div style="display: flex; gap: 8px;">
-                <button onclick="reprintBill(${index})" style="flex: 1; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;">🖨️ Reprint</button>
-                <button onclick="deleteBill(${index})" style="flex: 1; padding: 8px; background: rgba(244, 67, 54, 0.1); color: var(--danger); border: 1px solid rgba(244, 67, 54, 0.3); border-radius: 8px;">🗑️ Delete</button>
+                <button onclick="reprintBill(${index})" style="flex: 1; padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 12px;">🖨️ Reprint</button>
+                <button onclick="deleteBill(${index})" style="flex: 1; padding: 8px; background: rgba(244, 67, 54, 0.1); color: var(--danger); border: 1px solid rgba(244, 67, 54, 0.3); border-radius: 8px; font-size: 12px;">🗑️ Delete</button>
             </div>
         `;
         
@@ -1973,8 +2035,10 @@ function reprintBill(index) {
     const bills = JSON.parse(localStorage.getItem('bills') || '[]');
     const bill = bills[index];
     if (bill) {
-        // Generate bill HTML and print
-        const billHTML = generateBillHTMLForPrint(bill);
+        // Generate reprint HTML
+        const reprintHTML = generateReprintHTML(bill);
+        
+        // Create print window
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
             <html>
@@ -1985,7 +2049,7 @@ function reprintBill(index) {
             </style>
             </head>
             <body onload="window.print(); setTimeout(() => window.close(), 1000);">
-                ${billHTML}
+                ${reprintHTML}
             </body>
             </html>
         `);
@@ -1994,53 +2058,41 @@ function reprintBill(index) {
     }
 }
 
-function generateBillHTMLForPrint(bill) {
-    const printerWidth = localStorage.getItem('printerWidth') || '58';
-    const gstNo = localStorage.getItem('gstNo') || '';
-    const gstEnabled = localStorage.getItem('gstEnabled') === 'true';
+function generateReprintHTML(bill) {
     const resName = localStorage.getItem('resName') || "The House of Biryani's";
+    const date = new Date(bill.date);
     
     return `
-        <div class="bill-print" style="width: ${printerWidth}mm;">
-            <div class="header">
-                <div style="font-size: 12px; font-weight: bold; text-transform: uppercase;">${resName}</div>
-                <div style="margin: 5px 0; font-weight: bold; font-size: 11px;">REPRINT - TAX INVOICE</div>
+        <div style="width: 58mm; padding: 2mm; font-family: 'Courier New', monospace; font-size: 9px;">
+            <div style="text-align: center; margin-bottom: 10px;">
+                <div style="font-size: 12px; font-weight: bold;">${resName}</div>
+                <div style="font-size: 10px; margin: 5px 0;">*** REPRINT ***</div>
+                <div style="font-size: 11px; font-weight: bold;">TAX INVOICE</div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 5px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <div>Invoice: ${bill.invoiceNumber}</div>
-                <div>${new Date(bill.date).toLocaleDateString('en-IN')}</div>
+                <div>${date.toLocaleDateString('en-IN')}</div>
             </div>
             
-            <div class="divider"></div>
+            <div style="border-top: 1px dashed #000; margin: 5px 0;"></div>
             
-            <table>
-                <thead>
-                    <tr>
-                        <th style="text-align: left; width: 50%; font-size: 9px;">Item</th>
-                        <th style="text-align: center; width: 15%; font-size: 9px;">Qty</th>
-                        <th style="text-align: right; width: 35%; font-size: 9px;">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${bill.items.map(item => `
-                        <tr>
-                            <td style="font-size: 9px;">${item.name}</td>
-                            <td style="text-align: center; font-size: 9px;">${item.quantity}</td>
-                            <td style="text-align: right; font-size: 9px;">${(item.price * item.quantity).toFixed(2)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+            ${bill.items.map(item => `
+                <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+                    <div>${item.name}</div>
+                    <div>${item.quantity} x ₹${item.price}</div>
+                    <div>₹${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('')}
             
-            <div class="divider"></div>
-            
-            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 11px; margin: 5px 0;">
-                <span>TOTAL:</span>
-                <span>₹${bill.total.toFixed(2)}</span>
+            <div style="border-top: 2px solid #000; margin: 10px 0; padding-top: 10px;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <div>TOTAL:</div>
+                    <div>₹${bill.total.toFixed(2)}</div>
+                </div>
             </div>
             
-            <div style="text-align: center; font-size: 8px; margin-top: 10px;">
+            <div style="text-align: center; margin-top: 15px; font-size: 8px;">
                 <div style="font-weight: bold;">*** REPRINT ***</div>
             </div>
         </div>
@@ -2174,29 +2226,50 @@ function updateSalesChart(bills, period) {
         });
     }
     
-    salesChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Revenue',
-                data: data,
-                borderColor: '#7B1FA2',
-                backgroundColor: 'rgba(123, 31, 162, 0.1)',
-                borderWidth: 2,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+    try {
+        salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: data,
+                    borderColor: '#7B1FA2',
+                    backgroundColor: 'rgba(123, 31, 162, 0.1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false } 
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.1)' 
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: { 
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.1)' 
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        console.error('Chart error:', e);
+    }
 }
 
 function updateTopItems(bills) {
@@ -2276,7 +2349,7 @@ function loadSettings() {
     document.getElementById('cgstRate').value = localStorage.getItem('cgstRate') || '2.5';
     document.getElementById('sgstRate').value = localStorage.getItem('sgstRate') || '2.5';
     
-    // Update GST fields visibility
+    // Update GST fields
     toggleGSTFields();
     
     // Other settings
@@ -2287,6 +2360,7 @@ function loadSettings() {
     document.getElementById('printerWidth').value = localStorage.getItem('printerWidth') || '58';
     document.getElementById('soundEnabled').checked = localStorage.getItem('soundEnabled') !== 'false';
     
+    // Load menu editor
     loadMenuEditor();
 }
 
@@ -2334,8 +2408,8 @@ function loadMenuEditor() {
                 <div style="color: var(--primary); font-size: 14px;">₹${item.price}</div>
             </div>
             <div style="display: flex; gap: 8px;">
-                <button onclick="editMenuItem(${index})" style="padding: 6px 12px; background: var(--info); color: white; border: none; border-radius: 6px;">Edit</button>
-                <button onclick="deleteMenuItem(${index})" style="padding: 6px 12px; background: var(--danger); color: white; border: none; border-radius: 6px;">Delete</button>
+                <button onclick="editMenuItem(${index})" style="padding: 6px 12px; background: var(--info); color: white; border: none; border-radius: 6px; font-size: 12px;">Edit</button>
+                <button onclick="deleteMenuItem(${index})" style="padding: 6px 12px; background: var(--danger); color: white; border: none; border-radius: 6px; font-size: 12px;">Delete</button>
             </div>
         `;
         menuEditor.appendChild(div);
@@ -2400,7 +2474,7 @@ function deleteMenuItem(index) {
 function showToast(message, type = "info") {
     const toast = document.getElementById('toast');
     toast.textContent = message;
-    toast.className = `toast show`;
+    toast.className = 'toast';
     
     const colors = {
         success: '#4CAF50',
@@ -2411,29 +2485,68 @@ function showToast(message, type = "info") {
     
     toast.style.borderLeftColor = colors[type] || colors.info;
     
+    // Show toast
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    // Hide after delay
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
 }
 
-// ========== ANDROID FIXES ==========
-// Remove all problematic event listeners
-document.addEventListener('touchmove', function(e) {
-    // Allow all touch moves for scrolling
+// ========== REALME TOUCH FIXES ==========
+// Fix touch events
+document.addEventListener('touchstart', function(e) {
+    // Add visual feedback for buttons
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        e.target.style.opacity = '0.8';
+        setTimeout(() => {
+            e.target.style.opacity = '';
+        }, 150);
+    }
 }, { passive: true });
 
-document.addEventListener('gesturestart', function(e) {
-    // Don't prevent gestures
+// Fix for Realme keyboard
+window.addEventListener('focusin', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        setTimeout(() => {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+    }
 });
 
-// Force reflow for Android
-setTimeout(() => {
-    const scrollContainer = document.getElementById('scrollContainer');
-    if (scrollContainer) {
-        scrollContainer.style.height = 'calc(100% - 150px)';
-        scrollContainer.style.webkitOverflowScrolling = 'touch';
+// ========== PREVENT PAGE SCROLL ==========
+document.addEventListener('touchmove', function(e) {
+    // Allow scrolling only in scroll containers
+    if (!e.target.closest('.scroll-container') && 
+        !e.target.closest('.cart-container') && 
+        !e.target.closest('.bill-preview-container')) {
+        e.preventDefault();
     }
-}, 500);
+}, { passive: false });
+
+// ========== CLEANUP ON UNLOAD ==========
+window.addEventListener('beforeunload', function() {
+    // Save current state
+    localStorage.setItem('lastCart', JSON.stringify(cart));
+});
+
+// Initialize on load
+window.addEventListener('load', function() {
+    // Check for saved cart
+    const savedCart = localStorage.getItem('lastCart');
+    if (savedCart) {
+        try {
+            cart = JSON.parse(savedCart);
+            renderCart();
+            calc();
+        } catch (e) {
+            console.log('No saved cart found');
+        }
+    }
+});
 </script>
 </body>
 </html>
